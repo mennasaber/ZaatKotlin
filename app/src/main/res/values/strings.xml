@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Zaat</string>
+    <string name="home">Home</string>
+    <string name="chat">Chat</string>
+    <string name="notification">Notification</string>
+    <string name="setting">Setting</string>
+    <string name="facebook_app_id">242135343534022</string>
+    <string name="fb_login_protocol_scheme">fb242135343534022</string>
+    <string name="or">or</string>
+    <string name="title">Title</string>
+    <string name="your_memory">Your memory</string>
+    <string name="add_memory">Add memory</string>
+    <string name="memories">Memories</string>
+
+</resources>
