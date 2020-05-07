@@ -1,5 +1,6 @@
 package com.example.zaatkotlin
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.FrameLayout
@@ -9,13 +10,26 @@ import com.example.zaatkotlin.fragments.HomeFragment
 import com.example.zaatkotlin.fragments.NotificationFragment
 import com.example.zaatkotlin.fragments.SettingFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        checkUser()
         initFrameLayout()
         setupBottomNavigationView()
+    }
+
+    private fun checkUser() {
+        val auth = FirebaseAuth.getInstance().currentUser
+        if (auth == null) {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun initFrameLayout() {

@@ -3,6 +3,9 @@ package com.example.zaatkotlin
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.zaatkotlin.models.User
@@ -21,26 +24,37 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.ktx.firestore
+import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
     lateinit var firebaseAuth: FirebaseAuth
     lateinit var googleSignInClient: GoogleSignInClient
     lateinit var callbackManager: CallbackManager
+    lateinit var loginProgressBar: ProgressBar
+    private lateinit var loginLayout: RelativeLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        firebaseAuth = FirebaseAuth.getInstance()
+        loginLayout = findViewById(R.id.loginLayout)
+        loginProgressBar = findViewById(R.id.loginProgress)
+
+        setupWidget(false)
+        initSignInWithGoogle()
+        initSignInWithFacebook()
+    }
+
+    // ------------------------------- send request to sign in with google or facebook account ----------
+    private fun initSignInWithGoogle() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-        firebaseAuth = FirebaseAuth.getInstance()
-        var googleSignInButton: SignInButton = findViewById(R.id.googleSignInButton)
-
+        val googleSignInButton: SignInButton = findViewById(R.id.googleSignInButton)
         googleSignInButton.setOnClickListener { signInWithGoogle() }
-
-        initSignInWithFacebook()
     }
 
     private fun initSignInWithFacebook() {
@@ -51,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
         facebookButton.setReadPermissions("email", "public_profile")
         facebookButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult?) {
-                var request =
+                val request =
                     GraphRequest.newMeRequest(result?.accessToken) { `object`: JSONObject?, response: GraphResponse? ->
                         Log.d("logiiin", `object`.toString())
                         Log.d("login", `object`?.get("name").toString())
@@ -79,10 +93,17 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, 0)
+    }
+
+    // --------------------------------- save user email in firebase auth ----------------------------------
     private fun firebaseSignInWithFacebook(
         accessToken: AccessToken?,
         user: User
     ) {
+        setupWidget(true)
         val credential = accessToken?.token?.let {
             FacebookAuthProvider.getCredential(it)
         }
@@ -93,18 +114,55 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, "done", Toast.LENGTH_SHORT).show()
                     user.userId = firebaseAuth.uid
                     saveUserDataInFireStore(user)
+                    login()
                 } else {
-                    Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show()
+                    setupWidget(false)
                 }
             }
         }
     }
 
-    private fun signInWithGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, 0)
+    private fun firebaseSignInWithGoogle(
+        idToken: String,
+        account: GoogleSignInAccount
+    ) {
+        setupWidget(true)
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "suff", Toast.LENGTH_SHORT).show()
+                saveUserDataInFireStore(
+                    User(
+                        account.email,
+                        account.photoUrl.toString(),
+                        account.displayName,
+                        firebaseAuth.uid
+                    )
+                )
+                login()
+            } else
+                setupWidget(false)
+        }
     }
 
+    // ------------------------------ manage android widget -----------------------
+    private fun setupWidget(isLogin: Boolean) {
+        if (isLogin) {
+            loginProgressBar.visibility = View.VISIBLE
+            loginLayout.visibility = View.INVISIBLE
+        } else {
+            loginProgressBar.visibility = View.INVISIBLE
+            loginLayout.visibility = View.VISIBLE
+        }
+    }
+
+    // ------------------------------ go to MainActivity --------------------------
+    private fun login() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
+    // ------------------------------ intent callback ------------------------------------
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0) {
@@ -120,30 +178,10 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        callbackManager.onActivityResult(requestCode, resultCode, data) // ?????
+        callbackManager.onActivityResult(requestCode, resultCode, data) // send data to facebook sdk
     }
 
-    private fun firebaseSignInWithGoogle(
-        idToken: String,
-        account: GoogleSignInAccount
-    ) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                Toast.makeText(this, "suff", Toast.LENGTH_SHORT).show()
-                saveUserDataInFireStore(
-                    User(
-                        account.email,
-                        account.photoUrl.toString(),
-                        account.displayName,
-                        firebaseAuth.uid
-                    )
-                )
-            } else
-                Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show()
-        }
-    }
-
+    // ------------------------------save user data in fireStore ---------------------------------
     private fun saveUserDataInFireStore(user: User) {
         val db = Firebase.firestore
         user.userId?.let {
