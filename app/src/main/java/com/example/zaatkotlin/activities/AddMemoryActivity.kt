@@ -1,10 +1,14 @@
-package com.example.zaatkotlin
+package com.example.zaatkotlin.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.activity.viewModels
+import androidx.core.widget.addTextChangedListener
+import com.example.zaatkotlin.R
 import com.example.zaatkotlin.models.Memory
+import com.example.zaatkotlin.viewmodels.AddMemoryViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,25 +26,45 @@ class AddMemoryActivity : AppCompatActivity() {
 
     // ------------------------------ initialization ----------------------------
     private fun initWidget() {
+        val viewModel: AddMemoryViewModel by viewModels()
         saveButton = findViewById(R.id.saveMemory)
         backButton = findViewById(R.id.back)
-        backButton.setOnClickListener { finish() }
+        val titleET = findViewById<EditText>(R.id.titleET)
+        val memoryET = findViewById<EditText>(R.id.memoryET)
+        titleET.setText(viewModel.title)
+        memoryET.setText(viewModel.content)
+
+        backButton.setOnClickListener {
+            finish()
+        }
         saveButton.setOnClickListener {
-            val titleET = findViewById<EditText>(R.id.titleET)
-            val memoryET = findViewById<EditText>(R.id.memoryET)
+
             if (titleET.text.toString().trim() != "" && memoryET.text.toString().trim() != "") {
-                val memoryObject = initMemoryObject(titleET.text.toString().trim(), memoryET.text.toString().trim())
+                val memoryObject = initMemoryObject(
+                    titleET.text.toString().trim(),
+                    memoryET.text.toString().trim()
+                )
                 saveMemoryInFireStore(memoryObject)
             }
         }
+        titleET.addTextChangedListener { viewModel.title = titleET.text.toString() }
+        memoryET.addTextChangedListener { viewModel.content = memoryET.text.toString() }
     }
 
     // ------------------------------ Save Memory in FireStore ------------------
     private fun saveMemoryInFireStore(memoryObject: Memory) {
         val db = Firebase.firestore
         memoryObject.memoryID = db.collection("Memories").document().id
-        db.collection("Memories").document(memoryObject.memoryID).set(memoryObject)
-        finish()
+        db.collection("counter").document("value").get().addOnSuccessListener { document ->
+            if (document != null) {
+                memoryObject.index = document.data!!["last"] as Long
+                db.collection("counter").document("value").update("last", memoryObject.index + 1)
+                db.collection("Memories").document(memoryObject.memoryID).set(memoryObject)
+                finish()
+            }
+        }
+
+
     }
 
     // ------------------------------ Set Memory data ---------------------------

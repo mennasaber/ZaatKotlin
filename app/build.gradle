@@ -23,6 +23,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString() //because viewModels() work with jvm 1.8 not 1.6
+    }
 }
 
 dependencies {
@@ -47,4 +50,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
     implementation 'com.android.support:multidex:1.0.3'
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation 'androidx.fragment:fragment-ktx:1.2.5'
 }

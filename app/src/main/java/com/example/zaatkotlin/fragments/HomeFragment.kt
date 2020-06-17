@@ -6,25 +6,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.GridView
 import android.widget.ImageView
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.zaatkotlin.AddMemoryActivity
+import com.example.zaatkotlin.activities.AddMemoryActivity
 import com.example.zaatkotlin.R
-import com.example.zaatkotlin.adapters.GridViewAdapter
+import com.example.zaatkotlin.adapters.RecyclerViewAdapter
 import com.example.zaatkotlin.models.Memory
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.MetadataChanges
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.layout_top_home_toolbar.*
+import com.example.zaatkotlin.viewmodels.MemoriesViewModel
+
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 class HomeFragment : Fragment() {
     private val numOfItems = 2
+    lateinit var memoriesList: ArrayList<Memory>
+    lateinit var memoriesAdapter: RecyclerViewAdapter
+    lateinit var recyclerView: RecyclerView
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -48,26 +49,32 @@ class HomeFragment : Fragment() {
             val intent = Intent(context, AddMemoryActivity::class.java)
             startActivity(intent)
         }
-        setupGridView(view)
+        initWidget(view)
+        getMemories()
         return view
     }
 
-    private fun setupGridView(view: View?) {
-        val db = Firebase.firestore
-        val memoriesList = ArrayList<Memory>()
-        val gridViewAdapter = GridViewAdapter(memoriesList = memoriesList)
-        val gridView = view?.findViewById<GridView>(R.id.memoriesGridView)
-        val gridWidth = resources.displayMetrics.widthPixels
-        val itemWidth = gridWidth / numOfItems
-        gridView?.columnWidth = itemWidth
-        gridView?.adapter = gridViewAdapter
+    // ------------------------------ initialization ----------------------------
+    private fun initWidget(view: View?) {
 
-        db.collection("Memories").whereEqualTo("uid", FirebaseAuth.getInstance().uid.toString())
-            .addSnapshotListener(MetadataChanges.INCLUDE) { value, e ->
-                if (e != null)
-                    return@addSnapshotListener
+        memoriesList = ArrayList()
+
+        memoriesAdapter = RecyclerViewAdapter(memoriesList = memoriesList)
+
+        recyclerView = view?.findViewById(R.id.memoriesRecyclerView)!!
+
+        recyclerView.adapter = memoriesAdapter
+        recyclerView.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+    }
+
+    // ------------------------------ Get memories from viewModel that return liveData<QuerySnapShot> ----------------------------
+    private fun getMemories() {
+        val viewModel: MemoriesViewModel by viewModels()
+        viewModel.getDataLive()
+            .observe(viewLifecycleOwner, Observer { QuerySnapshot ->
                 memoriesList.clear()
-                for (document in value!!) {
+                for (document in QuerySnapshot) {
                     val memory = Memory(
                         title = document.data["title"] as String,
                         memory = document.data["memory"] as String,
@@ -77,9 +84,9 @@ class HomeFragment : Fragment() {
                     )
                     memory.memoryID = document.data["memoryID"] as String
                     memoriesList.add(memory)
-                    gridViewAdapter.notifyDataSetChanged()
+                    memoriesAdapter.notifyDataSetChanged()
                 }
-            }
+            })
     }
 
     companion object {
@@ -102,8 +109,4 @@ class HomeFragment : Fragment() {
             }
     }
 
-    override fun onStart() {
-        super.onStart()
-
-    }
 }

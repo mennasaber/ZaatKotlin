@@ -1,4 +1,4 @@
-package com.example.zaatkotlin
+package com.example.zaatkotlin.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.zaatkotlin.R
 import com.example.zaatkotlin.models.User
 import com.facebook.*
 import com.facebook.login.LoginManager
@@ -24,7 +25,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.ktx.firestore
-import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
