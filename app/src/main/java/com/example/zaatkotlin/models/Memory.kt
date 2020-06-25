@@ -8,5 +8,4 @@ class Memory(
     var isSharing: Boolean = false
 ) {
     lateinit var memoryID : String
-    var index : Long = -1
 }

@@ -1,29 +1,24 @@
 package com.example.zaatkotlin.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.adapters.SearchAdapter
+import com.example.zaatkotlin.models.Follow
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.SearchViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.MetadataChanges
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.ktx.Firebase
 import java.util.*
 import kotlin.collections.ArrayList
-import androidx.lifecycle.Observer
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,7 +34,9 @@ class SearchFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    lateinit var usersList: ArrayList<User>
+    private lateinit var usersList: ArrayList<User>
+    private var followList: ArrayList<Follow> = ArrayList()
+    private var booleanFollowList: ArrayList<Boolean> = ArrayList()
     lateinit var usersRecyclerView: RecyclerView
     lateinit var searchAdapter: SearchAdapter
     private val viewModel: SearchViewModel by viewModels()
@@ -63,12 +60,15 @@ class SearchFragment : Fragment() {
 
     // ------------------------------ Initialization ----------------------------
     private fun initWidget(view: View?) {
+        getFollowing()
         val searchImage = view?.findViewById<ImageView>(R.id.searchImage)
         val searchET = view?.findViewById<EditText>(R.id.searchET)
 
         usersList = viewModel.usersList
+        booleanFollowList = viewModel.followList
+
         usersRecyclerView = view?.findViewById(R.id.usersRecyclerView)!!
-        searchAdapter = SearchAdapter(usersList)
+        searchAdapter = SearchAdapter(usersList, booleanFollowList, viewModel)
         usersRecyclerView.adapter = searchAdapter
         usersRecyclerView.layoutManager = LinearLayoutManager(view.context)
 
@@ -78,10 +78,19 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun getFollowing() {
+        viewModel.getUserFollowing().observe(viewLifecycleOwner, Observer { querySnapshot ->
+            followList.clear()
+            for (document in querySnapshot)
+                followList.add(document.toObject(Follow::class.java))
+        })
+    }
+
     // ------------------------------ Get users from viewModel that return liveData<QuerySnapShot> ----------------------------
     private fun getUsers(searchContent: String) {
         viewModel.getUsersFromDB().observe(viewLifecycleOwner, Observer { querySnapshot ->
             usersList.clear()
+            booleanFollowList.clear()
             for (document in querySnapshot) {
                 if (document.data["username"].toString().toLowerCase(Locale.ROOT).contains(
                         searchContent.toLowerCase(
@@ -89,18 +98,26 @@ class SearchFragment : Fragment() {
                         )
                     ) && document.data["userId"].toString() != FirebaseAuth.getInstance().uid.toString()
                 ) {
+
                     val user = User(
                         username = document.data["username"] as String,
                         photoURL = document.data["photoURL"] as String,
                         userId = document.data["userId"] as String,
                         email = document.data["email"] as String
                     )
+                    val isFollow = isFollowing(user.userId)
+                    booleanFollowList.add(isFollow)
                     usersList.add(user)
                 }
             }
             viewModel.usersList = usersList
+            viewModel.followList = booleanFollowList
             searchAdapter.notifyDataSetChanged()
         })
+    }
+
+    private fun isFollowing(userId: String?): Boolean {
+        return followList.find { it.followingId == userId } != null
     }
 
     companion object {

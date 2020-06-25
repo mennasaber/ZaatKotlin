@@ -25,9 +25,10 @@
 
             <TextView
                 android:id="@+id/memoryTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:gravity="start"
                 android:maxLines="1"
                 tools:text="Memory Title"
                 android:textColor="@color/colorDeepOrange"
@@ -39,7 +40,8 @@
 
             <TextView
                 android:id="@+id/memoryText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="start"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"

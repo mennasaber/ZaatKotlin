@@ -16,4 +16,12 @@ class MemoriesViewModel : ViewModel() {
     fun getDataLive(): LiveData<QuerySnapshot> {
         return firebaseQueryLiveData
     }
+
+    fun updateMemory(memoryID: String, title: String, memory: String, isSharing: Boolean) {
+        val map = mutableMapOf<String, Any>()
+        map["title"] = title
+        map["memory"] = memory
+        map["sharing"] = isSharing
+        Firebase.firestore.collection("Memories").document(memoryID).update(map)
+    }
 }

@@ -23,15 +23,15 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
-    lateinit var firebaseAuth: FirebaseAuth
-    lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
     lateinit var callbackManager: CallbackManager
-    lateinit var loginProgressBar: ProgressBar
+    private lateinit var loginProgressBar: ProgressBar
     private lateinit var loginLayout: RelativeLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
         initSignInWithFacebook()
     }
 
-    // ------------------------------- send request to sign in with google or facebook account ----------
+    /** ---------------- send request to sign in with google or facebook account ----------**/
     private fun initSignInWithGoogle() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -61,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
         LoginManager.getInstance().logOut()
         callbackManager = CallbackManager.Factory.create()
         val facebookButton: LoginButton = findViewById(R.id.facebookSignInButton)
-        var user: User = User("", "", "", "")
+        var user: User
         facebookButton.setReadPermissions("email", "public_profile")
         facebookButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult?) {
@@ -98,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
         startActivityForResult(signInIntent, 0)
     }
 
-    // --------------------------------- save user email in firebase auth ----------------------------------
+    /**  --------------------- save user email in firebase auth --------------------**/
     private fun firebaseSignInWithFacebook(
         accessToken: AccessToken?,
         user: User
@@ -145,7 +145,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // ------------------------------ manage android widget -----------------------
+    /**  ------------------------------ manage android widget -----------------------**/
     private fun setupWidget(isLogin: Boolean) {
         if (isLogin) {
             loginProgressBar.visibility = View.VISIBLE
@@ -156,13 +156,13 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // ------------------------------ go to MainActivity --------------------------
+    /**  ------------------------------ go to MainActivity --------------------------**/
     private fun login() {
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 
-    // ------------------------------ intent callback ------------------------------------
+    /**  ------------------------------ intent callback ------------------------------------**/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0) {
@@ -181,7 +181,7 @@ class LoginActivity : AppCompatActivity() {
         callbackManager.onActivityResult(requestCode, resultCode, data) // send data to facebook sdk
     }
 
-    // ------------------------------save user data in fireStore ---------------------------------
+    /**  ------------ -----save user data in fireStore ----------------------**/
     private fun saveUserDataInFireStore(user: User) {
         val db = Firebase.firestore
         user.userId?.let {

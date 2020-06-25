@@ -16,5 +16,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="follow">Follow</string>
     <string name="searchHint">Username</string>
-
+    <string name="unfollow">Unfollow</string>
+    <string name="make_public">Make memory public</string>
 </resources>
