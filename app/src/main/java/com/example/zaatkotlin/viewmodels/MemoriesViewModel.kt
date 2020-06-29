@@ -12,6 +12,7 @@ import com.google.firebase.ktx.Firebase
 class MemoriesViewModel : ViewModel() {
     private val query: Query = Firebase.firestore.collection("Memories")
         .whereEqualTo("uid", FirebaseAuth.getInstance().uid.toString())
+        .orderBy("timestamp", Query.Direction.DESCENDING)
     private val firebaseQueryLiveData = FirebaseQueryLiveData(query)
     fun getDataLive(): LiveData<QuerySnapshot> {
         return firebaseQueryLiveData
@@ -24,4 +25,14 @@ class MemoriesViewModel : ViewModel() {
         map["sharing"] = isSharing
         Firebase.firestore.collection("Memories").document(memoryID).update(map)
     }
+
+    fun removeMemory(memoryID: String) {
+        Firebase.firestore.collection("Memories").document(memoryID).delete()
+    }
+
+    fun updateMemoryTimestamp(memoryID: String, timestamp: Long) {
+        Firebase.firestore.collection("Memories").document(memoryID).update("timestamp", timestamp)
+
+    }
+
 }

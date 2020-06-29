@@ -16,14 +16,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/topToolbar"
-        android:layout_margin="2dp">
+        android:layout_height="match_parent"
+        android:layout_below="@id/topToolbar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/memoriesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:numColumns="2" />
     </RelativeLayout>
 </RelativeLayout>

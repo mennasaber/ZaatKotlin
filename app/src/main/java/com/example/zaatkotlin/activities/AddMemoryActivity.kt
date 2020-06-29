@@ -96,6 +96,7 @@ class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
                         memoryET.text.toString().trim(),
                         makeMemoryPublicCB.isChecked
                     )
+                    memoryObject.timestamp = System.currentTimeMillis()
                     saveMemoryInFireStore(memoryObject)
                 }
             }

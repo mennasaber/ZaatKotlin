@@ -2,18 +2,20 @@ package com.example.zaatkotlin.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.zaatkotlin.activities.AddMemoryActivity
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.activities.AddMemoryActivity
 import com.example.zaatkotlin.adapters.RecyclerViewAdapter
+import com.example.zaatkotlin.callbacks.SimpleItemTouchHelperCallback
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.viewmodels.MemoriesViewModel
 
@@ -23,6 +25,7 @@ private const val ARG_PARAM2 = "param2"
 
 class HomeFragment : Fragment() {
     private val numOfItems = 2
+
     lateinit var memoriesList: ArrayList<Memory>
     lateinit var memoriesAdapter: RecyclerViewAdapter
     lateinit var recyclerView: RecyclerView
@@ -30,7 +33,7 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    private val viewModel: MemoriesViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -43,6 +46,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         val addMemoryButton = view.findViewById<ImageView>(R.id.addMemory)
         addMemoryButton.setOnClickListener {
@@ -59,32 +63,40 @@ class HomeFragment : Fragment() {
 
         memoriesList = ArrayList()
 
-        memoriesAdapter = RecyclerViewAdapter(memoriesList = memoriesList)
+        memoriesAdapter = RecyclerViewAdapter(memoriesList = memoriesList, viewModel = viewModel)
 
         recyclerView = view?.findViewById(R.id.memoriesRecyclerView)!!
 
         recyclerView.adapter = memoriesAdapter
         recyclerView.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+        val itemTouchHelperCallback = SimpleItemTouchHelperCallback(memoriesAdapter)
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     // ------------------------------ Get memories from viewModel that return liveData<QuerySnapShot> ----------------------------
     private fun getMemories() {
-        val viewModel: MemoriesViewModel by viewModels()
+
         viewModel.getDataLive()
             .observe(viewLifecycleOwner, Observer { QuerySnapshot ->
-                memoriesList.clear()
-                for (document in QuerySnapshot) {
-                    val memory = Memory(
-                        title = document.data["title"] as String,
-                        memory = document.data["memory"] as String,
-                        uID = document.data["uid"] as String,
-                        isSharing = document.data["sharing"] as Boolean,
-                        date = document.data["date"] as String
-                    )
-                    memory.memoryID = document.data["memoryID"] as String
-                    memoriesList.add(memory)
-                    memoriesAdapter.notifyDataSetChanged()
+
+                if (QuerySnapshot != null) {
+                    memoriesList.clear()
+                    for (document in QuerySnapshot) {
+
+                        val memory = Memory(
+                            title = document.data["title"] as String,
+                            memory = document.data["memory"] as String,
+                            uID = document.data["uid"] as String,
+                            isSharing = document.data["sharing"] as Boolean,
+                            date = document.data["date"] as String
+                        )
+                        memory.timestamp = document.data["timestamp"] as Long
+                        memory.memoryID = document.data["memoryID"] as String
+                        memoriesList.add(memory)
+                        memoriesAdapter.notifyDataSetChanged()
+                    }
                 }
             })
     }

@@ -1,9 +1,10 @@
 package com.example.zaatkotlin.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.fragments.*
@@ -13,9 +14,11 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: FragmentsViewModel by viewModels()
+    lateinit var bottomNavViewBar: BottomNavigationView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        bottomNavViewBar = findViewById(R.id.bottomNavView_bar)
         checkUser()
         initFrameLayout()
         setupBottomNavigationView()
@@ -45,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigationView() {
-        val bottomNavViewBar: BottomNavigationView = findViewById(R.id.bottomNavView_bar)
+
         bottomNavViewBar.setOnNavigationItemSelectedListener { item ->
             var index = "home"
             lateinit var newFragment: Fragment
@@ -75,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             val fragment = supportFragmentManager.findFragmentByTag(index)
             fragment?.let {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frameLayoutContainer, fragment, index).addToBackStack(index)
+                    .replace(R.id.frameLayoutContainer, fragment, index)
                     .commit() //Start exist fragment
             } ?: run {
                 supportFragmentManager.beginTransaction()
@@ -85,5 +88,23 @@ class MainActivity : AppCompatActivity() {
 
             true
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.frameLayoutContainer)
+        if (supportFragmentManager.backStackEntryCount == 0)
+            finish()
+        if (currentFragment is HomeFragment)
+            bottomNavViewBar.menu[0].isChecked = true
+        if (currentFragment is SearchFragment)
+            bottomNavViewBar.menu[1].isChecked = true
+        if (currentFragment is ChatFragment)
+            bottomNavViewBar.menu[2].isChecked = true
+        if (currentFragment is NotificationFragment)
+            bottomNavViewBar.menu[3].isChecked = true
+        if (currentFragment is SettingFragment)
+            bottomNavViewBar.menu[4].isChecked = true
+
     }
 }
