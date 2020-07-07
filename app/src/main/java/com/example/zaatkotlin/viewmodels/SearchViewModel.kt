@@ -11,8 +11,9 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class SearchViewModel : ViewModel() {
-    var followList = ArrayList<Boolean>()
+    var followList = mutableMapOf<String, Boolean>()
     var usersList = ArrayList<User>()
+
     private val query = Firebase.firestore.collection("Users")
     private val queryFollowing = Firebase.firestore.collection("Follow")
         .whereEqualTo("followerId", FirebaseAuth.getInstance().uid!!)
@@ -28,8 +29,10 @@ class SearchViewModel : ViewModel() {
         query.whereEqualTo("followingId", userID)
             .whereEqualTo("followerId", FirebaseAuth.getInstance().uid!!).get()
             .addOnSuccessListener { querySnapshot ->
-                for (document in querySnapshot)
+                for (document in querySnapshot) {
                     query.document(document.id).delete()
+                    followList[userID] = false
+                }
             }
     }
 
@@ -40,6 +43,7 @@ class SearchViewModel : ViewModel() {
         follow.followingId = userID
         val id = follow.followerId + follow.followingId
         query.document(id).set(follow)
+        followList[userID] = true
     }
 
     fun getUserFollowing(): LiveData<QuerySnapshot> {

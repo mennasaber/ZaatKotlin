@@ -2,7 +2,6 @@ package com.example.zaatkotlin.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
@@ -30,7 +29,7 @@ import org.json.JSONObject
 class LoginActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-    lateinit var callbackManager: CallbackManager
+    private lateinit var callbackManager: CallbackManager
     private lateinit var loginProgressBar: ProgressBar
     private lateinit var loginLayout: RelativeLayout
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,8 +66,6 @@ class LoginActivity : AppCompatActivity() {
             override fun onSuccess(result: LoginResult?) {
                 val request =
                     GraphRequest.newMeRequest(result?.accessToken) { `object`: JSONObject?, response: GraphResponse? ->
-                        Log.d("logiiin", `object`.toString())
-                        Log.d("login", `object`?.get("name").toString())
                         user = User(
                             `object`?.get("email").toString(),
                             "https://graph.facebook.com/" + `object`?.get("id")
@@ -130,7 +127,6 @@ class LoginActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
-                Toast.makeText(this, "suff", Toast.LENGTH_SHORT).show()
                 saveUserDataInFireStore(
                     User(
                         account.email,

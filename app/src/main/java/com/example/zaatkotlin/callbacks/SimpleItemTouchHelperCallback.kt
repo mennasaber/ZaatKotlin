@@ -10,6 +10,7 @@ class SimpleItemTouchHelperCallback(private val itemTouchHelperAdapter: ItemTouc
     var fromPosition: Int = -2
     var toPosition: Int = 0
     var startMovementIndex = -1
+
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
@@ -28,8 +29,9 @@ class SimpleItemTouchHelperCallback(private val itemTouchHelperAdapter: ItemTouc
             startMovementIndex = viewHolder.adapterPosition
         fromPosition = viewHolder.adapterPosition
         toPosition = target.adapterPosition
-        if (fromPosition != toPosition)
+        if (fromPosition != toPosition) {
             itemTouchHelperAdapter.onItemMove(fromPosition, toPosition)
+        }
         return true
     }
 

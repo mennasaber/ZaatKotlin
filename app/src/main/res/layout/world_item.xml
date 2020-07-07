@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:background="@drawable/gradient_background"
+        android:elevation="30dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_background"
+            android:padding="10dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userIV"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@color/colorWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/usernameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/userIV"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="TextView" />
+
+            <TextView
+                android:id="@+id/dateTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/userIV"
+                app:layout_constraintTop_toBottomOf="@+id/usernameTV"
+                tools:text="TextView" />
+
+            <TextView
+                android:id="@+id/memoryTV"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userIV"
+                tools:text="TextView" />
+
+            <TextView
+                android:id="@+id/lovesTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/colorWhite"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/memoryTV"
+                tools:text="TextView" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lovesTV">
+
+                <Button
+                    android:id="@+id/loveButton"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorWhite"
+                    android:drawableStart="@drawable/ic_dislove"
+                    android:drawableLeft="@drawable/ic_dislove"
+                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_marginEnd="1dp"
+                    android:text="@string/love"
+                    android:textColor="@color/colorDeepOrange"
+                    android:layout_marginRight="1dp" />
+
+                <!--                <Button-->
+                <!--                    android:id="@+id/commentButton"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="35dp"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:background="@color/colorWhite"-->
+                <!--                    android:drawableStart="@drawable/ic_comment_24"-->
+                <!--                    android:drawableLeft="@drawable/ic_comment_24"-->
+                <!--                    android:paddingStart="10dp"-->
+                <!--                    android:paddingLeft="10dp"-->
+                <!--                    android:paddingEnd="10dp"-->
+                <!--                    android:text="@string/comment"-->
+                <!--                    android:textColor="@color/colorDeepOrange" />-->
+
+                <Button
+                    android:id="@+id/shareButton"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorWhite"
+                    android:drawableStart="@drawable/ic_share"
+                    android:drawableLeft="@drawable/ic_share"
+                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/share"
+                    android:textColor="@color/colorDeepOrange" />
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

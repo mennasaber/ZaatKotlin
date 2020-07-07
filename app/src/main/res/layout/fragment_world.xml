@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    tools:context=".fragments.HomeFragment">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/topToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/layout_top_home_toolbar" />
+        <include layout="@layout/layout_top_world_toolbar" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -20,16 +17,17 @@
         android:layout_below="@id/topToolbar">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/memoriesRecyclerView"
+            android:id="@+id/memoriesRecyclerView_"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:numColumns="2" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:visibility="gone"
             android:id="@+id/vector"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_personal_notebook" />
+            android:src="@drawable/ic_public_memories" />
     </RelativeLayout>
 </RelativeLayout>

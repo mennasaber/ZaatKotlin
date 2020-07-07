@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RelativeLayout
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -31,23 +33,14 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
     private lateinit var usersList: ArrayList<User>
     private var followList: ArrayList<Follow> = ArrayList()
-    private var booleanFollowList: ArrayList<Boolean> = ArrayList()
-    lateinit var usersRecyclerView: RecyclerView
-    lateinit var searchAdapter: SearchAdapter
+    private var booleanFollowList = mutableMapOf<String, Boolean>()
+    private lateinit var usersRecyclerView: RecyclerView
+    private lateinit var searchAdapter: SearchAdapter
     private val viewModel: SearchViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var relativeLayout: RelativeLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,85 +51,83 @@ class SearchFragment : Fragment() {
         return view
     }
 
-    // ------------------------------ Initialization ----------------------------
+    /*** ------------------------------ Initialization ----------------------------*/
     private fun initWidget(view: View?) {
         getFollowing()
         val searchImage = view?.findViewById<ImageView>(R.id.searchImage)
         val searchET = view?.findViewById<EditText>(R.id.searchET)
+        relativeLayout = view?.findViewById(R.id.progressLayout)!!
 
         usersList = viewModel.usersList
         booleanFollowList = viewModel.followList
 
-        usersRecyclerView = view?.findViewById(R.id.usersRecyclerView)!!
+        usersRecyclerView = view.findViewById(R.id.usersRecyclerView)!!
         searchAdapter = SearchAdapter(usersList, booleanFollowList, viewModel)
         usersRecyclerView.adapter = searchAdapter
         usersRecyclerView.layoutManager = LinearLayoutManager(view.context)
 
         searchImage?.setOnClickListener {
-            if (searchET?.text.toString().trim() != "")
+            if (searchET?.text.toString().trim() != "") {
+                relativeLayout.visibility = View.VISIBLE
                 getUsers(searchET?.text.toString().trim())
+            }
+        }
+        searchET?.addTextChangedListener {
+            if (searchET.text.toString().trim() == "") {
+                usersList.clear()
+                viewModel.usersList.clear()
+                searchAdapter.notifyDataSetChanged()
+            }
         }
     }
 
+    /*** ------------------ Get all users that user follow ----------------------------*/
     private fun getFollowing() {
         viewModel.getUserFollowing().observe(viewLifecycleOwner, Observer { querySnapshot ->
-            followList.clear()
-            for (document in querySnapshot)
-                followList.add(document.toObject(Follow::class.java))
-        })
-    }
-
-    // ------------------------------ Get users from viewModel that return liveData<QuerySnapShot> ----------------------------
-    private fun getUsers(searchContent: String) {
-        viewModel.getUsersFromDB().observe(viewLifecycleOwner, Observer { querySnapshot ->
-            usersList.clear()
-            booleanFollowList.clear()
-            for (document in querySnapshot) {
-                if (document.data["username"].toString().toLowerCase(Locale.ROOT).contains(
-                        searchContent.toLowerCase(
-                            Locale.ROOT
-                        )
-                    ) && document.data["userId"].toString() != FirebaseAuth.getInstance().uid.toString()
-                ) {
-
-                    val user = User(
-                        username = document.data["username"] as String,
-                        photoURL = document.data["photoURL"] as String,
-                        userId = document.data["userId"] as String,
-                        email = document.data["email"] as String
-                    )
-                    val isFollow = isFollowing(user.userId)
-                    booleanFollowList.add(isFollow)
-                    usersList.add(user)
-                }
+            if (querySnapshot != null) {
+                followList.clear()
+                for (document in querySnapshot)
+                    followList.add(document.toObject(Follow::class.java))
             }
-            viewModel.usersList = usersList
-            viewModel.followList = booleanFollowList
-            searchAdapter.notifyDataSetChanged()
         })
     }
 
+    /***--------------- Get users from viewModel that return liveData<QuerySnapShot> --------------*/
+    private fun getUsers(searchContent: String) {
+
+        viewModel.getUsersFromDB().observe(viewLifecycleOwner, Observer { querySnapshot ->
+            if (querySnapshot != null) {
+                usersList.clear()
+                booleanFollowList.clear()
+                for (document in querySnapshot) {
+                    if (document.data["username"].toString().toLowerCase(Locale.ROOT).contains(
+                            searchContent.toLowerCase(
+                                Locale.ROOT
+                            )
+                        ) && document.data["userId"].toString() != FirebaseAuth.getInstance().uid.toString()
+                    ) {
+
+                        val user = User(
+                            username = document.data["username"] as String,
+                            photoURL = document.data["photoURL"] as String,
+                            userId = document.data["userId"] as String,
+                            email = document.data["email"] as String
+                        )
+                        val isFollow = isFollowing(user.userId)
+                        booleanFollowList[user.userId!!] = isFollow
+                        usersList.add(user)
+                    }
+                }
+                viewModel.usersList = usersList
+                viewModel.followList = booleanFollowList
+                searchAdapter.notifyDataSetChanged()
+            }
+        })
+        relativeLayout.visibility = View.GONE
+    }
+
+    /*** ------------------ Return true if current user follow this user ------------*/
     private fun isFollowing(userId: String?): Boolean {
         return followList.find { it.followingId == userId } != null
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SearchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

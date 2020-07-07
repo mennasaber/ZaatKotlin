@@ -18,4 +18,14 @@
     <string name="searchHint">Username</string>
     <string name="unfollow">Unfollow</string>
     <string name="make_public">Make memory public</string>
+    <string name="search">Search</string>
+    <string name="world">World</string>
+    <string name="like">Like</string>
+    <string name="comment">Comment</string>
+    <string name="share">Share</string>
+    <string name="love">Love</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Log out</string>
+    <string name="following">Following</string>
+    <string name="followers">Followers</string>
 </resources>

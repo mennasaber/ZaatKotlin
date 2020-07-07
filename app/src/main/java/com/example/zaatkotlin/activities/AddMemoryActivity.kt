@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
-    lateinit var saveButton: ImageView
+    private lateinit var saveButton: ImageView
     private lateinit var backButton: ImageView
     private lateinit var makeMemoryPublicCB: CheckBox
     private lateinit var titleET: EditText
@@ -36,8 +36,8 @@ class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
         saveButton = findViewById(R.id.saveMemory)
         backButton = findViewById(R.id.back)
         makeMemoryPublicCB = findViewById(R.id.makeMemoryPublicCB)
-        titleET = findViewById<EditText>(R.id.titleET)
-        memoryET = findViewById<EditText>(R.id.memoryET)
+        titleET = findViewById(R.id.titleET)
+        memoryET = findViewById(R.id.memoryET)
 
         titleET.setText(viewModel.title)
         memoryET.setText(viewModel.content)

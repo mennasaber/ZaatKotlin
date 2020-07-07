@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: FragmentsViewModel by viewModels()
-    lateinit var bottomNavViewBar: BottomNavigationView
+    private lateinit var bottomNavViewBar: BottomNavigationView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                     index = "search"
                     newFragment = SearchFragment()
                 }
-                R.id.chatMenu -> {
+                R.id.worldMenu -> {
                     index = "chat"
                     newFragment = ChatFragment()
                 }

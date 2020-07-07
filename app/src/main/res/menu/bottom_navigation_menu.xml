@@ -7,11 +7,11 @@
     <item
         android:id="@+id/searchMenu"
         android:icon="@drawable/ic_search"
-        android:title="@string/chat" />
+        android:title="@string/search" />
     <item
-        android:id="@+id/chatMenu"
-        android:icon="@drawable/ic_chat"
-        android:title="@string/chat" />
+        android:id="@+id/worldMenu"
+        android:icon="@drawable/ic_world"
+        android:title="@string/world" />
 
     <item
         android:id="@+id/notificationMenu"
