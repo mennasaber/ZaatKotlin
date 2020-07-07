@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_zaat_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.ProfileActivity"></activity>
+        <activity android:name=".activities.OtherProfileActivity"></activity>
+        <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.EditMemoryActivity" />
         <activity android:name=".activities.LoginActivity" />
 

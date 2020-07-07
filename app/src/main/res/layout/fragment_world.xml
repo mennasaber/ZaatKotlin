@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/topToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/layout_top_world_toolbar" />
-    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/topToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/topToolbar">
+            <include layout="@layout/layout_top_world_toolbar" />
+        </RelativeLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/memoriesRecyclerView_"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:numColumns="2" />
+            android:layout_below="@id/topToolbar">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:visibility="gone"
-            android:id="@+id/vector"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_public_memories" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/memoriesRecyclerView_"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/vector"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_public_memories"
+                android:visibility="gone" />
+        </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
+</androidx.core.widget.NestedScrollView>

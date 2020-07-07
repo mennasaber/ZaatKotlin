@@ -1,7 +1,6 @@
 package com.example.zaatkotlin.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -21,7 +20,6 @@ import kotlinx.android.synthetic.main.activity_profile.*
 
 
 class ProfileActivity : AppCompatActivity(), View.OnClickListener {
-    private val TAG = "ProfileActivity"
     private val viewModel: ProfileViewModel by viewModels()
     lateinit var userIV: ImageView
     lateinit var usernameTV: TextView
@@ -31,7 +29,7 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var followingAdapter: ProfileAdapter
     lateinit var followersAdapter: ProfileAdapter
     lateinit var backB: ImageView
-    lateinit var connectionIV: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -40,7 +38,6 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun initLists() {
         viewModel.getFollowing().observe(this, Observer { querySnapShot ->
-            viewModel.followingList.clear()
             if (querySnapShot != null) {
                 for (document in querySnapShot) {
                     getUser(document["followingId"] as String, 1)
@@ -48,7 +45,6 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
             }
         })
         viewModel.getFollowers().observe(this, Observer { querySnapShot ->
-            viewModel.followersList.clear()
             if (querySnapShot != null) {
                 for (document in querySnapShot) {
                     getUser(document["followerId"] as String, 0)
@@ -86,11 +82,9 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initWidget() {
-        Log.d(TAG, "initWidget: ${viewModel.followingList.count()}")
         followersAdapter = ProfileAdapter(viewModel.followersList)
         followingAdapter = ProfileAdapter(viewModel.followingList)
 
-        connectionIV = findViewById(R.id.connectionIV)
         backB = findViewById(R.id.back)
         userIV = findViewById(R.id.userIV)
         usernameTV = findViewById(R.id.usernameTV)
@@ -113,20 +107,14 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.followerB -> {
-                if (viewModel.followersList.isEmpty())
-                    connectionIV.visibility = View.VISIBLE
-                else
-                    connectionIV.visibility = View.GONE
+                imageVisibility(0)
                 followingB.setBackgroundResource(R.color.colorWhite)
                 followerB.setBackgroundResource(R.color.colorLightGray)
                 viewModel.index = 0
                 recyclerView.adapter = followersAdapter
             }
             R.id.followingB -> {
-                if (viewModel.followingList.isEmpty())
-                    connectionIV.visibility = View.VISIBLE
-                else
-                    connectionIV.visibility = View.GONE
+                imageVisibility(1)
                 followerB.setBackgroundResource(R.color.colorWhite)
                 followingB.setBackgroundResource(R.color.colorLightGray)
                 viewModel.index = 1
@@ -134,6 +122,24 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.back ->
                 finish()
+        }
+    }
+
+    private fun imageVisibility(type: Int) {
+        val connectionIV: ImageView = findViewById(R.id.connectionIV)
+        when (type) {
+            0 -> {
+                if (viewModel.followersList.isEmpty())
+                    connectionIV.visibility = View.VISIBLE
+                else
+                    connectionIV.visibility = View.GONE
+            }
+            1 -> {
+                if (viewModel.followingList.isEmpty())
+                    connectionIV.visibility = View.VISIBLE
+                else
+                    connectionIV.visibility = View.GONE
+            }
         }
     }
 }

@@ -10,9 +10,9 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavView_bar"
             android:layout_width="match_parent"
-            app:labelVisibilityMode="labeled"
-            android:background="@drawable/white_gray_border_bottom"
             android:layout_height="match_parent"
+            android:background="@drawable/white_gray_border_bottom"
+            app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_navigation_menu">
 
         </com.google.android.material.bottomnavigation.BottomNavigationView>

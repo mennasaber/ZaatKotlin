@@ -62,7 +62,7 @@ class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
     /** ------------------------------ Set Memory data ---------------------------**/
     private fun initMemoryObject(title: String, memory: String, isSharing: Boolean): Memory {
         val date = getCurrentDateTime()
-        val dateInString = date.toString("yyyy-MM-dd HH:mm")
+        val dateInString = date.toString("K:mm a dd-MM-yyyy")
         return Memory(
             title = title,
             memory = memory,

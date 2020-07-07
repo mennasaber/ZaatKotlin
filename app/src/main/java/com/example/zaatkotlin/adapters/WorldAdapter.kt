@@ -10,11 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 
-class WorldAdapter(private val memoriesList: ArrayList<Memory>) :
+class WorldAdapter(
+    private val memoriesList: ArrayList<Memory>,
+    val usersList: ArrayList<User>
+) :
     RecyclerView.Adapter<WorldAdapter.WorldViewHolder>() {
     class WorldViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val userIV: ImageView = itemView.findViewById(R.id.userIV)
@@ -37,20 +38,10 @@ class WorldAdapter(private val memoriesList: ArrayList<Memory>) :
     }
 
     override fun onBindViewHolder(holder: WorldViewHolder, position: Int) {
-        Firebase.firestore.collection("Users").document(memoriesList[position].uID).get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot != null) {
-                    val user = User(
-                        email = documentSnapshot["email"] as String,
-                        userId = documentSnapshot["userId"] as String,
-                        photoURL = documentSnapshot["photoURL"] as String,
-                        username = documentSnapshot["username"] as String
-                    )
-                    holder.usernameTV.text = user.username
-                    Picasso.get().load(user.photoURL).into(holder.userIV)
-                    holder.memoryTV.text = memoriesList[position].memory
-                    holder.memoryDateTV.text = memoriesList[position].date
-                }
-            }
+        val user = usersList.find { it.userId == memoriesList[position].uID }
+        holder.usernameTV.text = user?.username
+        Picasso.get().load(user?.photoURL).into(holder.userIV)
+        holder.memoryTV.text = memoriesList[position].memory
+        holder.memoryDateTV.text = memoriesList[position].date
     }
 }

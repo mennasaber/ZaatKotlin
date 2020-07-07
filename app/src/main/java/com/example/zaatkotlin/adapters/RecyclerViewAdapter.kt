@@ -88,8 +88,9 @@ class RecyclerViewAdapter(
     }
 
     override fun onItemMoveStop(fromPosition: Int, toPosition: Int) {
-        for (i in fromPosition until toPosition + 1) {
-            viewModel.updateMemoryTimestamp(memoriesList[i].memoryID, memoriesList[i].timestamp)
-        }
+        if (fromPosition != -1)
+            for (i in fromPosition until toPosition + 1) {
+                viewModel.updateMemoryTimestamp(memoriesList[i].memoryID, memoriesList[i].timestamp)
+            }
     }
 }

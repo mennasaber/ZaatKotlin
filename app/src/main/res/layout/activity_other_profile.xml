@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@color/colorPrimary"
     tools:context=".activities.ProfileActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +28,7 @@
         <View
             android:id="@+id/view3"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="150dp"
             android:background="@drawable/gradient_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
             android:id="@+id/usernameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="4dp"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,59 +58,43 @@
             app:layout_constraintTop_toBottomOf="@+id/userIV"
             tools:text="menna saber" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/deep_border"
-            android:padding="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/usernameTV">
-
-            <Button
-                android:id="@+id/followerB"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorLightGray"
-                android:text="@string/followers"
-                android:textColor="@color/colorDeepOrange"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/followingB"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/colorWhite"
-                android:text="@string/following"
-                android:textColor="@color/colorDeepOrange"
-                android:textStyle="bold" />
-        </LinearLayout>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/profileRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:layout_marginTop="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/followB" />
+
+        <Button
+            android:id="@+id/followB"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/rounded_background"
+            android:text="@string/follow"
+            android:textColor="@color/colorDeepOrange"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/usernameTV" />
 
         <ImageView
-            android:id="@+id/connectionIV"
+            android:id="@+id/publicIV"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@drawable/ic_connection"
-            android:visibility="invisible"
+            android:layout_marginTop="100dp"
+            android:src="@drawable/ic_public"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-            app:layout_constraintVertical_bias="0.13999999" />
+            app:layout_constraintTop_toBottomOf="@+id/view3"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

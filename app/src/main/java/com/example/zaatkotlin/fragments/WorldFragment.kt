@@ -1,6 +1,7 @@
 package com.example.zaatkotlin.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.adapters.WorldAdapter
-import com.example.zaatkotlin.models.Follow
 import com.example.zaatkotlin.models.Memory
+import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.WorldViewModel
 
 // TODO: Rename parameter arguments, choose names that match
@@ -26,34 +27,25 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ChatFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    val viewModel: WorldViewModel by viewModels()
-    private var followList: ArrayList<Follow> = ArrayList()
-    private var memoriesList: ArrayList<Memory> = ArrayList()
+    private val TAG = "WorldFragment"
+    private val viewModel: WorldViewModel by viewModels()
     lateinit var worldAdapter: WorldAdapter
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_world, container, false)
+        Log.d(TAG, "onCreateView: ")
+        initWidget(view)
         getFollowing(view)
         return view
     }
 
-    private fun getMemories(view: View) {
-        viewModel.getMemories().observe(viewLifecycleOwner, Observer { documents ->
+    private fun getMemories(userID: String) {
+        Log.d(TAG, "getMemories: ")
+        viewModel.getMemories(userID).observe(viewLifecycleOwner, Observer { documents ->
             if (documents != null) {
-                memoriesList.clear()
                 for (document in documents) {
                     val memory = Memory(
                         title = document.data["title"] as String,
@@ -64,16 +56,20 @@ class ChatFragment : Fragment() {
                     )
                     memory.timestamp = document.data["timestamp"] as Long
                     memory.memoryID = document.data["memoryID"] as String
-                    memoriesList.add(memory)
-
+                    if (viewModel.memoriesList.find { it.memoryID == memory.memoryID } == null)
+                        viewModel.memoriesList.add(memory)
+                    Log.d(TAG, "getMemories: ${viewModel.memoriesList.count()}")
                 }
-                initWidget(view)
+                viewModel.memoriesList.sortByDescending { it.timestamp }
+                worldAdapter.notifyDataSetChanged()
             }
         })
     }
 
     private fun initWidget(view: View?) {
-        worldAdapter = WorldAdapter(memoriesList = memoriesList)
+        Log.d(TAG, "initWidget: ")
+        worldAdapter =
+            WorldAdapter(memoriesList = viewModel.memoriesList, usersList = viewModel.followingList)
         val recyclerView = view?.findViewById<RecyclerView>(R.id.memoriesRecyclerView_)
         recyclerView?.adapter = worldAdapter
         recyclerView?.layoutManager = LinearLayoutManager(context)
@@ -81,34 +77,33 @@ class ChatFragment : Fragment() {
 
     /*** ------------------ Get all users that user follow ----------------------------*/
     private fun getFollowing(view: View) {
+        Log.d(TAG, "getFollowing: ")
         viewModel.getUserFollowing().observe(viewLifecycleOwner, Observer { querySnapshot ->
             if (querySnapshot != null) {
-                followList.clear()
                 viewModel.followingList.clear()
+                viewModel.memoriesList.clear()
                 for (document in querySnapshot)
-                    viewModel.followingList.add(document["followingId"] as String)
-                getMemories(view)
+                    getUser(document["followingId"] as String)
+                Log.d(TAG, "getFollowing: ${viewModel.memoriesList.count()}")
             }
         })
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChatFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChatFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun getUser(userID: String) {
+        Log.d(TAG, "getUser: ")
+        viewModel.getUserData(userID).observe(viewLifecycleOwner, Observer { querySnapShot ->
+            if (querySnapShot != null) {
+                for (document in querySnapShot) {
+                    val user = User(
+                        email = document["email"] as String,
+                        photoURL = document["photoURL"] as String,
+                        username = document["username"] as String,
+                        userId = document["userId"] as String
+                    )
+                    viewModel.followingList.add(user)
+                    getMemories(userID)
                 }
             }
+        })
     }
 }

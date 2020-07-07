@@ -1,6 +1,8 @@
 package com.example.zaatkotlin.adapters
 
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.activities.OtherProfileActivity
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.SearchViewModel
 import com.squareup.picasso.Picasso
@@ -56,6 +59,25 @@ class SearchAdapter(
                 viewModel.deleteFollow(usersList[position].userId!!)
             }
         }
+        holder.usernameTV.setOnClickListener {
+            goToProfile(holder.itemView.context, position, holder.followB.text.toString())
+        }
+        holder.photoIV.setOnClickListener {
+            goToProfile(holder.itemView.context, position, holder.followB.text.toString())
+        }
+    }
+
+    private fun goToProfile(
+        context: Context,
+        position: Int,
+        follow: String
+    ) {
+        val intent = Intent(context, OtherProfileActivity::class.java)
+        intent.putExtra("userID", usersList[position].userId)
+        intent.putExtra("username", usersList[position].username)
+        intent.putExtra("photoURL", usersList[position].photoURL)
+        intent.putExtra("isFollow", follow)
+        context.startActivity(intent)
     }
 
 }
