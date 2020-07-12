@@ -1,7 +1,5 @@
 package com.example.zaatkotlin.adapters
 
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,25 +8,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
-import com.example.zaatkotlin.activities.OtherProfileActivity
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
-import com.example.zaatkotlin.viewmodels.WorldViewModel
+import com.example.zaatkotlin.viewmodels.OtherProfileViewModel
 import com.squareup.picasso.Picasso
 
-class WorldAdapter(
+class OtherProfileAdapter(
     private val memoriesList: ArrayList<Memory>,
     val usersList: ArrayList<User>,
-    val viewModel: WorldViewModel?
+    val viewModel: OtherProfileViewModel?
 ) :
-    RecyclerView.Adapter<WorldAdapter.WorldViewHolder>() {
+    RecyclerView.Adapter<OtherProfileAdapter.WorldViewHolder>() {
     class WorldViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val userIV: ImageView = itemView.findViewById(R.id.userIV)
         val usernameTV: TextView = itemView.findViewById(R.id.usernameTV)
         val memoryTV: TextView = itemView.findViewById(R.id.memoryTV)
         val memoryDateTV: TextView = itemView.findViewById(R.id.dateTV)
-        val lovesTV = itemView.findViewById<TextView>(R.id.lovesTV)
-        val loveB = itemView.findViewById<Button>(R.id.loveButton)
+        val lovesTV: TextView = itemView.findViewById(R.id.lovesTV)
+        val loveB: Button = itemView.findViewById(R.id.loveButton)
         val shareB = itemView.findViewById<Button>(R.id.shareButton)
     }
 
@@ -49,6 +46,8 @@ class WorldAdapter(
         holder.memoryTV.text = memoriesList[position].memory
         holder.memoryDateTV.text = memoriesList[position].date
         holder.lovesTV.text = memoriesList[position].lovesCount.toString()
+
+
         if (viewModel != null && viewModel.reactMap.size == memoriesList.size)
             if (viewModel.reactMap[memoriesList[position].memoryID]!!) {
                 holder.loveB.setCompoundDrawablesWithIntrinsicBounds(
@@ -89,38 +88,5 @@ class WorldAdapter(
                 }
             }
         }
-
-        holder.userIV.setOnClickListener {
-            if (user != null) {
-                goToProfile(
-                    holder.itemView.context,
-                    user,
-                    "Unfollow"
-                )
-            }
-        }
-        holder.usernameTV.setOnClickListener {
-            if (user != null) {
-                goToProfile(
-                    holder.itemView.context,
-                    user,
-                    "Unfollow"
-                )
-            }
-        }
-
-    }
-
-    private fun goToProfile(
-        context: Context,
-        user: User,
-        follow: String
-    ) {
-        val intent = Intent(context, OtherProfileActivity::class.java)
-        intent.putExtra("userID", user.userId)
-        intent.putExtra("username", user.username)
-        intent.putExtra("photoURL", user.photoURL)
-        intent.putExtra("isFollow", follow)
-        context.startActivity(intent)
     }
 }

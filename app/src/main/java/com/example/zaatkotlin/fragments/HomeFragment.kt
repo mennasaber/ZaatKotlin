@@ -20,7 +20,6 @@ import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.viewmodels.MemoriesViewModel
 
 
-
 class HomeFragment : Fragment() {
 
     private lateinit var memoriesList: ArrayList<Memory>
@@ -53,7 +52,6 @@ class HomeFragment : Fragment() {
         memoriesAdapter = RecyclerViewAdapter(memoriesList = memoriesList, viewModel = viewModel)
 
         recyclerView = view?.findViewById(R.id.memoriesRecyclerView)!!
-
         recyclerView.adapter = memoriesAdapter
         recyclerView.layoutManager =
             LinearLayoutManager(context)

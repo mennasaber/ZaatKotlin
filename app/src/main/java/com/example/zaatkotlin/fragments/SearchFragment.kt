@@ -1,6 +1,7 @@
 package com.example.zaatkotlin.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +37,6 @@ class SearchFragment : Fragment() {
 
     private lateinit var usersList: ArrayList<User>
     private var followList: ArrayList<Follow> = ArrayList()
-    private var booleanFollowList = mutableMapOf<String, Boolean>()
     private lateinit var usersRecyclerView: RecyclerView
     private lateinit var searchAdapter: SearchAdapter
     private val viewModel: SearchViewModel by viewModels()
@@ -58,11 +58,10 @@ class SearchFragment : Fragment() {
         val searchET = view?.findViewById<EditText>(R.id.searchET)
         relativeLayout = view?.findViewById(R.id.progressLayout)!!
 
-        usersList = viewModel.usersList
-        booleanFollowList = viewModel.followList
+        viewModel.usersList.clear()
 
         usersRecyclerView = view.findViewById(R.id.usersRecyclerView)!!
-        searchAdapter = SearchAdapter(usersList, booleanFollowList, viewModel)
+        searchAdapter = SearchAdapter(viewModel.usersList, viewModel.followList, viewModel)
         usersRecyclerView.adapter = searchAdapter
         usersRecyclerView.layoutManager = LinearLayoutManager(view.context)
 
@@ -73,8 +72,8 @@ class SearchFragment : Fragment() {
             }
         }
         searchET?.addTextChangedListener {
-            if (searchET.text.toString().trim() == "") {
-                usersList.clear()
+            Log.d("empty", "initWidget: ")
+            if (searchET.text.toString().isEmpty()) {
                 viewModel.usersList.clear()
                 searchAdapter.notifyDataSetChanged()
             }
@@ -84,8 +83,8 @@ class SearchFragment : Fragment() {
     /*** ------------------ Get all users that user follow ----------------------------*/
     private fun getFollowing() {
         viewModel.getUserFollowing().observe(viewLifecycleOwner, Observer { querySnapshot ->
+            followList.clear()
             if (querySnapshot != null) {
-                followList.clear()
                 for (document in querySnapshot)
                     followList.add(document.toObject(Follow::class.java))
             }
@@ -97,8 +96,8 @@ class SearchFragment : Fragment() {
 
         viewModel.getUsersFromDB().observe(viewLifecycleOwner, Observer { querySnapshot ->
             if (querySnapshot != null) {
-                usersList.clear()
-                booleanFollowList.clear()
+                viewModel.usersList.clear()
+                viewModel.followList.clear()
                 for (document in querySnapshot) {
                     if (document.data["username"].toString().toLowerCase(Locale.ROOT).contains(
                             searchContent.toLowerCase(
@@ -114,12 +113,10 @@ class SearchFragment : Fragment() {
                             email = document.data["email"] as String
                         )
                         val isFollow = isFollowing(user.userId)
-                        booleanFollowList[user.userId!!] = isFollow
-                        usersList.add(user)
+                        viewModel.followList[user.userId!!] = isFollow
+                        viewModel.usersList.add(user)
                     }
                 }
-                viewModel.usersList = usersList
-                viewModel.followList = booleanFollowList
                 searchAdapter.notifyDataSetChanged()
             }
         })

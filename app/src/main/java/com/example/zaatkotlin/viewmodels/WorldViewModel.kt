@@ -13,9 +13,11 @@ import com.google.firebase.ktx.Firebase
 class WorldViewModel : ViewModel() {
     var followingList = ArrayList<User>()
     var memoriesList = ArrayList<Memory>()
-
+    val reactMap = hashMapOf<String, Boolean>()
+    var listIDs = ArrayList<String>()
+    val userID = FirebaseAuth.getInstance().uid!!
     private val queryFollowing = Firebase.firestore.collection("Follow")
-        .whereEqualTo("followerId", FirebaseAuth.getInstance().uid!!)
+        .whereEqualTo("followerId", userID)
     private val followingLiveData = FirebaseQueryLiveData(queryFollowing)
 
     fun getMemories(userID: String): LiveData<QuerySnapshot> {
@@ -34,4 +36,38 @@ class WorldViewModel : ViewModel() {
         return FirebaseQueryLiveData(userQuery)
     }
 
+    fun makeReact(memoryID: String) {
+        reactMap[memoryID] = true
+        val dataMap = hashMapOf<String, String>()
+        dataMap["userID"] = userID
+        dataMap["memoryID"] = memoryID
+        Firebase.firestore.collection("Reacts").document(userID + memoryID).set(dataMap)
+        increaseReactsCount(memoryID)
+    }
+
+    fun deleteReact(memoryID: String) {
+        reactMap[memoryID] = false
+        Firebase.firestore.collection("Reacts").document(userID + memoryID).delete()
+        decreaseReactsCount(memoryID)
+    }
+
+    fun getUserReact(memoryID: String): LiveData<QuerySnapshot> {
+        val query = Firebase.firestore.collection("Reacts").whereEqualTo("userID", userID)
+            .whereEqualTo("memoryID", memoryID)
+        return FirebaseQueryLiveData(query)
+    }
+
+    private fun increaseReactsCount(memoryID: String) {
+        Firebase.firestore.collection("Memories").document(memoryID).get().addOnSuccessListener {
+            Firebase.firestore.collection("Memories").document(memoryID)
+                .update("lovesCount", it["lovesCount"] as Long + 1)
+        }
+    }
+
+    private fun decreaseReactsCount(memoryID: String) {
+        Firebase.firestore.collection("Memories").document(memoryID).get().addOnSuccessListener {
+            Firebase.firestore.collection("Memories").document(memoryID)
+                .update("lovesCount", it["lovesCount"] as Long - 1)
+        }
+    }
 }

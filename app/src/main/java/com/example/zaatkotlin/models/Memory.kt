@@ -10,4 +10,5 @@ class Memory(
 ) {
     lateinit var memoryID: String
     var timestamp: Long = 0
+    var lovesCount = 0L
 }

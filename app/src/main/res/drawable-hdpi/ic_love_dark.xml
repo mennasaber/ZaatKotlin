@@ -1,8 +1,8 @@
-<vector android:height="16dp"
-    android:tint="@color/colorWhite"
+<vector android:height="12dp"
+    android:tint="@color/colorDeepOrange"
     android:viewportHeight="24"
     android:viewportWidth="24"
-    android:width="16dp"
+    android:width="12dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <path
         android:fillColor="@android:color/white"

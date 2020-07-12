@@ -30,20 +30,18 @@ class ChatFragment : Fragment() {
     private val TAG = "WorldFragment"
     private val viewModel: WorldViewModel by viewModels()
     lateinit var worldAdapter: WorldAdapter
-
+    lateinit var recyclerView: RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_world, container, false)
-        Log.d(TAG, "onCreateView: ")
         initWidget(view)
         getFollowing(view)
         return view
     }
 
     private fun getMemories(userID: String) {
-        Log.d(TAG, "getMemories: ")
         viewModel.getMemories(userID).observe(viewLifecycleOwner, Observer { documents ->
             if (documents != null) {
                 for (document in documents) {
@@ -56,9 +54,13 @@ class ChatFragment : Fragment() {
                     )
                     memory.timestamp = document.data["timestamp"] as Long
                     memory.memoryID = document.data["memoryID"] as String
-                    if (viewModel.memoriesList.find { it.memoryID == memory.memoryID } == null)
+                    memory.lovesCount = document.data["lovesCount"] as Long
+
+                    if (viewModel.memoriesList.find { it.memoryID == memory.memoryID } == null
+                        && viewModel.followingList.find { it.userId == memory.uID } != null) {
                         viewModel.memoriesList.add(memory)
-                    Log.d(TAG, "getMemories: ${viewModel.memoriesList.count()}")
+                        isReact(memory.memoryID)
+                    }
                 }
                 viewModel.memoriesList.sortByDescending { it.timestamp }
                 worldAdapter.notifyDataSetChanged()
@@ -66,31 +68,46 @@ class ChatFragment : Fragment() {
         })
     }
 
+    private fun isReact(memoryID: String) {
+        viewModel.getUserReact(memoryID).observe(viewLifecycleOwner, Observer {
+            viewModel.reactMap[memoryID] = it.size() != 0
+            Log.d("TAG", "isReact: ${viewModel.reactMap.size}   ${viewModel.memoriesList.size} ")
+            worldAdapter.notifyDataSetChanged()
+        })
+    }
+
     private fun initWidget(view: View?) {
-        Log.d(TAG, "initWidget: ")
         worldAdapter =
-            WorldAdapter(memoriesList = viewModel.memoriesList, usersList = viewModel.followingList)
-        val recyclerView = view?.findViewById<RecyclerView>(R.id.memoriesRecyclerView_)
-        recyclerView?.adapter = worldAdapter
-        recyclerView?.layoutManager = LinearLayoutManager(context)
+            WorldAdapter(
+                memoriesList = viewModel.memoriesList,
+                usersList = viewModel.followingList,
+                viewModel = viewModel
+            )
+        recyclerView = view?.findViewById(R.id.memoriesRecyclerView_)!!
+        recyclerView.adapter = worldAdapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
     }
 
     /*** ------------------ Get all users that user follow ----------------------------*/
-    private fun getFollowing(view: View) {
-        Log.d(TAG, "getFollowing: ")
+    private fun getFollowing(view: View?) {
         viewModel.getUserFollowing().observe(viewLifecycleOwner, Observer { querySnapshot ->
             if (querySnapshot != null) {
-                viewModel.followingList.clear()
                 viewModel.memoriesList.clear()
-                for (document in querySnapshot)
+                viewModel.followingList.clear()
+                viewModel.listIDs.clear()
+                Log.d(TAG, "getFollowing: ${querySnapshot.size()}")
+                for (document in querySnapshot) {
+                    viewModel.listIDs.add(document["followingId"] as String)
                     getUser(document["followingId"] as String)
-                Log.d(TAG, "getFollowing: ${viewModel.memoriesList.count()}")
+                }
             }
         })
     }
 
+    //may be we don't need observer here we want only user data once
+    // but what will happen if thus user change his photo??!!
+    // so i thing we need observer
     private fun getUser(userID: String) {
-        Log.d(TAG, "getUser: ")
         viewModel.getUserData(userID).observe(viewLifecycleOwner, Observer { querySnapShot ->
             if (querySnapShot != null) {
                 for (document in querySnapShot) {
@@ -100,10 +117,14 @@ class ChatFragment : Fragment() {
                         username = document["username"] as String,
                         userId = document["userId"] as String
                     )
-                    viewModel.followingList.add(user)
-                    getMemories(userID)
+                    if (viewModel.followingList.find { it.userId == user.userId } == null &&
+                        viewModel.listIDs.find { it == user.userId } != null) {
+                        viewModel.followingList.add(user)
+                        getMemories(userID)
+                    }
                 }
             }
         })
     }
 }
+
