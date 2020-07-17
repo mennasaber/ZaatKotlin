@@ -2,6 +2,7 @@ package com.example.zaatkotlin.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.models.User
+import com.example.zaatkotlin.sendNotifications.Token
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
@@ -19,10 +21,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.ktx.Firebase
 import org.json.JSONObject
 
@@ -183,7 +187,20 @@ class LoginActivity : AppCompatActivity() {
         user.userId?.let {
             db.collection("Users").document(it).set(user)
         }
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.d("TAG", "getInstanceId failed")
+                    return@OnCompleteListener
+                }
+
+                // Get new Instance ID token
+                val token = task.result?.token
+                val tokenObject = Token(token!!)
+                Firebase.firestore.collection("Token").document(user.userId!!)
+                    .set(tokenObject)
+
+                Log.d("TAG", "saveUserDataInFireStore: $token")
+            })
     }
-
-
 }

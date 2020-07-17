@@ -92,14 +92,14 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:drawableStart="@drawable/ic_love_dark"
+                android:drawableLeft="@drawable/ic_love"
                 android:textColor="@color/colorDeepOrange"
+                android:textSize="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/memoryTV"
-                tools:text="10000"
-                android:textSize="12dp"
-                android:drawableLeft="@drawable/ic_love" />
+                tools:text="10000" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -127,19 +127,21 @@
                     android:text="@string/love"
                     android:textColor="@color/colorWhite" />
 
-                <!--                <Button-->
-                <!--                    android:id="@+id/commentButton"-->
-                <!--                    android:layout_width="0dp"-->
-                <!--                    android:layout_height="35dp"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    android:background="@color/colorWhite"-->
-                <!--                    android:drawableStart="@drawable/ic_comment_24"-->
-                <!--                    android:drawableLeft="@drawable/ic_comment_24"-->
-                <!--                    android:paddingStart="10dp"-->
-                <!--                    android:paddingLeft="10dp"-->
-                <!--                    android:paddingEnd="10dp"-->
-                <!--                    android:text="@string/comment"-->
-                <!--                    android:textColor="@color/colorDeepOrange" />-->
+                <Button
+                    android:id="@+id/commentButton"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorDeepOrange"
+                    android:drawableStart="@drawable/ic_comment_24"
+                    android:drawableLeft="@drawable/ic_comment_24"
+                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/comment"
+                    android:textColor="@color/colorWhite" />
 
                 <Button
                     android:id="@+id/shareButton"

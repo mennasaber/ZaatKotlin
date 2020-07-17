@@ -15,6 +15,7 @@ import com.example.zaatkotlin.adapters.WorldAdapter
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.WorldViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,9 +37,26 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_world, container, false)
+        getCurrentUser()
         initWidget(view)
         getFollowing(view)
         return view
+    }
+
+    private fun getCurrentUser() {
+        viewModel.getUserData(userID = FirebaseAuth.getInstance().uid!!)
+            .observe(viewLifecycleOwner, Observer {
+                if (!it.isEmpty && it != null) {
+                    for (document in it) {
+                        viewModel.currentUser = User(
+                            email = document["email"] as String,
+                            photoURL = document["photoURL"] as String,
+                            username = document["username"] as String,
+                            userId = document["userId"] as String
+                        )
+                    }
+                }
+            })
     }
 
     private fun getMemories(userID: String) {

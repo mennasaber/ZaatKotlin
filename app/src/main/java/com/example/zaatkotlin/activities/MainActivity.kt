@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun initFrameLayout() {
         val fragment = supportFragmentManager.findFragmentByTag(viewModel.fragmentID)
         fragment?.let {
@@ -105,6 +106,5 @@ class MainActivity : AppCompatActivity() {
             bottomNavViewBar.menu[3].isChecked = true
         if (currentFragment is SettingFragment)
             bottomNavViewBar.menu[4].isChecked = true
-
     }
 }

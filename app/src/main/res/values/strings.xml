@@ -28,4 +28,8 @@
     <string name="logout">Log out</string>
     <string name="following">Following</string>
     <string name="followers">Followers</string>
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="memory">Memory</string>
+    <string name="write_comment">Write your comment</string>
 </resources>

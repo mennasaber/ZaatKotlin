@@ -16,6 +16,8 @@ class WorldViewModel : ViewModel() {
     val reactMap = hashMapOf<String, Boolean>()
     var listIDs = ArrayList<String>()
     val userID = FirebaseAuth.getInstance().uid!!
+    lateinit var currentUser: User
+
     private val queryFollowing = Firebase.firestore.collection("Follow")
         .whereEqualTo("followerId", userID)
     private val followingLiveData = FirebaseQueryLiveData(queryFollowing)
