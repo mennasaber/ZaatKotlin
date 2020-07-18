@@ -73,6 +73,7 @@ class ChatFragment : Fragment() {
                     memory.timestamp = document.data["timestamp"] as Long
                     memory.memoryID = document.data["memoryID"] as String
                     memory.lovesCount = document.data["lovesCount"] as Long
+                    memory.commentsCount = document.data["commentsCount"] as Long
 
                     if (viewModel.memoriesList.find { it.memoryID == memory.memoryID } == null
                         && viewModel.followingList.find { it.userId == memory.uID } != null) {
@@ -89,7 +90,6 @@ class ChatFragment : Fragment() {
     private fun isReact(memoryID: String) {
         viewModel.getUserReact(memoryID).observe(viewLifecycleOwner, Observer {
             viewModel.reactMap[memoryID] = it.size() != 0
-            Log.d("TAG", "isReact: ${viewModel.reactMap.size}   ${viewModel.memoriesList.size} ")
             worldAdapter.notifyDataSetChanged()
         })
     }

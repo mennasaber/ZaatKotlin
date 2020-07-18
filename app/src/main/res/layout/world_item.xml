@@ -95,7 +95,7 @@
                 android:drawableLeft="@drawable/ic_love"
                 android:textColor="@color/colorDeepOrange"
                 android:textSize="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/commentsCount"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/memoryTV"
@@ -158,6 +158,29 @@
                     android:textColor="@color/colorWhite" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/sharesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:textColor="@color/colorDeepOrange"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/memoryTV" />
+
+            <TextView
+                android:id="@+id/commentsCountTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="TextView"
+                android:textColor="@color/colorDeepOrange"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/sharesCount"
+                app:layout_constraintTop_toBottomOf="@+id/memoryTV" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

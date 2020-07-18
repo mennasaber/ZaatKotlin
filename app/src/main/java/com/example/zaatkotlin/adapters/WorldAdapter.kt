@@ -37,6 +37,7 @@ class WorldAdapter(
         val memoryTV: TextView = itemView.findViewById(R.id.memoryTV)
         val memoryDateTV: TextView = itemView.findViewById(R.id.dateTV)
         val lovesTV = itemView.findViewById<TextView>(R.id.lovesTV)
+        val commentsTV = itemView.findViewById<TextView>(R.id.commentsCountTV)
         val loveB = itemView.findViewById<Button>(R.id.loveButton)
         val shareB = itemView.findViewById<Button>(R.id.shareButton)
         val commentB = itemView.findViewById<Button>(R.id.commentButton)
@@ -59,6 +60,12 @@ class WorldAdapter(
         holder.memoryTV.text = memoriesList[position].memory
         holder.memoryDateTV.text = memoriesList[position].date
         holder.lovesTV.text = memoriesList[position].lovesCount.toString()
+        val commentsText =
+            memoriesList[position].commentsCount.toString() + " " + holder.itemView.resources.getText(
+                R.string.comments
+            )
+        holder.commentsTV.text = commentsText
+
         if (viewModel != null && viewModel.reactMap.size == memoriesList.size)
             if (viewModel.reactMap[memoriesList[position].memoryID]!!) {
                 holder.loveB.setCompoundDrawablesWithIntrinsicBounds(
@@ -124,12 +131,13 @@ class WorldAdapter(
             }
         }
         holder.commentB.setOnClickListener {
-            if (user != null) {
+            if (user != null && viewModel != null) {
                 goToMemory(
                     context = holder.itemView.context,
                     user = user,
                     memory = memoriesList[position],
-                    follow = "Unfollow"
+                    follow = "Unfollow",
+                    react = viewModel.reactMap[memoriesList[position].memoryID]
                 )
             }
         }
@@ -178,15 +186,18 @@ class WorldAdapter(
         context: Context,
         user: User,
         memory: Memory,
-        follow: String
+        follow: String,
+        react: Boolean?
     ) {
         val intent = Intent(context, MemoryActivity::class.java)
         intent.putExtra("userObject", user)
         intent.putExtra("isFollow", follow)
+        intent.putExtra("isReact", react)
         intent.putExtra("memoryObject", memory)
         //Parcel not work for those fields so we pass them
         intent.putExtra("memoryID", memory.memoryID)
         intent.putExtra("lovesCount", memory.lovesCount)
+        intent.putExtra("commentsCount", memory.commentsCount)
         context.startActivity(intent)
     }
 }
