@@ -12,11 +12,18 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class OtherProfileViewModel : ViewModel() {
-    var isFollow: String = "Follow"
+    var isFollow: Boolean = true
     var followingList = ArrayList<User>()
     var memoriesList = ArrayList<Memory>()
     val reactMap = hashMapOf<String, Boolean>()
     val userID = FirebaseAuth.getInstance().uid!!
+
+    fun isFollow(userID: String): LiveData<QuerySnapshot> {
+        val query = Firebase.firestore.collection("Follow").whereEqualTo("followingId", userID)
+            .whereEqualTo("followerId", this.userID)
+        return FirebaseQueryLiveData(query = query)
+    }
+
     fun getMemories(userID: String): LiveData<QuerySnapshot> {
         val query = Firebase.firestore.collection("Memories")
             .whereEqualTo("uid", userID)
@@ -26,8 +33,7 @@ class OtherProfileViewModel : ViewModel() {
 
     fun deleteFollow(userID: String) {
         val query = Firebase.firestore.collection("Follow")
-        query.whereEqualTo("followingId", userID)
-            .whereEqualTo("followerId", this.userID).get()
+        query.whereEqualTo("followingId", userID).whereEqualTo("followerId", this.userID).get()
             .addOnSuccessListener { querySnapshot ->
                 for (document in querySnapshot) {
                     query.document(document.id).delete()

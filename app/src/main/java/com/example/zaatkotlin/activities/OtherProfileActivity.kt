@@ -25,17 +25,27 @@ class OtherProfileActivity : AppCompatActivity() {
     lateinit var userID: String
     lateinit var username: String
     lateinit var photoURL: String
-    lateinit var isFollow: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_profile)
         userID = intent.getStringExtra("userID")!!
         username = intent.getStringExtra("username")!!
         photoURL = intent.getStringExtra("photoURL")!!
-        isFollow = intent.getStringExtra("isFollow")!!
-        viewModel.isFollow = isFollow
+        setupFollow()
         initWidget()
         getMemories(userID)
+    }
+
+    private fun setupFollow() {
+        viewModel.isFollow(userID = userID).observe(this, Observer {
+            viewModel.isFollow = !it.isEmpty
+            val followB = findViewById<Button>(R.id.followB)
+            if (viewModel.isFollow)
+                followB.text = this.resources.getString(R.string.unfollow)
+            else
+                followB.text = this.resources.getString(R.string.follow)
+        })
     }
 
     private fun getMemories(userID: String) {
@@ -52,6 +62,7 @@ class OtherProfileActivity : AppCompatActivity() {
                     memory.timestamp = document.data["timestamp"] as Long
                     memory.memoryID = document.data["memoryID"] as String
                     memory.lovesCount = document.data["lovesCount"] as Long
+                    memory.commentsCount = document.data["commentsCount"] as Long
 
                     if (viewModel.memoriesList.find { it.memoryID == memory.memoryID } == null) {
                         viewModel.memoriesList.add(memory)
@@ -92,7 +103,11 @@ class OtherProfileActivity : AppCompatActivity() {
 
         Picasso.get().load(photoURL).into(userIV)
         usernameTV.text = username
-        followB.text = viewModel.isFollow
+
+//        if (viewModel.isFollow)
+//            followB.text = this.resources.getString(R.string.unfollow)
+//        else
+//            followB.text = this.resources.getString(R.string.follow)
 
         usersList.add(User("", photoURL, username, userID))
 
@@ -105,14 +120,15 @@ class OtherProfileActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         followB.setOnClickListener {
-            if (viewModel.isFollow == "Follow") {
+            if (!viewModel.isFollow) {
                 viewModel.makeFollow(userID)
-                viewModel.isFollow = "Unfollow"
+                viewModel.isFollow = true
+                followB.text = this.resources.getString(R.string.unfollow)
             } else {
                 viewModel.deleteFollow(userID)
-                viewModel.isFollow = "Follow"
+                viewModel.isFollow = false
+                followB.text = this.resources.getString(R.string.follow)
             }
-            followB.text = viewModel.isFollow
         }
         backB.setOnClickListener { finish() }
     }

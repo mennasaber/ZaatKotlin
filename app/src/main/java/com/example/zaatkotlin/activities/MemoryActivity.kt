@@ -1,5 +1,7 @@
 package com.example.zaatkotlin.activities
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -22,25 +24,27 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MemoryActivity : AppCompatActivity() {
-    lateinit var memory: Memory
-    lateinit var user: User
-    lateinit var isFollow: String
-    var isReact: Boolean = false
+    private lateinit var memory: Memory
+    private lateinit var user: User
+    private lateinit var isFollow: String
+    private var isReact: Boolean = false
 
-    lateinit var memoryTV: TextView
-    lateinit var usernameTV: TextView
-    lateinit var dateTV: TextView
-    lateinit var lovesTV: TextView
-    lateinit var commentsTV: TextView
-    lateinit var userIV: ImageView
-    lateinit var loveB: Button
-    lateinit var commentB: Button
-    lateinit var shareB: Button
-    lateinit var commentET: EditText
-    lateinit var sendCommentB: Button
-    lateinit var recyclerView: RecyclerView
-    lateinit var commentsAdapter: CommentsAdapter
-    val viewModel: MemoryViewModel by viewModels()
+    private lateinit var memoryTV: TextView
+    private lateinit var usernameTV: TextView
+    private lateinit var dateTV: TextView
+    private lateinit var lovesTV: TextView
+    private lateinit var commentsTV: TextView
+    private lateinit var userIV: ImageView
+    private lateinit var loveB: Button
+    private lateinit var commentB: Button
+    private lateinit var shareB: Button
+    private lateinit var commentET: EditText
+    private lateinit var sendCommentB: Button
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var commentsAdapter: CommentsAdapter
+    private lateinit var backB: ImageView
+
+    private val viewModel: MemoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,30 +56,34 @@ class MemoryActivity : AppCompatActivity() {
         memory.memoryID = intent.getStringExtra("memoryID")!!
         user = intent.getParcelableExtra("userObject")!!
         isFollow = intent.getStringExtra("isFollow")!!
-        isReact = intent.getBooleanExtra("isReact", false)
-
+        // reset when phone rotate ,should solve it
+        //viewModel.isReact = intent.getBooleanExtra("isReact", false)
         initWidget()
+        updateMemory()
         setupReact()
         setupMemory()
         getComments()
     }
 
     private fun setupReact() {
-        if (isReact) {
-            loveB.setCompoundDrawablesWithIntrinsicBounds(
-                R.drawable.ic_love,
-                0,
-                0,
-                0
-            )
-        } else {
-            loveB.setCompoundDrawablesWithIntrinsicBounds(
-                R.drawable.ic_dislove,
-                0,
-                0,
-                0
-            )
-        }
+        viewModel.getUserReact(memoryID = memory.memoryID).observe(this, Observer {
+            viewModel.isReact = it.size() != 0
+            if (viewModel.isReact) {
+                loveB.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_love,
+                    0,
+                    0,
+                    0
+                )
+            } else {
+                loveB.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_dislove,
+                    0,
+                    0,
+                    0
+                )
+            }
+        })
     }
 
     private fun getComments() {
@@ -112,6 +120,7 @@ class MemoryActivity : AppCompatActivity() {
     }
 
     private fun initWidget() {
+        backB = findViewById(R.id.back)
         userIV = findViewById(R.id.userIV)
         usernameTV = findViewById(R.id.usernameTV)
         memoryTV = findViewById(R.id.memoryTV)
@@ -148,6 +157,40 @@ class MemoryActivity : AppCompatActivity() {
                 commentET.text.clear()
             }
         }
+        userIV.setOnClickListener {
+            goToProfile(
+                context = this,
+                user = user
+            )
+        }
+        usernameTV.setOnClickListener {
+            goToProfile(
+                context = this,
+                user = user
+            )
+        }
+        loveB.setOnClickListener {
+            if (viewModel.isReact) {
+                viewModel.deleteReact(memoryID = memory.memoryID)
+                viewModel.isReact = false
+                loveB.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_dislove,
+                    0,
+                    0,
+                    0
+                )
+            } else {
+                viewModel.makeReact(memoryID = memory.memoryID)
+                viewModel.isReact = true
+                loveB.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_love,
+                    0,
+                    0,
+                    0
+                )
+            }
+        }
+        backB.setOnClickListener { finish() }
     }
 
     /** ------------------------------ Convert date to specific format 'extension function' ---------**/
@@ -162,13 +205,35 @@ class MemoryActivity : AppCompatActivity() {
     }
 
     private fun setupMemory() {
-        val commentsText =
-            memory.commentsCount.toString() + " " + this.resources.getText(R.string.comments)
         Picasso.get().load(user.photoURL).into(userIV)
         usernameTV.text = user.username
         memoryTV.text = memory.memory
         dateTV.text = memory.date
-        lovesTV.text = memory.lovesCount.toString()
-        commentsTV.text = commentsText
+    }
+
+    private fun updateMemory() {
+        viewModel.getMemory(memory.memoryID).observe(this, Observer {
+            if (!it.isEmpty) {
+                for (document in it) {
+                    val commentsText =
+                        (document["commentsCount"] as Long).toString() + " " + this.resources.getText(
+                            R.string.comments
+                        )
+                    lovesTV.text = (document["lovesCount"] as Long).toString()
+                    commentsTV.text = commentsText
+                }
+            }
+        })
+    }
+
+    private fun goToProfile(
+        context: Context,
+        user: User
+    ) {
+        val intent = Intent(context, OtherProfileActivity::class.java)
+        intent.putExtra("userID", user.userId)
+        intent.putExtra("username", user.username)
+        intent.putExtra("photoURL", user.photoURL)
+        context.startActivity(intent)
     }
 }

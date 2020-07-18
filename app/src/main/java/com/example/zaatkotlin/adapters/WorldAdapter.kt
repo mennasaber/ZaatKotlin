@@ -116,8 +116,7 @@ class WorldAdapter(
             if (user != null) {
                 goToProfile(
                     holder.itemView.context,
-                    user,
-                    "Unfollow"
+                    user
                 )
             }
         }
@@ -125,8 +124,7 @@ class WorldAdapter(
             if (user != null) {
                 goToProfile(
                     context = holder.itemView.context,
-                    user = user,
-                    follow = "Unfollow"
+                    user = user
                 )
             }
         }
@@ -171,14 +169,12 @@ class WorldAdapter(
 
     private fun goToProfile(
         context: Context,
-        user: User,
-        follow: String
+        user: User
     ) {
         val intent = Intent(context, OtherProfileActivity::class.java)
         intent.putExtra("userID", user.userId)
         intent.putExtra("username", user.username)
         intent.putExtra("photoURL", user.photoURL)
-        intent.putExtra("isFollow", follow)
         context.startActivity(intent)
     }
 

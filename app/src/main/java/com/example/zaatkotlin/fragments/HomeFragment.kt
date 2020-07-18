@@ -62,14 +62,11 @@ class HomeFragment : Fragment() {
 
     // ------------------------------ Get memories from viewModel that return liveData<QuerySnapShot> ----------------------------
     private fun getMemories() {
-
         viewModel.getDataLive()
             .observe(viewLifecycleOwner, Observer { QuerySnapshot ->
-
                 if (QuerySnapshot != null) {
                     memoriesList.clear()
                     for (document in QuerySnapshot) {
-
                         val memory = Memory(
                             title = document.data["title"] as String,
                             memory = document.data["memory"] as String,
@@ -80,9 +77,18 @@ class HomeFragment : Fragment() {
                         memory.timestamp = document.data["timestamp"] as Long
                         memory.memoryID = document.data["memoryID"] as String
                         memoriesList.add(memory)
-                        memoriesAdapter.notifyDataSetChanged()
+                        //memoriesAdapter.notifyDataSetChanged()
                     }
                 }
+                memoriesAdapter.notifyDataSetChanged()
             })
+    }
+
+    private fun imageVisibility(view: View?) {
+        val vectorIV: ImageView = view?.findViewById(R.id.vector)!!
+        if (memoriesList.isEmpty())
+            vectorIV.visibility = View.VISIBLE
+        else
+            vectorIV.visibility = View.GONE
     }
 }

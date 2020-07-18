@@ -60,23 +60,21 @@ class SearchAdapter(
             }
         }
         holder.usernameTV.setOnClickListener {
-            goToProfile(holder.itemView.context, position, holder.followB.text.toString())
+            goToProfile(holder.itemView.context, position)
         }
         holder.photoIV.setOnClickListener {
-            goToProfile(holder.itemView.context, position, holder.followB.text.toString())
+            goToProfile(holder.itemView.context, position)
         }
     }
 
     private fun goToProfile(
         context: Context,
-        position: Int,
-        follow: String
+        position: Int
     ) {
         val intent = Intent(context, OtherProfileActivity::class.java)
         intent.putExtra("userID", usersList[position].userId)
         intent.putExtra("username", usersList[position].username)
         intent.putExtra("photoURL", usersList[position].photoURL)
-        intent.putExtra("isFollow", follow)
         context.startActivity(intent)
     }
 

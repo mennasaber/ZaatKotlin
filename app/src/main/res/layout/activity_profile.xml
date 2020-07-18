@@ -88,6 +88,16 @@
                 android:text="@string/following"
                 android:textColor="@color/colorDeepOrange"
                 android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/memoriesB"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorWhite"
+                android:text="@string/memories"
+                android:textColor="@color/colorDeepOrange"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

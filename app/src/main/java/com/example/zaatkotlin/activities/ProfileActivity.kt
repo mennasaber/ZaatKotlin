@@ -33,6 +33,7 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+        initWidget()
         initLists()
     }
 
@@ -50,7 +51,7 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
                     getUser(document["followerId"] as String, 0)
                 }
             }
-            initWidget()
+
         })
     }
 
@@ -66,7 +67,7 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
                     )
                     when (type) {
                         0 -> if (viewModel.followersList.find { it.userId == userID } == null) {
-                            viewModel.followingList.add(user)
+                            viewModel.followersList.add(user)
                         }
                         1 -> if (viewModel.followingList.find { it.userId == userID } == null) {
                             viewModel.followingList.add(user)
@@ -78,6 +79,10 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
             }
+            imageVisibility(0)
+            imageVisibility(1)
+            followersAdapter.notifyDataSetChanged()
+            followingAdapter.notifyDataSetChanged()
         })
     }
 

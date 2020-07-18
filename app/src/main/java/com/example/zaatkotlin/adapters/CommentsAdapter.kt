@@ -1,5 +1,7 @@
 package com.example.zaatkotlin.adapters
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,8 +9,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.activities.OtherProfileActivity
+import com.example.zaatkotlin.activities.ProfileActivity
 import com.example.zaatkotlin.models.Comment
 import com.example.zaatkotlin.models.User
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
 class CommentsAdapter(
@@ -45,5 +50,36 @@ class CommentsAdapter(
                 this.usernameTV.text = user.username
                 Picasso.get().load(user.photoURL).into(this.userIV)
             }
+        holder.userIV.setOnClickListener {
+            if (user != null) {
+                goToProfile(
+                    context = holder.itemView.context,
+                    user = user
+                )
+            }
+        }
+        holder.usernameTV.setOnClickListener {
+            if (user != null) {
+                goToProfile(
+                    context = holder.itemView.context,
+                    user = user
+                )
+            }
+        }
+    }
+
+    private fun goToProfile(
+        context: Context,
+        user: User
+    ) {
+        if (user.userId != FirebaseAuth.getInstance().uid) {
+            val intent = Intent(context, OtherProfileActivity::class.java)
+            intent.putExtra("userID", user.userId)
+            intent.putExtra("username", user.username)
+            intent.putExtra("photoURL", user.photoURL)
+            context.startActivity(intent)
+        } else {
+            context.startActivity(Intent(context, ProfileActivity::class.java))
+        }
     }
 }
