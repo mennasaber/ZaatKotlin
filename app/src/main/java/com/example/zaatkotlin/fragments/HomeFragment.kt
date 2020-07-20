@@ -11,20 +11,21 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.activities.AddMemoryActivity
 import com.example.zaatkotlin.adapters.RecyclerViewAdapter
 import com.example.zaatkotlin.callbacks.SimpleItemTouchHelperCallback
+import com.example.zaatkotlin.databinding.FragmentHomeBinding
+import com.example.zaatkotlin.databinding.LayoutTopHomeToolbarBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.viewmodels.MemoriesViewModel
 
 
 class HomeFragment : Fragment() {
-
+    private lateinit var binding: FragmentHomeBinding
+    private lateinit var toolbarbinding: LayoutTopHomeToolbarBinding
     private lateinit var memoriesList: ArrayList<Memory>
     private lateinit var memoriesAdapter: RecyclerViewAdapter
-    private lateinit var recyclerView: RecyclerView
 
     private val viewModel: MemoriesViewModel by viewModels()
 
@@ -32,35 +33,28 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
-        val addMemoryButton = view.findViewById<ImageView>(R.id.addMemory)
-        addMemoryButton.setOnClickListener {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        toolbarbinding = LayoutTopHomeToolbarBinding.bind(binding.root)
+        toolbarbinding.addMemory.setOnClickListener {
             val intent = Intent(context, AddMemoryActivity::class.java)
             startActivity(intent)
         }
-        initWidget(view)
+        initWidget()
         getMemories()
-        return view
+        return binding.root
     }
 
-    // ------------------------------ initialization ----------------------------
-    private fun initWidget(view: View?) {
-
+    private fun initWidget() {
         memoriesList = ArrayList()
-
         memoriesAdapter = RecyclerViewAdapter(memoriesList = memoriesList, viewModel = viewModel)
-
-        recyclerView = view?.findViewById(R.id.memoriesRecyclerView)!!
-        recyclerView.adapter = memoriesAdapter
-        recyclerView.layoutManager =
+        binding.memoriesRecyclerView.adapter = memoriesAdapter
+        binding.memoriesRecyclerView.layoutManager =
             LinearLayoutManager(context)
         val itemTouchHelperCallback = SimpleItemTouchHelperCallback(memoriesAdapter)
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+        itemTouchHelper.attachToRecyclerView(binding.memoriesRecyclerView)
     }
 
-    // ------------------------------ Get memories from viewModel that return liveData<QuerySnapShot> ----------------------------
     private fun getMemories() {
         viewModel.getDataLive()
             .observe(viewLifecycleOwner, Observer { QuerySnapshot ->

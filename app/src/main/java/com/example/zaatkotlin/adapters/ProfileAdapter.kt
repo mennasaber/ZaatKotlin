@@ -1,12 +1,9 @@
 package com.example.zaatkotlin.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.zaatkotlin.R
+import com.example.zaatkotlin.databinding.ProfileItemBinding
 import com.example.zaatkotlin.models.User
 import com.squareup.picasso.Picasso
 
@@ -14,14 +11,12 @@ class ProfileAdapter(
     private val usersList: ArrayList<User>
 ) : RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder>() {
 
-    class ProfileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val userIV: ImageView = itemView.findViewById(R.id.userIV)
-        val usernameTV: TextView = itemView.findViewById(R.id.usernameTV)
-    }
+    class ProfileViewHolder(val binding: ProfileItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileViewHolder {
         return ProfileViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.profile_item, parent, false)
+            ProfileItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -30,7 +25,9 @@ class ProfileAdapter(
     }
 
     override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) {
-        Picasso.get().load(usersList[position].photoURL).into(holder.userIV)
-        holder.usernameTV.text = usersList[position].username
+        holder.apply {
+            Picasso.get().load(usersList[position].photoURL).into(binding.userIV)
+            binding.usernameTV.text = usersList[position].username
+        }
     }
 }

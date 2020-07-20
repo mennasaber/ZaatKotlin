@@ -2,13 +2,12 @@ package com.example.zaatkotlin.activities
 
 import android.os.Bundle
 import android.view.View
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.databinding.ActivityAddMemoryBinding
+import com.example.zaatkotlin.databinding.LayoutTopAddToolbarBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.viewmodels.AddMemoryViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -16,40 +15,33 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
-    private lateinit var saveButton: ImageView
-    private lateinit var backButton: ImageView
-    private lateinit var makeMemoryPublicCB: CheckBox
-    private lateinit var titleET: EditText
-    private lateinit var memoryET: EditText
-
+    private lateinit var binding: ActivityAddMemoryBinding
+    private lateinit var toolbarBinding: LayoutTopAddToolbarBinding
     private val viewModel: AddMemoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_memory)
+        binding = ActivityAddMemoryBinding.inflate(layoutInflater)
+        toolbarBinding = LayoutTopAddToolbarBinding.bind(binding.root)
+        setContentView(binding.root)
         initWidget()
     }
 
     /** ------------------------------ initialization ----------------------------**/
     private fun initWidget() {
+        binding.titleET.setText(viewModel.title)
+        binding.memoryET.setText(viewModel.content)
+        binding.makeMemoryPublicCB.isChecked = viewModel.isSharing
 
-        saveButton = findViewById(R.id.saveMemory)
-        backButton = findViewById(R.id.back)
-        makeMemoryPublicCB = findViewById(R.id.makeMemoryPublicCB)
-        titleET = findViewById(R.id.titleET)
-        memoryET = findViewById(R.id.memoryET)
+        toolbarBinding.back.setOnClickListener(this)
+        toolbarBinding.saveMemory.setOnClickListener(this)
 
-        titleET.setText(viewModel.title)
-        memoryET.setText(viewModel.content)
-        makeMemoryPublicCB.isChecked = viewModel.isSharing
-
-        backButton.setOnClickListener(this)
-        saveButton.setOnClickListener(this)
-
-        titleET.addTextChangedListener { viewModel.title = titleET.text.toString() }
-        memoryET.addTextChangedListener { viewModel.content = memoryET.text.toString() }
-        makeMemoryPublicCB.setOnCheckedChangeListener { _, _ ->
-            viewModel.isSharing = makeMemoryPublicCB.isChecked
+        binding.titleET.addTextChangedListener { viewModel.title = binding.titleET.text.toString() }
+        binding.memoryET.addTextChangedListener {
+            viewModel.content = binding.memoryET.text.toString()
+        }
+        binding.makeMemoryPublicCB.setOnCheckedChangeListener { _, _ ->
+            viewModel.isSharing = binding.makeMemoryPublicCB.isChecked
         }
     }
 
@@ -92,9 +84,9 @@ class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
             R.id.saveMemory -> {
                 if (isValid()) {
                     val memoryObject = initMemoryObject(
-                        titleET.text.toString().trim(),
-                        memoryET.text.toString().trim(),
-                        makeMemoryPublicCB.isChecked
+                        binding.titleET.text.toString().trim(),
+                        binding.memoryET.text.toString().trim(),
+                        binding.makeMemoryPublicCB.isChecked
                     )
                     memoryObject.timestamp = System.currentTimeMillis()
                     saveMemoryInFireStore(memoryObject)
@@ -105,6 +97,7 @@ class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
 
     /** -------------- make sure of memory title or content empty ----------------**/
     private fun isValid(): Boolean {
-        return memoryET.text.toString().trim() != "" && titleET.text.toString().trim() != ""
+        return binding.memoryET.text.toString().trim() != "" && binding.titleET.text.toString()
+            .trim() != ""
     }
 }

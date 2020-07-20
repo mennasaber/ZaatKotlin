@@ -2,24 +2,24 @@ package com.example.zaatkotlin.activities
 
 import android.os.Bundle
 import android.view.View
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.databinding.ActivityEditMemoryBinding
+import com.example.zaatkotlin.databinding.LayoutTopEditToolbarBinding
 import com.example.zaatkotlin.viewmodels.MemoriesViewModel
 
 class EditMemoryActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var memoryID: String
-    private lateinit var titleET: EditText
-    private lateinit var memoryET: EditText
-    private lateinit var memorySharingCB: CheckBox
+    private lateinit var binding: ActivityEditMemoryBinding
+    private lateinit var toolbarBinding: LayoutTopEditToolbarBinding
     private val viewModel: MemoriesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_memory)
+        binding = ActivityEditMemoryBinding.inflate(layoutInflater)
+        toolbarBinding = LayoutTopEditToolbarBinding.bind(binding.root)
+        setContentView(binding.root)
 
         memoryID = intent.getStringExtra("memoryID")!!
         val memoryTitle = intent.getStringExtra("title")
@@ -31,18 +31,12 @@ class EditMemoryActivity : AppCompatActivity(), View.OnClickListener {
 
     /** ------------------------------ initialization ----------------------------**/
     private fun initWidget(memoryTitle: String?, memoryContent: String?, isSharing: Boolean) {
-        titleET = findViewById(R.id.titleET)
-        memoryET = findViewById(R.id.memoryET)
-        memorySharingCB = findViewById(R.id.makeMemoryPublicCB)
-        val backButton = findViewById<ImageView>(R.id.back)
-        val saveButton = findViewById<ImageView>(R.id.saveMemory)
+        memoryTitle?.let { binding.titleET.setText(memoryTitle) }
+        memoryContent?.let { binding.memoryET.setText(memoryContent) }
+        binding.makeMemoryPublicCB.isChecked = isSharing
 
-        memoryTitle?.let { titleET.setText(memoryTitle) }
-        memoryContent?.let { memoryET.setText(memoryContent) }
-        memorySharingCB.isChecked = isSharing
-
-        backButton.setOnClickListener(this)
-        saveButton.setOnClickListener(this)
+        toolbarBinding.back.setOnClickListener(this)
+        toolbarBinding.saveMemory.setOnClickListener(this)
     }
 
     /** ------------------------------ setup Click listener ----------------------**/
@@ -61,16 +55,17 @@ class EditMemoryActivity : AppCompatActivity(), View.OnClickListener {
 
     /** -------------- make sure of memory title or content empty ----------------**/
     private fun isValid(): Boolean {
-        return memoryET.text.toString().trim() != "" && titleET.text.toString().trim() != ""
+        return binding.memoryET.text.toString().trim() != "" && binding.titleET.text.toString()
+            .trim() != ""
     }
 
     /** -------------- update memory data by call viewModel and pass new data ----------------**/
     private fun updateMemory() {
         viewModel.updateMemory(
             memoryID = memoryID,
-            memory = memoryET.text.toString(),
-            title = titleET.text.toString(),
-            isSharing = memorySharingCB.isChecked
+            memory = binding.memoryET.text.toString(),
+            title = binding.titleET.text.toString(),
+            isSharing = binding.makeMemoryPublicCB.isChecked
         )
         finish()
     }

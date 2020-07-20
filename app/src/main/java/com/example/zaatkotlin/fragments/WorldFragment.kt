@@ -1,7 +1,6 @@
 package com.example.zaatkotlin.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,38 +8,27 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.zaatkotlin.R
 import com.example.zaatkotlin.adapters.WorldAdapter
+import com.example.zaatkotlin.databinding.FragmentWorldBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.WorldViewModel
 import com.google.firebase.auth.FirebaseAuth
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChatFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChatFragment : Fragment() {
-    private val TAG = "WorldFragment"
+    private lateinit var binding: FragmentWorldBinding
     private val viewModel: WorldViewModel by viewModels()
     lateinit var worldAdapter: WorldAdapter
-    lateinit var recyclerView: RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_world, container, false)
+        binding = FragmentWorldBinding.inflate(inflater, container, false)
         getCurrentUser()
-        initWidget(view)
-        getFollowing(view)
-        return view
+        initWidget()
+        getFollowing()
+        return binding.root
     }
 
     private fun getCurrentUser() {
@@ -94,26 +82,23 @@ class ChatFragment : Fragment() {
         })
     }
 
-    private fun initWidget(view: View?) {
+    private fun initWidget() {
         worldAdapter =
             WorldAdapter(
                 memoriesList = viewModel.memoriesList,
                 usersList = viewModel.followingList,
                 viewModel = viewModel
             )
-        recyclerView = view?.findViewById(R.id.memoriesRecyclerView_)!!
-        recyclerView.adapter = worldAdapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.memoriesRecyclerView.adapter = worldAdapter
+        binding.memoriesRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
-    /*** ------------------ Get all users that user follow ----------------------------*/
-    private fun getFollowing(view: View?) {
+    private fun getFollowing() {
         viewModel.getUserFollowing().observe(viewLifecycleOwner, Observer { querySnapshot ->
             if (querySnapshot != null) {
                 viewModel.memoriesList.clear()
                 viewModel.followingList.clear()
                 viewModel.listIDs.clear()
-                Log.d(TAG, "getFollowing: ${querySnapshot.size()}")
                 for (document in querySnapshot) {
                     viewModel.listIDs.add(document["followingId"] as String)
                     getUser(document["followingId"] as String)

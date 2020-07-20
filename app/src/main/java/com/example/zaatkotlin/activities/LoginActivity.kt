@@ -4,11 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.databinding.ActivityLoginBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.sendNotifications.Token
 import com.facebook.*
@@ -34,15 +33,14 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var callbackManager: CallbackManager
-    private lateinit var loginProgressBar: ProgressBar
-    private lateinit var loginLayout: RelativeLayout
+    private lateinit var binding: ActivityLoginBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
-        loginLayout = findViewById(R.id.loginLayout)
-        loginProgressBar = findViewById(R.id.loginProgress)
 
         setupWidget(false)
         initSignInWithGoogle()
@@ -148,11 +146,11 @@ class LoginActivity : AppCompatActivity() {
     /**  ------------------------------ manage android widget -----------------------**/
     private fun setupWidget(isLogin: Boolean) {
         if (isLogin) {
-            loginProgressBar.visibility = View.VISIBLE
-            loginLayout.visibility = View.INVISIBLE
+            binding.loginProgress.visibility = View.VISIBLE
+            binding.loginLayout.visibility = View.INVISIBLE
         } else {
-            loginProgressBar.visibility = View.INVISIBLE
-            loginLayout.visibility = View.VISIBLE
+            binding.loginProgress.visibility = View.INVISIBLE
+            binding.loginLayout.visibility = View.VISIBLE
         }
     }
 

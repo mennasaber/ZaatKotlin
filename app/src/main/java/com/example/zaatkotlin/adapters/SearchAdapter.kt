@@ -4,14 +4,11 @@ package com.example.zaatkotlin.adapters
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.activities.OtherProfileActivity
+import com.example.zaatkotlin.databinding.SearchItemBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.SearchViewModel
 import com.squareup.picasso.Picasso
@@ -22,17 +19,12 @@ class SearchAdapter(
     private var viewModel: SearchViewModel
 ) :
     RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
-    // View holder take view of item
-    class SearchViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
-        val usernameTV: TextView = itemView.findViewById(R.id.searchItemTV)
-        val photoIV: ImageView = itemView.findViewById(R.id.searchItemIV)
-        val followB: Button = itemView.findViewById(R.id.followB)
-    }
+
+    class SearchViewHolder(val binding: SearchItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         return SearchViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.search_item, parent, false)
+            SearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -42,27 +34,27 @@ class SearchAdapter(
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
 
-        holder.usernameTV.text = usersList[position].username!!
+        holder.binding.searchItemTV.text = usersList[position].username!!
         if (followList[usersList[position].userId]!!)
-            holder.followB.setText(R.string.unfollow)
+            holder.binding.followB.setText(R.string.unfollow)
         else
-            holder.followB.setText(R.string.follow)
-        Picasso.get().load(usersList[position].photoURL!!).into(holder.photoIV)
+            holder.binding.followB.setText(R.string.follow)
+        Picasso.get().load(usersList[position].photoURL!!).into(holder.binding.searchItemIV)
 
 
-        holder.followB.setOnClickListener {
-            if (holder.followB.text.toString() == "Follow") {
-                holder.followB.setText(R.string.unfollow)
+        holder.binding.followB.setOnClickListener {
+            if (holder.binding.followB.text.toString() == "Follow") {
+                holder.binding.followB.setText(R.string.unfollow)
                 viewModel.makeFollow(usersList[position].userId!!)
             } else {
-                holder.followB.setText(R.string.follow)
+                holder.binding.followB.setText(R.string.follow)
                 viewModel.deleteFollow(usersList[position].userId!!)
             }
         }
-        holder.usernameTV.setOnClickListener {
+        holder.binding.searchItemTV.setOnClickListener {
             goToProfile(holder.itemView.context, position)
         }
-        holder.photoIV.setOnClickListener {
+        holder.binding.searchItemIV.setOnClickListener {
             goToProfile(holder.itemView.context, position)
         }
     }

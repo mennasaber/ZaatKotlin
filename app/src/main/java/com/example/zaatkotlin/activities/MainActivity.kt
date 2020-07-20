@@ -7,18 +7,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.databinding.ActivityMainBinding
+import com.example.zaatkotlin.databinding.LayoutBottomNavigationViewBinding
 import com.example.zaatkotlin.fragments.*
 import com.example.zaatkotlin.viewmodels.FragmentsViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: FragmentsViewModel by viewModels()
-    private lateinit var bottomNavViewBar: BottomNavigationView
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navigationViewBinding: LayoutBottomNavigationViewBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        bottomNavViewBar = findViewById(R.id.bottomNavView_bar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        navigationViewBinding = LayoutBottomNavigationViewBinding.bind(binding.root)
+        setContentView(binding.root)
         checkUser()
         initFrameLayout()
         setupBottomNavigationView()
@@ -32,7 +35,6 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
     }
-
 
     private fun initFrameLayout() {
         val fragment = supportFragmentManager.findFragmentByTag(viewModel.fragmentID)
@@ -50,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigationView() {
 
-        bottomNavViewBar.setOnNavigationItemSelectedListener { item ->
+        navigationViewBinding.bottomNavViewBar.setOnNavigationItemSelectedListener { item ->
             var index = "home"
             lateinit var newFragment: Fragment
             when (item.itemId) {
@@ -97,14 +99,14 @@ class MainActivity : AppCompatActivity() {
         if (supportFragmentManager.backStackEntryCount == 0)
             finish()
         if (currentFragment is HomeFragment)
-            bottomNavViewBar.menu[0].isChecked = true
+            navigationViewBinding.bottomNavViewBar.menu[0].isChecked = true
         if (currentFragment is SearchFragment)
-            bottomNavViewBar.menu[1].isChecked = true
+            navigationViewBinding.bottomNavViewBar.menu[1].isChecked = true
         if (currentFragment is ChatFragment)
-            bottomNavViewBar.menu[2].isChecked = true
+            navigationViewBinding.bottomNavViewBar.menu[2].isChecked = true
         if (currentFragment is NotificationFragment)
-            bottomNavViewBar.menu[3].isChecked = true
+            navigationViewBinding.bottomNavViewBar.menu[3].isChecked = true
         if (currentFragment is SettingFragment)
-            bottomNavViewBar.menu[4].isChecked = true
+            navigationViewBinding.bottomNavViewBar.menu[4].isChecked = true
     }
 }

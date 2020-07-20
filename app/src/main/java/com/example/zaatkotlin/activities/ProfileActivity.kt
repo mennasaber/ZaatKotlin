@@ -2,16 +2,14 @@ package com.example.zaatkotlin.activities
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.adapters.ProfileAdapter
+import com.example.zaatkotlin.databinding.ActivityProfileBinding
+import com.example.zaatkotlin.databinding.LayoutTopProfileToolbarBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -21,18 +19,15 @@ import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : AppCompatActivity(), View.OnClickListener {
     private val viewModel: ProfileViewModel by viewModels()
-    lateinit var userIV: ImageView
-    lateinit var usernameTV: TextView
-    lateinit var followersB: Button
-    lateinit var followingB: Button
-    lateinit var recyclerView: RecyclerView
-    lateinit var followingAdapter: ProfileAdapter
-    lateinit var followersAdapter: ProfileAdapter
-    lateinit var backB: ImageView
-
+    private lateinit var binding: ActivityProfileBinding
+    private lateinit var toolbarBinding: LayoutTopProfileToolbarBinding
+    private lateinit var followingAdapter: ProfileAdapter
+    private lateinit var followersAdapter: ProfileAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        toolbarBinding = LayoutTopProfileToolbarBinding.bind(binding.root)
+        setContentView(binding.root)
         initWidget()
         initLists()
     }
@@ -53,6 +48,23 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         })
+    }
+
+    private fun initWidget() {
+        followersAdapter = ProfileAdapter(viewModel.followersList)
+        followingAdapter = ProfileAdapter(viewModel.followingList)
+
+        binding.profileRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        binding.followerB.setOnClickListener(this)
+        binding.followingB.setOnClickListener(this)
+        toolbarBinding.back.setOnClickListener(this)
+
+        getUser(FirebaseAuth.getInstance().uid!!, 2)
+        if (viewModel.index == 1)
+            binding.followingB.callOnClick()
+        else
+            binding.followerB.callOnClick()
     }
 
     private fun getUser(userID: String, type: Int) {
@@ -86,29 +98,6 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    private fun initWidget() {
-        followersAdapter = ProfileAdapter(viewModel.followersList)
-        followingAdapter = ProfileAdapter(viewModel.followingList)
-
-        backB = findViewById(R.id.back)
-        userIV = findViewById(R.id.userIV)
-        usernameTV = findViewById(R.id.usernameTV)
-        followersB = findViewById(R.id.followerB)
-        followingB = findViewById(R.id.followingB)
-        recyclerView = findViewById(R.id.profileRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        followersB.setOnClickListener(this)
-        followingB.setOnClickListener(this)
-        backB.setOnClickListener(this)
-
-        getUser(FirebaseAuth.getInstance().uid!!, 2)
-        if (viewModel.index == 1)
-            followingB.callOnClick()
-        else
-            followersB.callOnClick()
-    }
-
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.followerB -> {
@@ -116,14 +105,14 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
                 followingB.setBackgroundResource(R.color.colorWhite)
                 followerB.setBackgroundResource(R.color.colorLightGray)
                 viewModel.index = 0
-                recyclerView.adapter = followersAdapter
+                binding.profileRecyclerView.adapter = followersAdapter
             }
             R.id.followingB -> {
                 imageVisibility(1)
                 followerB.setBackgroundResource(R.color.colorWhite)
                 followingB.setBackgroundResource(R.color.colorLightGray)
                 viewModel.index = 1
-                recyclerView.adapter = followingAdapter
+                binding.profileRecyclerView.adapter = followingAdapter
             }
             R.id.back ->
                 finish()
@@ -131,19 +120,18 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun imageVisibility(type: Int) {
-        val connectionIV: ImageView = findViewById(R.id.connectionIV)
         when (type) {
             0 -> {
                 if (viewModel.followersList.isEmpty())
-                    connectionIV.visibility = View.VISIBLE
+                    binding.connectionIV.visibility = View.VISIBLE
                 else
-                    connectionIV.visibility = View.GONE
+                    binding.connectionIV.visibility = View.GONE
             }
             1 -> {
                 if (viewModel.followingList.isEmpty())
-                    connectionIV.visibility = View.VISIBLE
+                    binding.connectionIV.visibility = View.VISIBLE
                 else
-                    connectionIV.visibility = View.GONE
+                    binding.connectionIV.visibility = View.GONE
             }
         }
     }

@@ -2,12 +2,11 @@ package com.example.zaatkotlin.adapters
 
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.activities.EditMemoryActivity
+import com.example.zaatkotlin.databinding.MemoryItemBinding
 import com.example.zaatkotlin.interfaces.ItemTouchHelperAdapter
 import com.example.zaatkotlin.interfaces.ItemTouchHelperViewHolder
 import com.example.zaatkotlin.models.Memory
@@ -20,32 +19,26 @@ class RecyclerViewAdapter(
 ) :
     RecyclerView.Adapter<RecyclerViewAdapter.MemoryViewHolder>(), ItemTouchHelperAdapter {
 
-    // View holder take view of item
-    class MemoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    class MemoryViewHolder(val binding: MemoryItemBinding) : RecyclerView.ViewHolder(binding.root),
         ItemTouchHelperViewHolder {
-        private lateinit var memoryObject: Memory
-        private val titleTV: TextView = itemView.findViewById(R.id.memoryTitle)
-        private val memoryTV: TextView = itemView.findViewById(R.id.memoryText)
         fun setDataOfMemory(memoryObject: Memory) {
-            this.memoryObject = memoryObject
-            titleTV.text = memoryObject.title
-            memoryTV.text = memoryObject.memory
+            binding.memoryTitle.text = memoryObject.title
+            binding.memoryText.text = memoryObject.memory
         }
 
         override fun onItemSelected() {
-            itemView.setBackgroundResource(R.drawable.border_rounded_background)
+            binding.root.setBackgroundResource(R.drawable.border_rounded_background)
         }
 
         override fun onItemClear() {
-            itemView.setBackgroundColor(0)
+            binding.root.setBackgroundColor(0)
         }
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemoryViewHolder {
-
         return MemoryViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.memory_item, parent, false)
+            MemoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -57,7 +50,7 @@ class RecyclerViewAdapter(
         holder.setDataOfMemory(
             memoryObject = memoriesList[position]
         )
-        holder.itemView.setOnClickListener {
+        holder.binding.root.setOnClickListener {
             val intent = Intent(
                 holder.itemView.context,
                 EditMemoryActivity::class.java
@@ -66,11 +59,9 @@ class RecyclerViewAdapter(
             intent.putExtra("title", memoriesList[position].title)
             intent.putExtra("content", memoriesList[position].memory)
             intent.putExtra("isSharing", memoriesList[position].isSharing)
-            holder.itemView.context.startActivity(intent)
+            holder.binding.root.context.startActivity(intent)
         }
-        holder.itemView.setOnLongClickListener { view ->
-            true
-        }
+        holder.itemView.setOnLongClickListener { true }
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
