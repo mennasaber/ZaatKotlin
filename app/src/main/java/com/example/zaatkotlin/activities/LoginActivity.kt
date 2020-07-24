@@ -63,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
         callbackManager = CallbackManager.Factory.create()
         val facebookButton: LoginButton = findViewById(R.id.facebookSignInButton)
         var user: User
-        facebookButton.setReadPermissions("email", "public_profile")
+        facebookButton.setPermissions("email", "public_profile")
         facebookButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult?) {
                 val request =

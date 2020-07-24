@@ -5,69 +5,58 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.zaatkotlin.R
-import com.example.zaatkotlin.adapters.ProfileAdapter
+import com.example.zaatkotlin.adapters.ProfileViewPagerAdapter
 import com.example.zaatkotlin.databinding.ActivityProfileBinding
 import com.example.zaatkotlin.databinding.LayoutTopProfileToolbarBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.layout_profile_tabs.view.*
+import kotlinx.android.synthetic.main.layout_top_profile.view.*
 
 
 class ProfileActivity : AppCompatActivity(), View.OnClickListener {
     private val viewModel: ProfileViewModel by viewModels()
     private lateinit var binding: ActivityProfileBinding
     private lateinit var toolbarBinding: LayoutTopProfileToolbarBinding
-    private lateinit var followingAdapter: ProfileAdapter
-    private lateinit var followersAdapter: ProfileAdapter
+    private lateinit var profileViewPagerAdapter: ProfileViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         toolbarBinding = LayoutTopProfileToolbarBinding.bind(binding.root)
         setContentView(binding.root)
         initWidget()
-        initLists()
+        //initLists()
     }
 
-    private fun initLists() {
-        viewModel.getFollowing().observe(this, Observer { querySnapShot ->
-            if (querySnapShot != null) {
-                for (document in querySnapShot) {
-                    getUser(document["followingId"] as String, 1)
-                }
-            }
-        })
-        viewModel.getFollowers().observe(this, Observer { querySnapShot ->
-            if (querySnapShot != null) {
-                for (document in querySnapShot) {
-                    getUser(document["followerId"] as String, 0)
-                }
-            }
+    /* private fun initLists() {
+         viewModel.getFollowing().observe(this, Observer { querySnapShot ->
+             if (querySnapShot != null) {
+                 for (document in querySnapShot) {
+                     getUser(document["followingId"] as String, 1)
+                 }
+             }
+         })
+         viewModel.getFollowers().observe(this, Observer { querySnapShot ->
+             if (querySnapShot != null) {
+                 for (document in querySnapShot) {
+                     getUser(document["followerId"] as String, 0)
+                 }
+             }
 
-        })
-    }
+         })
+     }*/
 
     private fun initWidget() {
-        followersAdapter = ProfileAdapter(viewModel.followersList)
-        followingAdapter = ProfileAdapter(viewModel.followingList)
-
-        binding.profileRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        binding.followerB.setOnClickListener(this)
-        binding.followingB.setOnClickListener(this)
-        toolbarBinding.back.setOnClickListener(this)
-
-        getUser(FirebaseAuth.getInstance().uid!!, 2)
-        if (viewModel.index == 1)
-            binding.followingB.callOnClick()
-        else
-            binding.followerB.callOnClick()
+        getUser(FirebaseAuth.getInstance().uid!!)
+        profileViewPagerAdapter = ProfileViewPagerAdapter(supportFragmentManager, 1, this)
+        binding.bottomProfile.profileViewPager.adapter = profileViewPagerAdapter
+        binding.bottomProfile.tab_layout.setupWithViewPager(binding.bottomProfile.profileViewPager)
+        toolbarBinding.back.setOnClickListener { finish() }
     }
 
-    private fun getUser(userID: String, type: Int) {
+    private fun getUser(userID: String) {
         viewModel.getUserData(userID).observe(this, Observer { querySnapShot ->
             if (querySnapShot != null) {
                 for (document in querySnapShot) {
@@ -77,29 +66,31 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
                         username = document["username"] as String,
                         userId = document["userId"] as String
                     )
-                    when (type) {
-                        0 -> if (viewModel.followersList.find { it.userId == userID } == null) {
-                            viewModel.followersList.add(user)
-                        }
-                        1 -> if (viewModel.followingList.find { it.userId == userID } == null) {
-                            viewModel.followingList.add(user)
-                        }
-                        2 -> {
-                            Picasso.get().load(user.photoURL).into(userIV)
-                            usernameTV.text = user.username
-                        }
-                    }
+                    Picasso.get().load(user.photoURL).into(binding.topProfile.userIV)
+                    binding.topProfile.usernameTV.text = user.username
+//                    when (type) {
+//                        0 -> if (viewModel.followersList.find { it.userId == userID } == null) {
+//                            viewModel.followersList.add(user)
+//                        }
+//                        1 -> if (viewModel.followingList.find { it.userId == userID } == null) {
+//                            viewModel.followingList.add(user)
+//                        }
+//                        2 -> {
+//                            Picasso.get().load(user.photoURL).into(binding.topProfile.userIV)
+//                            binding.topProfile.usernameTV.text = user.username
+//                        }
+//                    }
                 }
             }
-            imageVisibility(0)
-            imageVisibility(1)
-            followersAdapter.notifyDataSetChanged()
-            followingAdapter.notifyDataSetChanged()
+            //imageVisibility(0)
+            //imageVisibility(1)
+            //followersAdapter.notifyDataSetChanged()
+            //followingAdapter.notifyDataSetChanged()
         })
     }
 
     override fun onClick(view: View?) {
-        when (view?.id) {
+        /*when (view?.id) {
             R.id.followerB -> {
                 imageVisibility(0)
                 followingB.setBackgroundResource(R.color.colorWhite)
@@ -116,10 +107,10 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.back ->
                 finish()
-        }
+        }*/
     }
 
-    private fun imageVisibility(type: Int) {
+    /*private fun imageVisibility(type: Int) {
         when (type) {
             0 -> {
                 if (viewModel.followersList.isEmpty())
@@ -134,5 +125,5 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
                     binding.connectionIV.visibility = View.GONE
             }
         }
-    }
+    }*/
 }
