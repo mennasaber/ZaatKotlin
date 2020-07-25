@@ -1,34 +1,39 @@
 package com.example.zaatkotlin.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.zaatkotlin.R
 import com.example.zaatkotlin.adapters.ProfileAdapter
 import com.example.zaatkotlin.databinding.FragmentFollowersBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.layout_top_profile.view.*
 
 class FollowersFragment : Fragment() {
     private lateinit var binding: FragmentFollowersBinding
     val viewModel: ProfileViewModel by viewModels()
+    private lateinit var followersAdapter: ProfileAdapter
+    private val TAG = "FollowersFragment"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFollowersBinding.inflate(inflater, container, false)
+        Log.d(TAG, "onCreateView: ")
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initWidget()
         binding.Progress.visibility = View.VISIBLE
         binding.followersRecyclerView.visibility = View.VISIBLE
         getFollowers()
-        return binding.root
     }
 
     private fun getFollowers() {
@@ -40,13 +45,12 @@ class FollowersFragment : Fragment() {
             }
             binding.Progress.visibility = View.INVISIBLE
             binding.followersRecyclerView.visibility = View.VISIBLE
-            initWidget()
         })
     }
 
     private fun initWidget() {
         binding.followersRecyclerView.layoutManager = LinearLayoutManager(context)
-        val followersAdapter = ProfileAdapter(viewModel.followersList)
+        followersAdapter = ProfileAdapter(viewModel.followersList)
         binding.followersRecyclerView.adapter = followersAdapter
     }
 
@@ -62,6 +66,7 @@ class FollowersFragment : Fragment() {
                     )
                     if (viewModel.followersList.find { it.userId == userID } == null)
                         viewModel.followersList.add(user)
+                    followersAdapter.notifyDataSetChanged()
                 }
             }
         })

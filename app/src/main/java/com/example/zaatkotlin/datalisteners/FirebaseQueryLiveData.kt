@@ -3,7 +3,6 @@ package com.example.zaatkotlin.datalisteners
 
 import androidx.lifecycle.LiveData
 import com.google.firebase.firestore.*
-import com.google.firebase.ktx.Firebase
 
 
 class FirebaseQueryLiveData(var query: Query) : LiveData<QuerySnapshot>() {

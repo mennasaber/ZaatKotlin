@@ -9,13 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.zaatkotlin.R
-import com.example.zaatkotlin.adapters.OtherProfileAdapter
 import com.example.zaatkotlin.adapters.ProfileMemoriesAdapter
 import com.example.zaatkotlin.databinding.FragmentMemoriesBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
-import com.example.zaatkotlin.viewmodels.OtherProfileViewModel
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -23,15 +20,21 @@ class MemoriesFragment : Fragment() {
     private lateinit var binding: FragmentMemoriesBinding
     val viewModel: ProfileViewModel by viewModels()
     lateinit var user: User
-    lateinit var memoriesAdapter: ProfileMemoriesAdapter
+    private lateinit var memoriesAdapter: ProfileMemoriesAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMemoriesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.Progress.visibility = View.VISIBLE
+        binding.memoriesRecyclerView.visibility = View.VISIBLE
         getUser(FirebaseAuth.getInstance().uid!!)
         getMemories()
-        return binding.root
     }
 
     private fun getMemories() {
@@ -60,6 +63,8 @@ class MemoriesFragment : Fragment() {
                 }
                 viewModel.memoriesList.sortByDescending { it.timestamp }
             }
+            binding.Progress.visibility = View.INVISIBLE
+            binding.memoriesRecyclerView.visibility = View.VISIBLE
         })
     }
 

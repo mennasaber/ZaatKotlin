@@ -26,7 +26,7 @@ class WorldAdapter(
     val viewModel: WorldViewModel?
 ) :
     RecyclerView.Adapter<WorldAdapter.WorldViewHolder>() {
-    lateinit var api: APIService
+    private lateinit var api: APIService
 
     class WorldViewHolder(val binding: WorldItemBinding) : RecyclerView.ViewHolder(binding.root)
 

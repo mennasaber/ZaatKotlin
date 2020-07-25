@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso
 
 class SearchAdapter(
     var usersList: ArrayList<User>,
-    var followList: MutableMap<String, Boolean>,
+    private var followList: MutableMap<String, Boolean>,
     private var viewModel: SearchViewModel
 ) :
     RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {

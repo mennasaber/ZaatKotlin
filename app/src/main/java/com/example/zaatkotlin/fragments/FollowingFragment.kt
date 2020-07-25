@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.zaatkotlin.R
 import com.example.zaatkotlin.adapters.ProfileAdapter
-import com.example.zaatkotlin.databinding.FragmentFollowersBinding
 import com.example.zaatkotlin.databinding.FragmentFollowingBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
@@ -18,15 +16,21 @@ import com.example.zaatkotlin.viewmodels.ProfileViewModel
 class FollowingFragment : Fragment() {
     private lateinit var binding: FragmentFollowingBinding
     val viewModel: ProfileViewModel by viewModels()
+    private lateinit var followingAdapter: ProfileAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFollowingBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initWidget()
         binding.Progress.visibility = View.VISIBLE
         binding.followingRecyclerView.visibility = View.INVISIBLE
         getFollowers()
-        return binding.root
     }
 
     private fun getFollowers() {
@@ -38,13 +42,12 @@ class FollowingFragment : Fragment() {
             }
             binding.Progress.visibility = View.INVISIBLE
             binding.followingRecyclerView.visibility = View.VISIBLE
-            initWidget()
         })
     }
 
     private fun initWidget() {
         binding.followingRecyclerView.layoutManager = LinearLayoutManager(context)
-        val followingAdapter = ProfileAdapter(viewModel.followingList)
+        followingAdapter = ProfileAdapter(viewModel.followingList)
         binding.followingRecyclerView.adapter = followingAdapter
     }
 
@@ -60,6 +63,7 @@ class FollowingFragment : Fragment() {
                     )
                     if (viewModel.followingList.find { it.userId == userID } == null)
                         viewModel.followingList.add(user)
+                    followingAdapter.notifyDataSetChanged()
                 }
             }
         })

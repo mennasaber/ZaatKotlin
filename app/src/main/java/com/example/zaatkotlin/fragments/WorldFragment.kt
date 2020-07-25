@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 class ChatFragment : Fragment() {
     private lateinit var binding: FragmentWorldBinding
     private val viewModel: WorldViewModel by viewModels()
-    lateinit var worldAdapter: WorldAdapter
+    private lateinit var worldAdapter: WorldAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

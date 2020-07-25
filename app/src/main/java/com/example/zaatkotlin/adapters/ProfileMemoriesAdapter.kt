@@ -10,7 +10,6 @@ import com.example.zaatkotlin.activities.MemoryActivity
 import com.example.zaatkotlin.databinding.WorldItemBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
-import com.example.zaatkotlin.viewmodels.OtherProfileViewModel
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
 import com.squareup.picasso.Picasso
 

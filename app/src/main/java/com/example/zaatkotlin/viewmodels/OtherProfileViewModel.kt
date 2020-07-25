@@ -13,7 +13,6 @@ import com.google.firebase.ktx.Firebase
 
 class OtherProfileViewModel : ViewModel() {
     var isFollow: Boolean = true
-    var followingList = ArrayList<User>()
     var memoriesList = ArrayList<Memory>()
     val reactMap = hashMapOf<String, Boolean>()
     val userID = FirebaseAuth.getInstance().uid!!

@@ -7,9 +7,9 @@ import com.example.zaatkotlin.interfaces.ItemTouchHelperViewHolder
 
 class SimpleItemTouchHelperCallback(private val itemTouchHelperAdapter: ItemTouchHelperAdapter) :
     ItemTouchHelper.Callback() {
-    var fromPosition: Int = -2
-    var toPosition: Int = 0
-    var startMovementIndex = -1
+    private var fromPosition: Int = -2
+    private var toPosition: Int = 0
+    private var startMovementIndex = -1
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,

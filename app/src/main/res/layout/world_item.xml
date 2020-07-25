@@ -94,8 +94,8 @@
                 android:drawableStart="@drawable/ic_love_dark"
                 android:drawableLeft="@drawable/ic_love"
                 android:textColor="@color/colorDeepOrange"
-                android:textSize="12dp"
-                app:layout_constraintEnd_toStartOf="@+id/commentsCount"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@+id/commentsCountTV"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/memoryTV"
@@ -167,7 +167,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:textColor="@color/colorDeepOrange"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/memoryTV" />
 
@@ -176,9 +176,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="TextView"
+                tools:text="5 Comments"
                 android:textColor="@color/colorDeepOrange"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toStartOf="@+id/sharesCount"
                 app:layout_constraintTop_toBottomOf="@+id/memoryTV" />
 
