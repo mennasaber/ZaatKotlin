@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.zaatkotlin.datalisteners.FirebaseQueryLiveData
 import com.example.zaatkotlin.models.Comment
+import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
@@ -11,6 +12,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class MemoryViewModel : ViewModel() {
+    lateinit var memory: Memory
+    lateinit var user: User
     val userID = FirebaseAuth.getInstance().uid!!
     var commentsList = ArrayList<Comment>()
     var usersList = ArrayList<User>()

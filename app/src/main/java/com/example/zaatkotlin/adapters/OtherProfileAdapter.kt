@@ -2,6 +2,7 @@ package com.example.zaatkotlin.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,15 +11,23 @@ import com.example.zaatkotlin.activities.MemoryActivity
 import com.example.zaatkotlin.databinding.WorldItemBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
+import com.example.zaatkotlin.sendNotifications.*
 import com.example.zaatkotlin.viewmodels.OtherProfileViewModel
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
+import retrofit2.Call
+import retrofit2.Callback
 
 class OtherProfileAdapter(
     private val memoriesList: ArrayList<Memory>,
     val usersList: ArrayList<User>,
-    val viewModel: OtherProfileViewModel?
+    val viewModel: OtherProfileViewModel?,
+    val username: String
 ) :
     RecyclerView.Adapter<OtherProfileAdapter.WorldViewHolder>() {
+    private lateinit var api: APIService
+
     class WorldViewHolder(val binding: WorldItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorldViewHolder {
@@ -100,9 +109,53 @@ class OtherProfileAdapter(
                         0,
                         0
                     )
+                    val message =
+                        "$username reacted love on your memory"
+                    sendNotification(
+                        message,
+                        memoriesList[position].memoryID,
+                        ownerMemoryID = memoriesList[position].uID
+                    )
                 }
             }
         }
+    }
+
+    private fun sendNotification(
+        message: String,
+        memoryID: String,
+        ownerMemoryID: String
+    ) {
+        api =
+            Client.getClient(url = "https://fcm.googleapis.com/").create(APIService::class.java)
+        Firebase.firestore.collection("Token").document(ownerMemoryID).get().addOnSuccessListener {
+            val usertoken = it.data?.get("token") as String
+            send(usertoken, "ZAAT", message, memoryID, ownerMemoryID)
+        }
+    }
+
+    private fun send(
+        usertoken: String,
+        s: String,
+        message: String,
+        memoryID: String,
+        ownerMemoryID: String
+    ) {
+        val data =
+            Data(Title = s, Message = message, MemoryID = memoryID, OwnerMemoryID = ownerMemoryID)
+        val notificationSender = NotificationSender(data = data, to = usertoken)
+        api.sendNotification(notificationSender).enqueue(object : Callback<Response> {
+            override fun onFailure(call: Call<Response>?, t: Throwable?) {
+                Log.d("TAG", "onFailure: ")
+            }
+
+            override fun onResponse(
+                call: Call<Response>?,
+                response: retrofit2.Response<Response>?
+            ) {
+            }
+
+        })
     }
 
     private fun goToMemory(

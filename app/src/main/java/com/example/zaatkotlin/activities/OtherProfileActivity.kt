@@ -57,7 +57,8 @@ class OtherProfileActivity : AppCompatActivity() {
             OtherProfileAdapter(
                 memoriesList = viewModel.memoriesList,
                 usersList = usersList,
-                viewModel = viewModel
+                viewModel = viewModel,
+                username = username
             )
         binding.profileRecyclerView.adapter = profileAdapter
         binding.profileRecyclerView.layoutManager = LinearLayoutManager(this)

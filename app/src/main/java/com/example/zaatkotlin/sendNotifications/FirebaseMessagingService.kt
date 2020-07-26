@@ -11,6 +11,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.activities.MainActivity
+import com.example.zaatkotlin.activities.MemoryActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -25,17 +27,22 @@ class FirebaseMessagingService :
         val title = remoteMessage.data["Title"] as String
         val message = remoteMessage.data["Message"] as String
         val memoryID = remoteMessage.data["MemoryID"] as String
+        val ownerMemoryID = remoteMessage.data["OwnerMemoryID"] as String
+
 //        val title = remoteMessage.notification?.title
 //        val message = remoteMessage.notification?.body
         Log.d("TAG", "onMessageReceived:$title $message $memoryID")
-        sendNotification(
-            title = title
-            , message = message
-        )
+        if (ownerMemoryID == FirebaseAuth.getInstance().uid)
+            sendNotification(
+                title = title
+                , message = message, memoryID = memoryID
+            )
     }
 
-    private fun sendNotification(title: String, message: String) {
-        val intent = Intent(this, MainActivity::class.java)
+    private fun sendNotification(title: String, message: String, memoryID: String) {
+        val intent = Intent(this, MemoryActivity::class.java)
+        intent.putExtra("memoryID", memoryID)
+        intent.putExtra("userID", FirebaseAuth.getInstance().uid)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* Request code */, intent,

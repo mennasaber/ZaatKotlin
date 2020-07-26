@@ -86,12 +86,6 @@ class WorldAdapter(
                         0
                     )
                 } else {
-                    val message = "${viewModel.currentUser.username} reacted love on your memory"
-                    sendNotification(
-                        memoriesList[position].uID,
-                        message,
-                        memoriesList[position].memoryID
-                    )
                     viewModel.makeReact(memoriesList[position].memoryID)
                     viewModel.memoriesList[position].lovesCount++
                     holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
@@ -99,6 +93,13 @@ class WorldAdapter(
                         0,
                         0,
                         0
+                    )
+                    val message =
+                        "${viewModel.currentUser.username} reacted love on your memory"
+                    sendNotification(
+                        message,
+                        memoriesList[position].memoryID,
+                        ownerMemoryID = memoriesList[position].uID
                     )
                 }
             }
@@ -137,17 +138,28 @@ class WorldAdapter(
         }
     }
 
-    private fun sendNotification(uID: String, message: String, memoryID: String) {
+    private fun sendNotification(
+        message: String,
+        memoryID: String,
+        ownerMemoryID: String
+    ) {
         api =
             Client.getClient(url = "https://fcm.googleapis.com/").create(APIService::class.java)
-        Firebase.firestore.collection("Token").document(uID).get().addOnSuccessListener {
+        Firebase.firestore.collection("Token").document(ownerMemoryID).get().addOnSuccessListener {
             val usertoken = it.data?.get("token") as String
-            send(usertoken, "ZAAT", message, memoryID)
+            send(usertoken, "ZAAT", message, memoryID, ownerMemoryID)
         }
     }
 
-    private fun send(usertoken: String, s: String, message: String, memoryID: String) {
-        val data = Data(Title = s, Message = message, MemoryID = memoryID)
+    private fun send(
+        usertoken: String,
+        s: String,
+        message: String,
+        memoryID: String,
+        ownerMemoryID: String
+    ) {
+        val data =
+            Data(Title = s, Message = message, MemoryID = memoryID, OwnerMemoryID = ownerMemoryID)
         val notificationSender = NotificationSender(data = data, to = usertoken)
         api.sendNotification(notificationSender).enqueue(object : Callback<Response> {
             override fun onFailure(call: Call<Response>?, t: Throwable?) {
@@ -182,14 +194,15 @@ class WorldAdapter(
         react: Boolean?
     ) {
         val intent = Intent(context, MemoryActivity::class.java)
-        intent.putExtra("userObject", user)
-        intent.putExtra("isFollow", follow)
-        intent.putExtra("isReact", react)
-        intent.putExtra("memoryObject", memory)
+//        intent.putExtra("userObject", user)
+//        intent.putExtra("isFollow", follow)
+//        intent.putExtra("isReact", react)
+//        intent.putExtra("memoryObject", memory)
         //Parcel not work for those fields so we pass them
         intent.putExtra("memoryID", memory.memoryID)
-        intent.putExtra("lovesCount", memory.lovesCount)
-        intent.putExtra("commentsCount", memory.commentsCount)
+        intent.putExtra("userID", user.userId)
+//        intent.putExtra("lovesCount", memory.lovesCount)
+//        intent.putExtra("commentsCount", memory.commentsCount)
         context.startActivity(intent)
     }
 }
