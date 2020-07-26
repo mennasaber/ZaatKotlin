@@ -8,9 +8,9 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:background="@color/colorWhite"
         android:minHeight="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/colorDeepOrange"
         app:tabMaxWidth="0dp"
@@ -20,7 +20,7 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/profileViewPager"
+        android:layout_below="@id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tab_layout" />
+        android:layout_height="wrap_content" />
 </RelativeLayout>

@@ -66,7 +66,7 @@ class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
 
     /** ------------------------------ Convert date to specific format 'extension function' ---------**/
     private fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
-        val formatter = SimpleDateFormat(format, locale)
+        val formatter = SimpleDateFormat(format, Locale.US)
         return formatter.format(this)
     }
 

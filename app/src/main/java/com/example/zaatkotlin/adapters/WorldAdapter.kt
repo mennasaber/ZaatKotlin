@@ -5,8 +5,12 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.activities.LovesActivity
 import com.example.zaatkotlin.activities.MemoryActivity
 import com.example.zaatkotlin.activities.OtherProfileActivity
 import com.example.zaatkotlin.databinding.WorldItemBinding
@@ -125,6 +129,11 @@ class WorldAdapter(
                     react = viewModel.reactMap[memoriesList[position].memoryID]
                 )
             }
+        }
+        holder.binding.lovesTV.setOnClickListener {
+            val intent = Intent(holder.binding.root.context, LovesActivity::class.java)
+            intent.putExtra("memoryID", memoriesList[position].memoryID)
+            holder.binding.root.context.startActivity(intent)
         }
     }
 

@@ -14,6 +14,8 @@ import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.WorldViewModel
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ChatFragment : Fragment() {
     private lateinit var binding: FragmentWorldBinding
@@ -58,6 +60,7 @@ class ChatFragment : Fragment() {
                         isSharing = document.data["sharing"] as Boolean,
                         date = document.data["date"] as String
                     )
+                    memory.date = convertDate(memory.date)
                     memory.timestamp = document.data["timestamp"] as Long
                     memory.memoryID = document.data["memoryID"] as String
                     memory.lovesCount = document.data["lovesCount"] as Long
@@ -73,6 +76,13 @@ class ChatFragment : Fragment() {
                 worldAdapter.notifyDataSetChanged()
             }
         })
+    }
+
+    private fun convertDate(date: String): String {
+        val formatterDefault = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.US)
+        val dateTemp = formatterDefault.parse(date)
+        val formatter = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.getDefault())
+        return formatter.format(dateTemp!!);
     }
 
     private fun isReact(memoryID: String) {

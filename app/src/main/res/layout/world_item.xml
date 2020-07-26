@@ -105,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:background="@color/colorWhite"
+                android:background="@drawable/rounded_deep_background"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -115,15 +115,13 @@
                     android:id="@+id/loveButton"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
-                    android:layout_marginEnd="1dp"
-                    android:layout_marginRight="1dp"
                     android:layout_weight="1"
-                    android:background="@color/colorDeepOrange"
+                    android:background="@android:color/transparent"
                     android:drawableStart="@drawable/ic_dislove"
                     android:drawableLeft="@drawable/ic_dislove"
-                    android:paddingStart="10dp"
-                    android:paddingLeft="10dp"
-                    android:paddingEnd="10dp"
+                    android:gravity="center"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
                     android:text="@string/love"
                     android:textColor="@color/colorWhite" />
 
@@ -134,28 +132,28 @@
                     android:layout_marginEnd="1dp"
                     android:layout_marginRight="1dp"
                     android:layout_weight="1"
-                    android:background="@color/colorDeepOrange"
+                    android:background="@android:color/transparent"
                     android:drawableStart="@drawable/ic_comment_24"
                     android:drawableLeft="@drawable/ic_comment_24"
-                    android:paddingStart="10dp"
-                    android:paddingLeft="10dp"
-                    android:paddingEnd="10dp"
+                    android:gravity="center"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
                     android:text="@string/comment"
                     android:textColor="@color/colorWhite" />
 
-                <Button
-                    android:id="@+id/shareButton"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorDeepOrange"
-                    android:drawableStart="@drawable/ic_share"
-                    android:drawableLeft="@drawable/ic_share"
-                    android:paddingStart="10dp"
-                    android:paddingLeft="10dp"
-                    android:paddingEnd="10dp"
-                    android:text="@string/share"
-                    android:textColor="@color/colorWhite" />
+                <!--                <Button-->
+                <!--                    android:id="@+id/shareButton"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="30dp"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:background="@color/colorDeepOrange"-->
+                <!--                    android:drawableStart="@drawable/ic_share"-->
+                <!--                    android:drawableLeft="@drawable/ic_share"-->
+                <!--                    android:paddingStart="10dp"-->
+                <!--                    android:paddingLeft="10dp"-->
+                <!--                    android:paddingEnd="10dp"-->
+                <!--                    android:text="@string/share"-->
+                <!--                    android:textColor="@color/colorWhite" />-->
 
             </LinearLayout>
 
@@ -176,11 +174,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                tools:text="5 Comments"
                 android:textColor="@color/colorDeepOrange"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toStartOf="@+id/sharesCount"
-                app:layout_constraintTop_toBottomOf="@+id/memoryTV" />
+                app:layout_constraintTop_toBottomOf="@+id/memoryTV"
+                tools:text="5 Comments" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
