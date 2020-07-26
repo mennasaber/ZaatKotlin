@@ -67,6 +67,7 @@ class SearchAdapter(
         intent.putExtra("userID", usersList[position].userId)
         intent.putExtra("username", usersList[position].username)
         intent.putExtra("photoURL", usersList[position].photoURL)
+        intent.putExtra("currentUsername", viewModel.currentUser.username)
         context.startActivity(intent)
     }
 

@@ -13,6 +13,7 @@ import com.example.zaatkotlin.adapters.ProfileAdapter
 import com.example.zaatkotlin.databinding.FragmentFollowersBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class FollowersFragment : Fragment() {
     private lateinit var binding: FragmentFollowersBinding
@@ -24,6 +25,7 @@ class FollowersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFollowersBinding.inflate(inflater, container, false)
+        getUser(FirebaseAuth.getInstance().uid!!, 1)
         Log.d(TAG, "onCreateView: ")
         return binding.root
     }
@@ -50,11 +52,11 @@ class FollowersFragment : Fragment() {
 
     private fun initWidget() {
         binding.followersRecyclerView.layoutManager = LinearLayoutManager(context)
-        followersAdapter = ProfileAdapter(viewModel.followersList)
+        followersAdapter = ProfileAdapter(viewModel.followersList, viewModel)
         binding.followersRecyclerView.adapter = followersAdapter
     }
 
-    private fun getUser(userID: String) {
+    private fun getUser(userID: String, type: Int = 0) {
         viewModel.getUserData(userID).observe(viewLifecycleOwner, Observer { querySnapShot ->
             if (querySnapShot != null) {
                 for (document in querySnapShot) {
@@ -64,9 +66,12 @@ class FollowersFragment : Fragment() {
                         username = document["username"] as String,
                         userId = document["userId"] as String
                     )
-                    if (viewModel.followersList.find { it.userId == userID } == null)
-                        viewModel.followersList.add(user)
-                    followersAdapter.notifyDataSetChanged()
+                    if (type == 0) {
+                        if (viewModel.followersList.find { it.userId == userID } == null)
+                            viewModel.followersList.add(user)
+                        followersAdapter.notifyDataSetChanged()
+                    } else
+                        viewModel.currentUser = user
                 }
             }
         })

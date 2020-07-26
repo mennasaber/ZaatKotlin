@@ -20,8 +20,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
                     android:layout_toEndOf="@id/back"
                     android:layout_toRightOf="@id/back"
                     android:text="@string/memory"
@@ -35,8 +33,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
                     android:src="@drawable/ic_back" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>

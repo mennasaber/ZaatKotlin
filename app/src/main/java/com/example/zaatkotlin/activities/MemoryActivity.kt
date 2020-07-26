@@ -14,6 +14,7 @@ import com.example.zaatkotlin.databinding.ActivityMemoryBinding
 import com.example.zaatkotlin.databinding.LayoutTopMemoryToolbarBinding
 import com.example.zaatkotlin.models.Comment
 import com.example.zaatkotlin.models.Memory
+import com.example.zaatkotlin.models.Notification
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.sendNotifications.*
 import com.example.zaatkotlin.viewmodels.MemoryViewModel
@@ -51,6 +52,7 @@ class MemoryActivity : AppCompatActivity() {
         userID = intent.getStringExtra("userID")!!
         getMemory(memoryID)
         getUser(userID, 1)
+        getUser(FirebaseAuth.getInstance().uid!!, 2)
         //isFollow = intent.getStringExtra("isFollow")!!
         // reset when phone rotate ,should solve it
         //viewModel.isReact = intent.getBooleanExtra("isReact", false)
@@ -144,14 +146,18 @@ class MemoryActivity : AppCompatActivity() {
                         username = document["username"] as String,
                         userId = document["userId"] as String
                     )
-                    if (type == 0) {
-                        viewModel.usersList.add(user)
-                        commentsAdapter.notifyDataSetChanged()
-                    } else {
-                        viewModel.user = user
-                        setupReact()
-                        setupMemory()
-                        getComments()
+                    when (type) {
+                        0 -> {
+                            viewModel.usersList.add(user)
+                            commentsAdapter.notifyDataSetChanged()
+                        }
+                        1 -> {
+                            viewModel.user = user
+                            setupReact()
+                            setupMemory()
+                            getComments()
+                        }
+                        else -> viewModel.currentUser = user
                     }
                 }
             }
@@ -160,7 +166,11 @@ class MemoryActivity : AppCompatActivity() {
 
     private fun initWidget() {
         commentsAdapter =
-            CommentsAdapter(commentsList = viewModel.commentsList, usersList = viewModel.usersList)
+            CommentsAdapter(
+                commentsList = viewModel.commentsList,
+                usersList = viewModel.usersList,
+                viewModel = viewModel
+            )
 
         binding.commentsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.commentsRecyclerView.adapter = commentsAdapter
@@ -178,12 +188,20 @@ class MemoryActivity : AppCompatActivity() {
                 )
                 viewModel.makeComment(comment)
                 binding.commentInclude.commentET.text.clear()
-                if (viewModel.user.userId != viewModel.memory.uID) {
-                    val message = "${viewModel.user.username} commented on your memory"
+                if (viewModel.currentUser.userId != viewModel.memory.uID) {
+                    val message = "${viewModel.currentUser.username} commented on your memory"
                     sendNotification(
                         message = message,
                         memoryID = viewModel.memory.memoryID,
                         ownerMemoryID = viewModel.memory.uID
+                    )
+                    saveNotificationToDB(
+                        Notification(
+                            userID = viewModel.memory.uID,
+                            senderID = viewModel.currentUser.userId!!,
+                            message = message,
+                            seen = false
+                        )
                     )
                 }
             }
@@ -203,7 +221,6 @@ class MemoryActivity : AppCompatActivity() {
         binding.memoryInclude.loveButton.setOnClickListener {
             if (viewModel.isReact) {
                 viewModel.deleteReact(memoryID = viewModel.memory.memoryID)
-                viewModel.isReact = false
                 binding.memoryInclude.loveButton.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.ic_dislove,
                     0,
@@ -212,24 +229,40 @@ class MemoryActivity : AppCompatActivity() {
                 )
             } else {
                 viewModel.makeReact(memoryID = viewModel.memory.memoryID)
-                if (viewModel.user.userId != viewModel.memory.uID) {
-                    val message = "${viewModel.user.username} reacted love on your memory"
-                    sendNotification(
-                        message = message,
-                        memoryID = viewModel.memory.memoryID,
-                        ownerMemoryID = viewModel.memory.uID
-                    )
-                }
-                viewModel.isReact = true
                 binding.memoryInclude.loveButton.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.ic_love,
                     0,
                     0,
                     0
                 )
+                if (viewModel.currentUser.userId != viewModel.memory.uID) {
+                    val message = "${viewModel.currentUser.username} reacted love on your memory"
+                    sendNotification(
+                        message = message,
+                        memoryID = viewModel.memory.memoryID,
+                        ownerMemoryID = viewModel.memory.uID
+                    )
+                    saveNotificationToDB(
+                        Notification(
+                            userID = viewModel.memory.uID,
+                            senderID = viewModel.currentUser.userId!!,
+                            message = message,
+                            seen = false
+                        )
+                    )
+                }
             }
         }
+        binding.memoryInclude.lovesTV.setOnClickListener {
+            val intent = Intent(binding.root.context, LovesActivity::class.java)
+            intent.putExtra("memoryID", memoryID)
+            binding.root.context.startActivity(intent)
+        }
         toolbarBinding.back.setOnClickListener { finish() }
+    }
+
+    private fun saveNotificationToDB(notification: Notification) {
+        viewModel.addNotification(notification)
     }
 
     /** ------------------------------ Convert date to specific format 'extension function' ---------**/
@@ -296,6 +329,7 @@ class MemoryActivity : AppCompatActivity() {
         intent.putExtra("userID", user.userId)
         intent.putExtra("username", user.username)
         intent.putExtra("photoURL", user.photoURL)
+        intent.putExtra("currentUsername", viewModel.currentUser.username)
         context.startActivity(intent)
     }
 }

@@ -32,8 +32,25 @@ class SearchFragment : Fragment() {
     ): View? {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         toolbarbinding = LayoutTopSearchToolbarBinding.bind(binding.root)
+        getCurrentUser(FirebaseAuth.getInstance().uid!!)
         initWidget()
         return binding.root
+    }
+
+    private fun getCurrentUser(userID: String) {
+        viewModel.getUser(userID = userID).observe(viewLifecycleOwner, Observer { querySnapShot ->
+            if (querySnapShot != null) {
+                for (document in querySnapShot) {
+                    val user = User(
+                        email = document["email"] as String,
+                        photoURL = document["photoURL"] as String,
+                        username = document["username"] as String,
+                        userId = document["userId"] as String
+                    )
+                    viewModel.currentUser = user
+                }
+            }
+        })
     }
 
     private fun initWidget() {

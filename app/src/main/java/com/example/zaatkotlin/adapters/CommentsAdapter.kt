@@ -10,12 +10,13 @@ import com.example.zaatkotlin.activities.ProfileActivity
 import com.example.zaatkotlin.databinding.CommentItemBinding
 import com.example.zaatkotlin.models.Comment
 import com.example.zaatkotlin.models.User
+import com.example.zaatkotlin.viewmodels.MemoryViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
 class CommentsAdapter(
     var commentsList: ArrayList<Comment>,
-    var usersList: ArrayList<User>
+    var usersList: ArrayList<User>, val viewModel: MemoryViewModel
 ) : RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>() {
     class CommentsViewHolder(val binding: CommentItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -67,6 +68,7 @@ class CommentsAdapter(
             intent.putExtra("userID", user.userId)
             intent.putExtra("username", user.username)
             intent.putExtra("photoURL", user.photoURL)
+            intent.putExtra("currentUsername", viewModel.currentUser.username)
             context.startActivity(intent)
         } else {
             context.startActivity(Intent(context, ProfileActivity::class.java))

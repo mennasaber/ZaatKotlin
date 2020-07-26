@@ -15,6 +15,7 @@ class ProfileViewModel : ViewModel() {
     var followingList = ArrayList<User>()
     var memoriesList = ArrayList<Memory>()
     val reactMap = hashMapOf<String, Boolean>()
+    lateinit var currentUser: User
 
     lateinit var user: User
     private val userID = FirebaseAuth.getInstance().uid.toString()

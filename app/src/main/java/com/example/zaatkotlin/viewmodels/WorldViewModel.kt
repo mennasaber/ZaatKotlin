@@ -1,9 +1,11 @@
 package com.example.zaatkotlin.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.zaatkotlin.datalisteners.FirebaseQueryLiveData
 import com.example.zaatkotlin.models.Memory
+import com.example.zaatkotlin.models.Notification
 import com.example.zaatkotlin.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
@@ -71,5 +73,12 @@ class WorldViewModel : ViewModel() {
             Firebase.firestore.collection("Memories").document(memoryID)
                 .update("lovesCount", it["lovesCount"] as Long - 1)
         }
+    }
+
+    fun addNotification(notification: Notification) {
+        Log.d("TAG", "addNotification: ")
+        val db = Firebase.firestore
+        notification.notificationID = db.collection("Notifications").document().id
+        db.collection("Notifications").document(notification.notificationID).set(notification)
     }
 }

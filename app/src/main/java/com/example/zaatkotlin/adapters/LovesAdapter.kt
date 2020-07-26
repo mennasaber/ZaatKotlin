@@ -6,14 +6,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.activities.OtherProfileActivity
+import com.example.zaatkotlin.activities.ProfileActivity
 import com.example.zaatkotlin.databinding.ProfileItemBinding
 import com.example.zaatkotlin.models.User
-import com.example.zaatkotlin.viewmodels.ProfileViewModel
+import com.example.zaatkotlin.viewmodels.LovesViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
-class ProfileAdapter(
-    private val usersList: ArrayList<User>, val viewModel: ProfileViewModel
-) : RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder>() {
+class LovesAdapter(
+    private val usersList: ArrayList<User>, val viewModel: LovesViewModel
+) : RecyclerView.Adapter<LovesAdapter.ProfileViewHolder>() {
 
     class ProfileViewHolder(val binding: ProfileItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -51,11 +53,16 @@ class ProfileAdapter(
         context: Context,
         position: Int
     ) {
-        val intent = Intent(context, OtherProfileActivity::class.java)
-        intent.putExtra("userID", usersList[position].userId)
-        intent.putExtra("username", usersList[position].username)
-        intent.putExtra("photoURL", usersList[position].photoURL)
-        intent.putExtra("currentUsername", viewModel.currentUser.username)
-        context.startActivity(intent)
+        val user = usersList[position]
+        if (user.userId != FirebaseAuth.getInstance().uid) {
+            val intent = Intent(context, OtherProfileActivity::class.java)
+            intent.putExtra("userID", user.userId)
+            intent.putExtra("username", user.username)
+            intent.putExtra("photoURL", user.photoURL)
+            intent.putExtra("currentUsername", viewModel.currentUser.username)
+            context.startActivity(intent)
+        } else {
+            context.startActivity(Intent(context, ProfileActivity::class.java))
+        }
     }
 }

@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.activities.LovesActivity
 import com.example.zaatkotlin.activities.MemoryActivity
+import com.example.zaatkotlin.activities.OtherProfileActivity
 import com.example.zaatkotlin.databinding.WorldItemBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
@@ -53,10 +55,7 @@ class ProfileMemoriesAdapter(
                     goToMemory(
                         context = this.itemView.context,
                         user = user,
-                        memory = memoriesList[position],
-                        follow = "Unfollow",
-                        //react = false
-                        react = viewModel.reactMap[memoriesList[position].memoryID]
+                        memory = memoriesList[position]
                     )
                 }
             }
@@ -102,24 +101,21 @@ class ProfileMemoriesAdapter(
                 }
             }
         }
+        holder.binding.lovesTV.setOnClickListener {
+            val intent = Intent(holder.binding.root.context, LovesActivity::class.java)
+            intent.putExtra("memoryID", memoriesList[position].memoryID)
+            holder.binding.root.context.startActivity(intent)
+        }
     }
 
     private fun goToMemory(
         context: Context,
         user: User,
-        memory: Memory,
-        follow: String,
-        react: Boolean?
+        memory: Memory
     ) {
         val intent = Intent(context, MemoryActivity::class.java)
-        intent.putExtra("userObject", user)
-        intent.putExtra("isFollow", follow)
-        intent.putExtra("isReact", react)
-        intent.putExtra("memoryObject", memory)
-        //Parcel not work for those fields so we pass them
         intent.putExtra("memoryID", memory.memoryID)
-        intent.putExtra("lovesCount", memory.lovesCount)
-        intent.putExtra("commentsCount", memory.commentsCount)
+        intent.putExtra("userID", user.userId)
         context.startActivity(intent)
     }
 }

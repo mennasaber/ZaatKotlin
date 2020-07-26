@@ -7,16 +7,18 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.adapters.LovesAdapter
 import com.example.zaatkotlin.adapters.ProfileAdapter
 import com.example.zaatkotlin.databinding.ActivityLovesBinding
 import com.example.zaatkotlin.databinding.LayoutTopLovesToolbarBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.LovesViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class LovesActivity : AppCompatActivity() {
     lateinit var binding: ActivityLovesBinding
     lateinit var toolbarBinding: LayoutTopLovesToolbarBinding
-    lateinit var usersAdapter: ProfileAdapter
+    lateinit var usersAdapter: LovesAdapter
     val viewModel: LovesViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,13 +30,14 @@ class LovesActivity : AppCompatActivity() {
         binding.lovesRecyclerView.visibility = View.INVISIBLE
 
         val memoryID = intent.getStringExtra("memoryID")
+        getUser(FirebaseAuth.getInstance().uid!!, 1)
         getUsersLove(memoryID!!)
         initWidget()
 
     }
 
     private fun initWidget() {
-        usersAdapter = ProfileAdapter(usersList = viewModel.usersList)
+        usersAdapter = LovesAdapter(usersList = viewModel.usersList, viewModel = viewModel)
         binding.lovesRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.lovesRecyclerView.adapter = usersAdapter
         toolbarBinding.back.setOnClickListener { finish() }
@@ -52,7 +55,7 @@ class LovesActivity : AppCompatActivity() {
         })
     }
 
-    private fun getUser(userID: String) {
+    private fun getUser(userID: String, type: Int = 0) {
         viewModel.getUserData(userID).observe(this, Observer { querySnapShot ->
             if (querySnapShot != null) {
                 for (document in querySnapShot) {
@@ -62,9 +65,12 @@ class LovesActivity : AppCompatActivity() {
                         username = document["username"] as String,
                         userId = document["userId"] as String
                     )
-                    if (viewModel.usersList.find { it.userId == user.userId } == null)
-                        viewModel.usersList.add(user)
-                    usersAdapter.notifyDataSetChanged()
+                    if (type == 0) {
+                        if (viewModel.usersList.find { it.userId == user.userId } == null)
+                            viewModel.usersList.add(user)
+                        usersAdapter.notifyDataSetChanged()
+                    } else
+                        viewModel.currentUser = user
                 }
             }
         })

@@ -82,7 +82,7 @@ class ChatFragment : Fragment() {
         val formatterDefault = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.US)
         val dateTemp = formatterDefault.parse(date)
         val formatter = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.getDefault())
-        return formatter.format(dateTemp!!);
+        return formatter.format(dateTemp!!)
     }
 
     private fun isReact(memoryID: String) {

@@ -10,6 +10,7 @@ import com.google.firebase.ktx.Firebase
 
 class LovesViewModel : ViewModel() {
     val usersList = ArrayList<User>()
+    lateinit var currentUser: User
     fun getUsersLoveMemory(memoryID: String): LiveData<QuerySnapshot> {
         val query = Firebase.firestore.collection("Reacts").whereEqualTo("memoryID", memoryID)
         return FirebaseQueryLiveData(query)

@@ -15,6 +15,7 @@ import com.example.zaatkotlin.activities.MemoryActivity
 import com.example.zaatkotlin.activities.OtherProfileActivity
 import com.example.zaatkotlin.databinding.WorldItemBinding
 import com.example.zaatkotlin.models.Memory
+import com.example.zaatkotlin.models.Notification
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.sendNotifications.*
 import com.example.zaatkotlin.viewmodels.WorldViewModel
@@ -101,6 +102,14 @@ class WorldAdapter(
                         memoriesList[position].memoryID,
                         ownerMemoryID = memoriesList[position].uID
                     )
+                    saveNotificationToDB(
+                        Notification(
+                            userID = memoriesList[position].uID,
+                            senderID = viewModel.userID,
+                            message = message,
+                            seen = false
+                        )
+                    )
                 }
             }
         }
@@ -125,9 +134,7 @@ class WorldAdapter(
                 goToMemory(
                     context = holder.itemView.context,
                     user = user,
-                    memory = memoriesList[position],
-                    follow = "Unfollow",
-                    react = viewModel.reactMap[memoriesList[position].memoryID]
+                    memory = memoriesList[position]
                 )
             }
         }
@@ -175,6 +182,10 @@ class WorldAdapter(
         })
     }
 
+    private fun saveNotificationToDB(notification: Notification) {
+        viewModel?.addNotification(notification)
+    }
+
     private fun goToProfile(
         context: Context,
         user: User
@@ -183,26 +194,18 @@ class WorldAdapter(
         intent.putExtra("userID", user.userId)
         intent.putExtra("username", user.username)
         intent.putExtra("photoURL", user.photoURL)
+        intent.putExtra("currentUsername", viewModel?.currentUser?.username)
         context.startActivity(intent)
     }
 
     private fun goToMemory(
         context: Context,
         user: User,
-        memory: Memory,
-        follow: String,
-        react: Boolean?
+        memory: Memory
     ) {
         val intent = Intent(context, MemoryActivity::class.java)
-//        intent.putExtra("userObject", user)
-//        intent.putExtra("isFollow", follow)
-//        intent.putExtra("isReact", react)
-//        intent.putExtra("memoryObject", memory)
-        //Parcel not work for those fields so we pass them
         intent.putExtra("memoryID", memory.memoryID)
         intent.putExtra("userID", user.userId)
-//        intent.putExtra("lovesCount", memory.lovesCount)
-//        intent.putExtra("commentsCount", memory.commentsCount)
         context.startActivity(intent)
     }
 }

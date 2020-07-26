@@ -22,6 +22,7 @@ class OtherProfileActivity : AppCompatActivity() {
     private lateinit var toolbarBinding: LayoutTopProfileToolbarBinding
     private val usersList = ArrayList<User>()
     private lateinit var userID: String
+    private lateinit var currentUsername: String
     private lateinit var username: String
     private lateinit var photoURL: String
 
@@ -34,6 +35,8 @@ class OtherProfileActivity : AppCompatActivity() {
         userID = intent.getStringExtra("userID")!!
         username = intent.getStringExtra("username")!!
         photoURL = intent.getStringExtra("photoURL")!!
+        currentUsername = intent.getStringExtra("currentUsername")!!
+
         setupFollow()
         initWidget()
         getMemories(userID)
@@ -58,7 +61,7 @@ class OtherProfileActivity : AppCompatActivity() {
                 memoriesList = viewModel.memoriesList,
                 usersList = usersList,
                 viewModel = viewModel,
-                username = username
+                username = currentUsername
             )
         binding.profileRecyclerView.adapter = profileAdapter
         binding.profileRecyclerView.layoutManager = LinearLayoutManager(this)

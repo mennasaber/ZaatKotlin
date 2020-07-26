@@ -1,10 +1,12 @@
 package com.example.zaatkotlin.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.zaatkotlin.datalisteners.FirebaseQueryLiveData
 import com.example.zaatkotlin.models.Comment
 import com.example.zaatkotlin.models.Memory
+import com.example.zaatkotlin.models.Notification
 import com.example.zaatkotlin.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
@@ -14,6 +16,7 @@ import com.google.firebase.ktx.Firebase
 class MemoryViewModel : ViewModel() {
     lateinit var memory: Memory
     lateinit var user: User
+    lateinit var currentUser: User
     val userID = FirebaseAuth.getInstance().uid!!
     var commentsList = ArrayList<Comment>()
     var usersList = ArrayList<User>()
@@ -47,6 +50,7 @@ class MemoryViewModel : ViewModel() {
     }
 
     fun makeReact(memoryID: String) {
+        isReact = true
         val dataMap = hashMapOf<String, String>()
         dataMap["userID"] = userID
         dataMap["memoryID"] = memoryID
@@ -55,6 +59,7 @@ class MemoryViewModel : ViewModel() {
     }
 
     fun deleteReact(memoryID: String) {
+        isReact = false
         Firebase.firestore.collection("Reacts").document(userID + memoryID).delete()
         decreaseReactsCount(memoryID)
     }
@@ -79,5 +84,11 @@ class MemoryViewModel : ViewModel() {
         }
     }
 
+    fun addNotification(notification: Notification) {
+        Log.d("TAG", "addNotification: ")
+        val db = Firebase.firestore
+        notification.notificationID = db.collection("Notifications").document().id
+        db.collection("Notifications").document(notification.notificationID).set(notification)
+    }
 
 }

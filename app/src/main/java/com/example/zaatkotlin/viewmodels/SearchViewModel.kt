@@ -11,6 +11,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class SearchViewModel : ViewModel() {
+    lateinit var currentUser: User
     var followList = mutableMapOf<String, Boolean>()
     var usersList = ArrayList<User>()
 
@@ -49,4 +50,10 @@ class SearchViewModel : ViewModel() {
     fun getUserFollowing(): LiveData<QuerySnapshot> {
         return followingLiveData
     }
+
+    fun getUser(userID: String): LiveData<QuerySnapshot> {
+        val query = Firebase.firestore.collection("Users").whereEqualTo("userId", userID)
+        return FirebaseQueryLiveData(query = query)
+    }
+
 }
