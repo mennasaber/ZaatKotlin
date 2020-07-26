@@ -9,13 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.zaatkotlin.R
 import com.example.zaatkotlin.adapters.NotificationsAdapter
 import com.example.zaatkotlin.databinding.FragmentNotificationBinding
 import com.example.zaatkotlin.models.Notification
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.NotificationsViewModel
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NotificationFragment : Fragment() {
     lateinit var binding: FragmentNotificationBinding
@@ -35,7 +36,7 @@ class NotificationFragment : Fragment() {
 
     private fun initWidget() {
         notificationsAdapter = NotificationsAdapter(
-            viewModel = viewModel
+            viewModel = viewModel, context = context
         )
         binding.notificationRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.notificationRecyclerView.adapter = notificationsAdapter
@@ -52,8 +53,10 @@ class NotificationFragment : Fragment() {
                             message = document["message"] as String,
                             seen = document["seen"] as Boolean,
                             memoryID = document["memoryID"] as String,
-                            date = document["date"] as String
+                            date = document["date"] as String,
+                            type = document["type"] as Long
                         )
+                        notification.date = convertDate(notification.date)
                         notification.notificationID = document["notificationID"] as String
                         val tempNoti =
                             viewModel.notificationsList.find { it.notificationID == notification.notificationID }
@@ -70,6 +73,13 @@ class NotificationFragment : Fragment() {
                 binding.Progress.visibility = View.GONE
                 binding.notificationRecyclerView.visibility = View.VISIBLE
             })
+    }
+
+    private fun convertDate(date: String): String {
+        val formatterDefault = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.US)
+        val dateTemp = formatterDefault.parse(date)
+        val formatter = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.getDefault())
+        return formatter.format(dateTemp!!)
     }
 
     private fun getUser(senderID: String, notificationID: String) {

@@ -14,6 +14,9 @@ import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.OtherProfileViewModel
 import com.squareup.picasso.Picasso
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class OtherProfileActivity : AppCompatActivity() {
     val viewModel: OtherProfileViewModel by viewModels()
@@ -90,6 +93,7 @@ class OtherProfileActivity : AppCompatActivity() {
                         isSharing = document.data["sharing"] as Boolean,
                         date = document.data["date"] as String
                     )
+                    memory.date = convertDate(memory.date)
                     memory.timestamp = document.data["timestamp"] as Long
                     memory.memoryID = document.data["memoryID"] as String
                     memory.lovesCount = document.data["lovesCount"] as Long
@@ -106,6 +110,13 @@ class OtherProfileActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    private fun convertDate(date: String): String {
+        val formatterDefault = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.US)
+        val dateTemp = formatterDefault.parse(date)
+        val formatter = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.getDefault())
+        return formatter.format(dateTemp!!)
     }
 
     private fun isReact(memoryID: String) {

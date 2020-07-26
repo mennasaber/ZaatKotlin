@@ -2,13 +2,16 @@ package com.example.zaatkotlin.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.activities.LovesActivity
 import com.example.zaatkotlin.activities.MemoryActivity
-import com.example.zaatkotlin.activities.OtherProfileActivity
 import com.example.zaatkotlin.databinding.WorldItemBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
@@ -21,6 +24,8 @@ class ProfileMemoriesAdapter(
     val viewModel: ProfileViewModel?
 ) :
     RecyclerView.Adapter<ProfileMemoriesAdapter.WorldViewHolder>() {
+    private val TAG = "ProfileMemoriesAdapter"
+
     class WorldViewHolder(val binding: WorldItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorldViewHolder {
@@ -38,6 +43,9 @@ class ProfileMemoriesAdapter(
     }
 
     override fun onBindViewHolder(holder: WorldViewHolder, position: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Log.d(TAG, "onBindViewHolder: ${holder.binding.root.layoutDirection}")
+        }
         holder.apply {
             binding.usernameTV.text = user.username
             Picasso.get().load(user.photoURL).into(binding.userIV)
@@ -63,41 +71,50 @@ class ProfileMemoriesAdapter(
 
         if (viewModel != null && viewModel.reactMap.size == memoriesList.size)
             if (viewModel.reactMap[memoriesList[position].memoryID]!!) {
-                holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_love,
-                    0,
-                    0,
-                    0
-                )
-            } else {
-                holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_dislove,
-                    0,
-                    0,
-                    0
-                )
-            }
-
-        holder.binding.loveButton.setOnClickListener {
-            if (viewModel != null) {
-                if (viewModel.reactMap[memoriesList[position].memoryID]!!) {
-                    viewModel.deleteReact(memoriesList[position].memoryID)
-                    viewModel.memoriesList[position].lovesCount--
-                    holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_dislove,
-                        0,
-                        0,
-                        0
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    holder.binding.loveButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        ContextCompat.getDrawable(
+                            holder.binding.root.context,
+                            R.drawable.ic_love
+                        ),
+                        null,
+                        null,
+                        null
                     )
                 } else {
-                    viewModel.makeReact(memoriesList[position].memoryID)
-                    viewModel.memoriesList[position].lovesCount++
                     holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_love,
                         0,
                         0,
                         0
                     )
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    holder.binding.loveButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        ContextCompat.getDrawable(
+                            holder.binding.root.context,
+                            R.drawable.ic_dislove
+                        ),
+                        null,
+                        null,
+                        null
+                    )
+                } else {
+                    holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_dislove,
+                        0,
+                        0,
+                        0
+                    )
+                }
+            }
+        holder.binding.loveButton.setOnClickListener {
+            if (viewModel != null) {
+                if (viewModel.reactMap[memoriesList[position].memoryID]!!) {
+                    viewModel.deleteReact(memoriesList[position].memoryID)
+                } else {
+                    viewModel.makeReact(memoriesList[position].memoryID)
                 }
             }
         }
@@ -107,6 +124,14 @@ class ProfileMemoriesAdapter(
             holder.binding.root.context.startActivity(intent)
         }
     }
+
+    private fun isLayoutRtl(view: View): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            view.layoutDirection == View.LAYOUT_DIRECTION_RTL
+        } else {
+            false
+        }
+
 
     private fun goToMemory(
         context: Context,

@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso
 class SearchAdapter(
     var usersList: ArrayList<User>,
     private var followList: MutableMap<String, Boolean>,
-    private var viewModel: SearchViewModel
+    private var viewModel: SearchViewModel, val context: Context?
 ) :
     RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
@@ -43,7 +43,7 @@ class SearchAdapter(
 
 
         holder.binding.followB.setOnClickListener {
-            if (holder.binding.followB.text.toString() == "Follow") {
+            if (holder.binding.followB.text.toString() == context?.resources?.getString(R.string.follow)) {
                 holder.binding.followB.setText(R.string.unfollow)
                 viewModel.makeFollow(usersList[position].userId!!)
             } else {

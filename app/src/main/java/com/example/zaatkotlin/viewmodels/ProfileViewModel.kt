@@ -49,18 +49,20 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun makeReact(memoryID: String) {
-        reactMap[memoryID] = true
         val dataMap = hashMapOf<String, String>()
         dataMap["userID"] = userID
         dataMap["memoryID"] = memoryID
         Firebase.firestore.collection("Reacts").document(userID + memoryID).set(dataMap)
-        increaseReactsCount(memoryID)
+            .addOnSuccessListener {
+                increaseReactsCount(memoryID)
+            }
     }
 
     fun deleteReact(memoryID: String) {
-        reactMap[memoryID] = false
         Firebase.firestore.collection("Reacts").document(userID + memoryID).delete()
-        decreaseReactsCount(memoryID)
+            .addOnSuccessListener {
+                decreaseReactsCount(memoryID)
+            }
     }
 
     fun getUserReact(memoryID: String): LiveData<QuerySnapshot> {
@@ -70,16 +72,22 @@ class ProfileViewModel : ViewModel() {
     }
 
     private fun increaseReactsCount(memoryID: String) {
-        Firebase.firestore.collection("Memories").document(memoryID).get().addOnSuccessListener {
-            Firebase.firestore.collection("Memories").document(memoryID)
-                .update("lovesCount", it["lovesCount"] as Long + 1)
-        }
+        Firebase.firestore.collection("Reacts").whereEqualTo("memoryID", memoryID).get()
+            .addOnSuccessListener {
+                Firebase.firestore.collection("Memories").document(memoryID)
+                    .update("lovesCount", it.count()).addOnCompleteListener {
+                        reactMap[memoryID] = true
+                    }
+            }
     }
 
     private fun decreaseReactsCount(memoryID: String) {
-        Firebase.firestore.collection("Memories").document(memoryID).get().addOnSuccessListener {
-            Firebase.firestore.collection("Memories").document(memoryID)
-                .update("lovesCount", it["lovesCount"] as Long - 1)
-        }
+        Firebase.firestore.collection("Reacts").whereEqualTo("memoryID", memoryID).get()
+            .addOnSuccessListener {
+                Firebase.firestore.collection("Memories").document(memoryID)
+                    .update("lovesCount", it.count()).addOnCompleteListener {
+                        reactMap[memoryID] = false
+                    }
+            }
     }
 }

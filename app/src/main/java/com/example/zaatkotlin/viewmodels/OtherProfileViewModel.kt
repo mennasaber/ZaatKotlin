@@ -7,7 +7,6 @@ import com.example.zaatkotlin.datalisteners.FirebaseQueryLiveData
 import com.example.zaatkotlin.models.Follow
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.Notification
-import com.example.zaatkotlin.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -51,20 +50,21 @@ class OtherProfileViewModel : ViewModel() {
         query.document(id).set(follow)
     }
 
-
     fun makeReact(memoryID: String) {
-        reactMap[memoryID] = true
         val dataMap = hashMapOf<String, String>()
         dataMap["userID"] = userID
         dataMap["memoryID"] = memoryID
         Firebase.firestore.collection("Reacts").document(userID + memoryID).set(dataMap)
-        increaseReactsCount(memoryID)
+            .addOnSuccessListener {
+                increaseReactsCount(memoryID)
+            }
     }
 
     fun deleteReact(memoryID: String) {
-        reactMap[memoryID] = false
         Firebase.firestore.collection("Reacts").document(userID + memoryID).delete()
-        decreaseReactsCount(memoryID)
+            .addOnSuccessListener {
+                decreaseReactsCount(memoryID)
+            }
     }
 
     fun getUserReact(memoryID: String): LiveData<QuerySnapshot> {
@@ -74,17 +74,23 @@ class OtherProfileViewModel : ViewModel() {
     }
 
     private fun increaseReactsCount(memoryID: String) {
-        Firebase.firestore.collection("Memories").document(memoryID).get().addOnSuccessListener {
-            Firebase.firestore.collection("Memories").document(memoryID)
-                .update("lovesCount", it["lovesCount"] as Long + 1)
-        }
+        Firebase.firestore.collection("Reacts").whereEqualTo("memoryID", memoryID).get()
+            .addOnSuccessListener {
+                Firebase.firestore.collection("Memories").document(memoryID)
+                    .update("lovesCount", it.count()).addOnCompleteListener {
+                        reactMap[memoryID] = true
+                    }
+            }
     }
 
     private fun decreaseReactsCount(memoryID: String) {
-        Firebase.firestore.collection("Memories").document(memoryID).get().addOnSuccessListener {
-            Firebase.firestore.collection("Memories").document(memoryID)
-                .update("lovesCount", it["lovesCount"] as Long - 1)
-        }
+        Firebase.firestore.collection("Reacts").whereEqualTo("memoryID", memoryID).get()
+            .addOnSuccessListener {
+                Firebase.firestore.collection("Memories").document(memoryID)
+                    .update("lovesCount", it.count()).addOnCompleteListener {
+                        reactMap[memoryID] = false
+                    }
+            }
     }
 
     fun addNotification(notification: Notification) {

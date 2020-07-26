@@ -35,4 +35,10 @@
     <string name="write_comment">Write your comment</string>
     <string name="people_reacted">People who reacted</string>
     <string name="notifications">Notifications</string>
+
+    <string name="notification_comment">commented on your memory</string>
+    <string name="notification_react">reacted love on your memory</string>
+
+    <string name="memory_deleted">Memory deleted</string>
+    <string name="edit_profile">Edit profile</string>
 </resources>

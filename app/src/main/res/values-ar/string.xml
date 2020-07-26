@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ذات</string>
+    <string name="home">الرئيسيه</string>
+    <string name="chat">المحادثه</string>
+    <string name="notification">الإشعارات</string>
+    <string name="setting">الإعدادات</string>
+    <string name="facebook_app_id">242135343534022</string>
+    <string name="fb_login_protocol_scheme">fb242135343534022</string>
+    <string name="or">أو</string>
+    <string name="title">العنوان</string>
+    <string name="your_memory">ذكرتك</string>
+    <string name="add_memory">إضافه ذكرى</string>
+    <string name="memories">الذكريات</string>
+    <string name="edit_memory">تعديل الذكرى</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="follow">تابع</string>
+    <string name="searchHint">إسم المستخدم</string>
+    <string name="unfollow">الغاء المتابعه</string>
+    <string name="make_public">جعل الذكرى عامه</string>
+    <string name="search">البحث</string>
+    <string name="world">العالم</string>
+    <string name="like">أعجبني</string>
+    <string name="comment">تعليق</string>
+    <string name="comments">تعليقا</string>
+    <string name="share">مشاركه</string>
+    <string name="love">أحببته</string>
+    <string name="profile">الصفحه الشخصيه</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="following">يتابع</string>
+    <string name="followers">المتابعين</string>
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="memory">الذكرى</string>
+    <string name="write_comment">اكتب تعليقك</string>
+    <string name="people_reacted">الاشخاص الذين تفاعلوا</string>
+    <string name="notifications">الاشعارات</string>
+
+    <string name="notification_comment">قام بالتعليق على ذكرى خاصه بك</string>
+    <string name="notification_react">قام بالتفاعل مع ذكرى خاصه بك </string>
+    <string name="memory_deleted">تم مسح الذكرى</string>
+    <string name="edit_profile">تعديل الصفحه الشخصيه</string>
+</resources>

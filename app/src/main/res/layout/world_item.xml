@@ -41,6 +41,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
+                android:gravity="start"
                 android:textColor="@color/colorDeepOrange"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -58,6 +59,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
+                android:gravity="start"
                 android:textColor="@color/colorDeepOrange"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +84,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userIV"
-                tools:text="TextView" />
+                tools:text="textView" />
 
             <TextView
                 android:id="@+id/lovesTV"
@@ -117,24 +119,20 @@
                     android:layout_height="30dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:drawableStart="@drawable/ic_dislove"
-                    android:drawableLeft="@drawable/ic_dislove"
+                    tools:drawableStart="@drawable/ic_dislove"
                     android:gravity="center"
                     android:paddingStart="30dp"
                     android:paddingEnd="30dp"
                     android:text="@string/love"
                     android:textColor="@color/colorWhite" />
-
                 <Button
                     android:id="@+id/commentButton"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_marginEnd="1dp"
-                    android:layout_marginRight="1dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:drawableStart="@drawable/ic_comment_24"
-                    android:drawableLeft="@drawable/ic_comment_24"
+                    android:drawableStart="@drawable/ic_comment"
                     android:gravity="center"
                     android:paddingStart="30dp"
                     android:paddingEnd="30dp"

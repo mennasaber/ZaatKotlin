@@ -65,8 +65,25 @@
             android:layout_marginLeft="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="4dp"
             android:text="@string/make_public"
             android:textColor="@color/colorDeepOrange" />
+
+        <TextView
+            android:id="@+id/memoryDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:layout_below="@id/makeMemoryPublicCB"
+            android:layout_alignParentEnd="true"
+            tools:text="TextView"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_alignParentRight="true" />
+
     </RelativeLayout>
 </RelativeLayout>

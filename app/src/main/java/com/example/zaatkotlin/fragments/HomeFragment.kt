@@ -19,6 +19,9 @@ import com.example.zaatkotlin.databinding.FragmentHomeBinding
 import com.example.zaatkotlin.databinding.LayoutTopHomeToolbarBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.viewmodels.MemoriesViewModel
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
@@ -70,6 +73,7 @@ class HomeFragment : Fragment() {
                             isSharing = document.data["sharing"] as Boolean,
                             date = document.data["date"] as String
                         )
+                        memory.date = convertDate(memory.date)
                         memory.timestamp = document.data["timestamp"] as Long
                         memory.memoryID = document.data["memoryID"] as String
                         memoriesList.add(memory)
@@ -80,6 +84,13 @@ class HomeFragment : Fragment() {
                 binding.Progress.visibility = View.INVISIBLE
                 binding.memoriesRecyclerView.visibility = View.VISIBLE
             })
+    }
+
+    private fun convertDate(date: String): String {
+        val formatterDefault = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.US)
+        val dateTemp = formatterDefault.parse(date)
+        val formatter = SimpleDateFormat("K:mm a dd-MM-yyyy", Locale.getDefault())
+        return formatter.format(dateTemp!!)
     }
 
     private fun imageVisibility(view: View?) {

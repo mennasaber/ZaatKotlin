@@ -67,9 +67,12 @@ class ChatFragment : Fragment() {
                     memory.memoryID = document.data["memoryID"] as String
                     memory.lovesCount = document.data["lovesCount"] as Long
                     memory.commentsCount = document.data["commentsCount"] as Long
-
-                    if (viewModel.memoriesList.find { it.memoryID == memory.memoryID } == null
-                        && viewModel.followingList.find { it.userId == memory.uID } != null) {
+                    val memoryTemp = viewModel.memoriesList.find { it.memoryID == memory.memoryID }
+                    val userTemp = viewModel.followingList.find { it.userId == memory.uID }
+                    if (memoryTemp != null && userTemp != null) {
+                        viewModel.memoriesList.remove(memoryTemp)
+                    }
+                    if (userTemp != null) {
                         viewModel.memoriesList.add(memory)
                         isReact(memory.memoryID)
                     }
@@ -118,6 +121,8 @@ class ChatFragment : Fragment() {
                     getUser(document["followingId"] as String)
                 }
             }
+            binding.Progress.visibility = View.INVISIBLE
+            binding.memoriesRecyclerView.visibility = View.VISIBLE
         })
     }
 

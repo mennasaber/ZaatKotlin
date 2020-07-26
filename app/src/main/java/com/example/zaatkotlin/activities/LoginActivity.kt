@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.databinding.ActivityLoginBinding
@@ -67,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
         facebookButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult?) {
                 val request =
-                    GraphRequest.newMeRequest(result?.accessToken) { `object`: JSONObject?, response: GraphResponse? ->
+                    GraphRequest.newMeRequest(result?.accessToken) { `object`: JSONObject?, _: GraphResponse? ->
                         user = User(
                             `object`?.get("email").toString(),
                             "https://graph.facebook.com/" + `object`?.get("id")
@@ -110,7 +109,6 @@ class LoginActivity : AppCompatActivity() {
             //lambda functions >> add on complete listener take one parameter 'task' and return 'unit'
             firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "done", Toast.LENGTH_SHORT).show()
                     user.userId = firebaseAuth.uid
                     saveUserDataInFireStore(user)
                     login()
@@ -172,7 +170,6 @@ class LoginActivity : AppCompatActivity() {
 
                 firebaseSignInWithGoogle(account.idToken!!, account)
             } catch (e: ApiException) {
-                Toast.makeText(this, "error", Toast.LENGTH_SHORT).show()
             }
         }
 

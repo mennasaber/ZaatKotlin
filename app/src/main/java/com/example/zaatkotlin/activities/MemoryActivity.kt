@@ -55,7 +55,11 @@ class MemoryActivity : AppCompatActivity() {
     private fun getMemory(memoryID: String) {
         viewModel.getMemory(memoryID).observe(this, Observer { querySnapShot ->
             if (querySnapShot.isEmpty) {
-                Toast.makeText(this, "Memory deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.memory_deleted),
+                    Toast.LENGTH_SHORT
+                ).show()
                 finish()
             }
             if (querySnapShot != null) {
@@ -96,14 +100,14 @@ class MemoryActivity : AppCompatActivity() {
         viewModel.getUserReact(memoryID = viewModel.memory.memoryID).observe(this, Observer {
             viewModel.isReact = it.size() != 0
             if (viewModel.isReact) {
-                binding.memoryInclude.loveButton.setCompoundDrawablesWithIntrinsicBounds(
+                binding.memoryInclude.loveButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.ic_love,
                     0,
                     0,
                     0
                 )
             } else {
-                binding.memoryInclude.loveButton.setCompoundDrawablesWithIntrinsicBounds(
+                binding.memoryInclude.loveButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.ic_dislove,
                     0,
                     0,
@@ -123,6 +127,7 @@ class MemoryActivity : AppCompatActivity() {
                         val comment = document.toObject(Comment::class.java)
                         if (viewModel.usersList.find { it.userId == comment.userID } == null)
                             getUser(comment.userID)
+                        comment.date = convertDate(comment.date)
                         viewModel.commentsList.add(comment)
                     }
                     viewModel.commentsList.sortBy { it.timestamp }
@@ -183,9 +188,9 @@ class MemoryActivity : AppCompatActivity() {
                 viewModel.makeComment(comment)
                 binding.commentInclude.commentET.text.clear()
                 if (viewModel.currentUser.userId != viewModel.memory.uID) {
-                    val message = "${viewModel.currentUser.username} commented on your memory"
+                    val message = viewModel.currentUser.username
                     sendNotification(
-                        message = message,
+                        message = message!!,
                         memoryID = viewModel.memory.memoryID,
                         ownerMemoryID = viewModel.memory.uID
                     )
@@ -196,7 +201,8 @@ class MemoryActivity : AppCompatActivity() {
                             message = message,
                             seen = false,
                             memoryID = memoryID,
-                            date = date.toString("K:mm a dd-MM-yyyy")
+                            date = date.toString("K:mm a dd-MM-yyyy"),
+                            type = 1
                         )
                     )
                 }
@@ -217,24 +223,12 @@ class MemoryActivity : AppCompatActivity() {
         binding.memoryInclude.loveButton.setOnClickListener {
             if (viewModel.isReact) {
                 viewModel.deleteReact(memoryID = viewModel.memory.memoryID)
-                binding.memoryInclude.loveButton.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_dislove,
-                    0,
-                    0,
-                    0
-                )
             } else {
                 viewModel.makeReact(memoryID = viewModel.memory.memoryID)
-                binding.memoryInclude.loveButton.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_love,
-                    0,
-                    0,
-                    0
-                )
                 if (viewModel.currentUser.userId != viewModel.memory.uID) {
-                    val message = "${viewModel.currentUser.username} reacted love on your memory"
+                    val message = viewModel.currentUser.username
                     sendNotification(
-                        message = message,
+                        message = message!!,
                         memoryID = viewModel.memory.memoryID,
                         ownerMemoryID = viewModel.memory.uID
                     )
@@ -245,7 +239,8 @@ class MemoryActivity : AppCompatActivity() {
                             message = message,
                             seen = false,
                             memoryID = memoryID,
-                            date = getCurrentDateTime().toString("K:mm a dd-MM-yyyy")
+                            date = getCurrentDateTime().toString("K:mm a dd-MM-yyyy"),
+                            type = 0
                         )
                     )
                 }

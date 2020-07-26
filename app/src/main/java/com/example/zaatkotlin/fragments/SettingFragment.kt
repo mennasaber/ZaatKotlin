@@ -1,6 +1,8 @@
 package com.example.zaatkotlin.fragments
 
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import com.example.zaatkotlin.R
 import com.example.zaatkotlin.activities.LoginActivity
 import com.example.zaatkotlin.activities.ProfileActivity
 import com.example.zaatkotlin.databinding.FragmentSettingBinding
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -37,7 +40,12 @@ class SettingFragment : Fragment(), View.OnClickListener {
                 FirebaseAuth.getInstance().signOut()
                 val intent = Intent(view.context, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP and Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(
+                        intent,
+                        ActivityOptions.makeSceneTransitionAnimation(activity).toBundle()
+                    )
+                }
                 activity?.finish()
             }
         }
@@ -49,5 +57,6 @@ class SettingFragment : Fragment(), View.OnClickListener {
             .build()
         val mGoogleSignInClient = view?.context?.let { GoogleSignIn.getClient(it, gso) }
         mGoogleSignInClient?.signOut()
+        LoginManager.getInstance().logOut()
     }
 }

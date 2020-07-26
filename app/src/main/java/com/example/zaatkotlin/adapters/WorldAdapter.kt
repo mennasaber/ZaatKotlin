@@ -63,14 +63,14 @@ class WorldAdapter(
 
         if (viewModel != null && viewModel.reactMap.size == memoriesList.size)
             if (viewModel.reactMap[memoriesList[position].memoryID]!!) {
-                holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
+                holder.binding.loveButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.ic_love,
                     0,
                     0,
                     0
                 )
             } else {
-                holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
+                holder.binding.loveButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.ic_dislove,
                     0,
                     0,
@@ -82,26 +82,11 @@ class WorldAdapter(
             if (viewModel != null) {
                 if (viewModel.reactMap[memoriesList[position].memoryID]!!) {
                     viewModel.deleteReact(memoriesList[position].memoryID)
-                    viewModel.memoriesList[position].lovesCount--
-                    holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_dislove,
-                        0,
-                        0,
-                        0
-                    )
                 } else {
                     viewModel.makeReact(memoriesList[position].memoryID)
-                    viewModel.memoriesList[position].lovesCount++
-                    holder.binding.loveButton.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_love,
-                        0,
-                        0,
-                        0
-                    )
-                    val message =
-                        "${viewModel.currentUser.username} reacted love on your memory"
+                    val message = viewModel.currentUser.username
                     sendNotification(
-                        message,
+                        message!!,
                         memoriesList[position].memoryID,
                         ownerMemoryID = memoriesList[position].uID
                     )
@@ -112,7 +97,8 @@ class WorldAdapter(
                             message = message,
                             seen = false,
                             memoryID = memoriesList[position].memoryID,
-                            date = getCurrentDateTime().toString("K:mm a dd-MM-yyyy")
+                            date = getCurrentDateTime().toString("K:mm a dd-MM-yyyy"),
+                            type = 0
                         )
                     )
                 }

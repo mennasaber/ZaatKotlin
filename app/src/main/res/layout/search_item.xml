@@ -49,6 +49,8 @@
                 android:maxWidth="150dp"
                 android:textColor="@color/colorDeepOrange"
                 android:textSize="18sp"
+                android:gravity="start"
+                android:textDirection="locale"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/followB"

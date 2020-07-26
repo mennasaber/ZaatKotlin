@@ -56,7 +56,7 @@ class SearchFragment : Fragment() {
     private fun initWidget() {
         getFollowing()
         viewModel.usersList.clear()
-        searchAdapter = SearchAdapter(viewModel.usersList, viewModel.followList, viewModel)
+        searchAdapter = SearchAdapter(viewModel.usersList, viewModel.followList, viewModel, context)
         binding.usersRecyclerView.adapter = searchAdapter
         binding.usersRecyclerView.layoutManager = LinearLayoutManager(binding.root.context)
         toolbarbinding.searchImage.setOnClickListener {

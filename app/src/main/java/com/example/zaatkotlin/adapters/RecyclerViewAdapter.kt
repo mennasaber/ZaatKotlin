@@ -24,6 +24,7 @@ class RecyclerViewAdapter(
         fun setDataOfMemory(memoryObject: Memory) {
             binding.memoryTitle.text = memoryObject.title
             binding.memoryText.text = memoryObject.memory
+            binding.memoryDate.text = memoryObject.date
         }
 
         override fun onItemSelected() {
@@ -59,6 +60,7 @@ class RecyclerViewAdapter(
             intent.putExtra("title", memoriesList[position].title)
             intent.putExtra("content", memoriesList[position].memory)
             intent.putExtra("isSharing", memoriesList[position].isSharing)
+            intent.putExtra("date", memoriesList[position].date)
             holder.binding.root.context.startActivity(intent)
         }
         holder.itemView.setOnLongClickListener { true }

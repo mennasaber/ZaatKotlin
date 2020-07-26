@@ -24,14 +24,21 @@ class EditMemoryActivity : AppCompatActivity(), View.OnClickListener {
         memoryID = intent.getStringExtra("memoryID")!!
         val memoryTitle = intent.getStringExtra("title")
         val memoryContent = intent.getStringExtra("content")
+        val memoryDate = intent.getStringExtra("date")
         val memorySharing = intent.getBooleanExtra("isSharing", false)
 
-        initWidget(memoryTitle, memoryContent, memorySharing)
+        initWidget(memoryTitle, memoryContent, memorySharing, memoryDate)
     }
 
-    private fun initWidget(memoryTitle: String?, memoryContent: String?, isSharing: Boolean) {
+    private fun initWidget(
+        memoryTitle: String?,
+        memoryContent: String?,
+        isSharing: Boolean,
+        memoryDate: String?
+    ) {
         memoryTitle?.let { binding.titleET.setText(memoryTitle) }
         memoryContent?.let { binding.memoryET.setText(memoryContent) }
+        memoryDate?.let { binding.memoryDate.text = memoryDate }
         binding.makeMemoryPublicCB.isChecked = isSharing
 
         toolbarBinding.back.setOnClickListener(this)
