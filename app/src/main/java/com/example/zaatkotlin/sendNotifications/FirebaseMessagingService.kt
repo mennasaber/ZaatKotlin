@@ -28,10 +28,6 @@ class FirebaseMessagingService :
         val message = remoteMessage.data["Message"] as String
         val memoryID = remoteMessage.data["MemoryID"] as String
         val ownerMemoryID = remoteMessage.data["OwnerMemoryID"] as String
-
-//        val title = remoteMessage.notification?.title
-//        val message = remoteMessage.notification?.body
-        Log.d("TAG", "onMessageReceived:$title $message $memoryID")
         if (ownerMemoryID == FirebaseAuth.getInstance().uid)
             sendNotification(
                 title = title

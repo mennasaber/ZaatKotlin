@@ -20,6 +20,9 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class OtherProfileAdapter(
     private val memoriesList: ArrayList<Memory>,
@@ -121,7 +124,9 @@ class OtherProfileAdapter(
                             userID = memoriesList[position].uID,
                             senderID = viewModel.userID,
                             message = message,
-                            seen = false
+                            seen = false,
+                            memoryID = memoriesList[position].memoryID,
+                            date = getCurrentDateTime().toString("K:mm a dd-MM-yyyy")
                         )
                     )
                 }
@@ -132,6 +137,17 @@ class OtherProfileAdapter(
             intent.putExtra("memoryID", memoriesList[position].memoryID)
             holder.binding.root.context.startActivity(intent)
         }
+    }
+
+    /** ------------------------------ Convert date to specific format 'extension function' ---------**/
+    private fun Date.toString(format: String, locale: Locale = Locale.US): String {
+        val formatter = SimpleDateFormat(format, locale)
+        return formatter.format(this)
+    }
+
+    /** ------------------------------- Get current date -------------------------**/
+    private fun getCurrentDateTime(): Date {
+        return Calendar.getInstance().time
     }
 
     private fun sendNotification(

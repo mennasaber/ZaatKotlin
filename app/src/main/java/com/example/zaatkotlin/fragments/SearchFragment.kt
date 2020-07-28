@@ -61,7 +61,8 @@ class SearchFragment : Fragment() {
         binding.usersRecyclerView.layoutManager = LinearLayoutManager(binding.root.context)
         toolbarbinding.searchImage.setOnClickListener {
             if (toolbarbinding.searchET.text.toString().trim() != "") {
-                binding.progressLayout.visibility = View.VISIBLE
+                binding.Progress.visibility = View.VISIBLE
+                binding.usersRecyclerView.visibility = View.INVISIBLE
                 getUsers(toolbarbinding.searchET.text.toString().trim())
             }
         }
@@ -109,8 +110,9 @@ class SearchFragment : Fragment() {
                 }
                 searchAdapter.notifyDataSetChanged()
             }
+            binding.Progress.visibility = View.INVISIBLE
+            binding.usersRecyclerView.visibility = View.VISIBLE
         })
-        binding.progressLayout.visibility = View.GONE
     }
 
     private fun isFollowing(userId: String?): Boolean {

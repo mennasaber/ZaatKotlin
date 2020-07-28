@@ -4,25 +4,22 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
+    <ProgressBar
+        android:id="@+id/Progress"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/topToolbar"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="16dp" />
+
     <RelativeLayout
         android:id="@+id/topToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <include layout="@layout/layout_top_search_toolbar" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/progressLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/topToolbar"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
     </RelativeLayout>
 
     <RelativeLayout

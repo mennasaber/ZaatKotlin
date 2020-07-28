@@ -27,6 +27,8 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentWorldBinding.inflate(inflater, container, false)
+        binding.Progress.visibility = View.VISIBLE
+        binding.memoriesRecyclerView.visibility = View.INVISIBLE
         getCurrentUser()
         initWidget()
         getFollowing()
@@ -75,6 +77,8 @@ class ChatFragment : Fragment() {
                 viewModel.memoriesList.sortByDescending { it.timestamp }
                 worldAdapter.notifyDataSetChanged()
             }
+            binding.Progress.visibility = View.INVISIBLE
+            binding.memoriesRecyclerView.visibility = View.VISIBLE
         })
     }
 

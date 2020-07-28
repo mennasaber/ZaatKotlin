@@ -27,7 +27,6 @@ class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
         initWidget()
     }
 
-    /** ------------------------------ initialization ----------------------------**/
     private fun initWidget() {
         binding.titleET.setText(viewModel.title)
         binding.memoryET.setText(viewModel.content)
@@ -45,13 +44,11 @@ class AddMemoryActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    /** ------------------------------ call viewModel function to add the memory ------------------**/
     private fun saveMemoryInFireStore(memoryObject: Memory) {
         viewModel.addMemory(memoryObject)
         finish()
     }
 
-    /** ------------------------------ Set Memory data ---------------------------**/
     private fun initMemoryObject(title: String, memory: String, isSharing: Boolean): Memory {
         val date = getCurrentDateTime()
         val dateInString = date.toString("K:mm a dd-MM-yyyy")

@@ -6,6 +6,16 @@
     android:background="@color/colorPrimary"
     tools:context=".fragments.HomeFragment">
 
+    <ProgressBar
+        android:id="@+id/Progress"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/topToolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="16dp"
+        android:visibility="visible" />
+
     <RelativeLayout
         android:id="@+id/topToolbar"
         android:layout_width="match_parent"
@@ -34,8 +44,8 @@
             android:id="@+id/vector"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:visibility="gone"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_personal_notebook" />
+            android:src="@drawable/ic_personal_notebook"
+            android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>

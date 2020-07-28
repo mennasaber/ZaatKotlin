@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.databinding.ActivityMainBinding
 import com.example.zaatkotlin.databinding.LayoutBottomNavigationViewBinding
@@ -23,8 +25,29 @@ class MainActivity : AppCompatActivity() {
         navigationViewBinding = LayoutBottomNavigationViewBinding.bind(binding.root)
         setContentView(binding.root)
         checkUser()
+        getNotificationsCount()
         initFrameLayout()
         setupBottomNavigationView()
+    }
+
+    private fun getNotificationsCount() {
+        viewModel.getNotificationsCount().observe(this, Observer { querySnapShot ->
+            viewModel.notificationsCount = querySnapShot.count()
+            if (viewModel.notificationsCount != 0) {
+                val badge =
+                    navigationViewBinding.bottomNavViewBar.getOrCreateBadge(R.id.notificationMenu)
+                badge.isVisible = true
+                badge.badgeTextColor = ContextCompat.getColor(this, android.R.color.holo_red_dark)
+                badge.backgroundColor = ContextCompat.getColor(this, android.R.color.white)
+                badge.maxCharacterCount = 99
+                badge.number = viewModel.notificationsCount
+            } else {
+                val badge =
+                    navigationViewBinding.bottomNavViewBar.getOrCreateBadge(R.id.notificationMenu)
+                badge.isVisible = false
+                badge.clearNumber()
+            }
+        })
     }
 
     private fun checkUser() {

@@ -1,18 +1,90 @@
 package com.example.zaatkotlin.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.zaatkotlin.R
+import com.example.zaatkotlin.adapters.NotificationsAdapter
+import com.example.zaatkotlin.databinding.FragmentNotificationBinding
+import com.example.zaatkotlin.models.Notification
+import com.example.zaatkotlin.models.User
+import com.example.zaatkotlin.viewmodels.NotificationsViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class NotificationFragment : Fragment() {
+    lateinit var binding: FragmentNotificationBinding
+    val viewModel: NotificationsViewModel by viewModels()
+    lateinit var notificationsAdapter: NotificationsAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notification, container, false)
+        binding = FragmentNotificationBinding.inflate(inflater, container, false)
+        binding.Progress.visibility = View.VISIBLE
+        binding.notificationRecyclerView.visibility = View.INVISIBLE
+        getNotifications()
+        // initWidget()
+        return binding.root
+    }
+
+    private fun initWidget() {
+        notificationsAdapter = NotificationsAdapter(
+            viewModel = viewModel
+        )
+        binding.notificationRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.notificationRecyclerView.adapter = notificationsAdapter
+    }
+
+    private fun getNotifications() {
+        viewModel.getNotifications(FirebaseAuth.getInstance().uid!!)
+            .observe(viewLifecycleOwner, Observer { querySnapShot ->
+                if (querySnapShot != null) {
+                    for (document in querySnapShot) {
+                        val notification = Notification(
+                            userID = document["userID"] as String,
+                            senderID = document["senderID"] as String,
+                            message = document["message"] as String,
+                            seen = document["seen"] as Boolean,
+                            memoryID = document["memoryID"] as String,
+                            date = document["date"] as String
+                        )
+                        notification.notificationID = document["notificationID"] as String
+                        val tempNoti =
+                            viewModel.notificationsList.find { it.notificationID == notification.notificationID }
+                        if (tempNoti != null) {
+                            viewModel.notificationsList.remove(tempNoti)
+                            Log.d("TAG", "getNotifications: ")
+                        } else {
+                            getUser(notification.senderID, notification.notificationID)
+                        }
+                        viewModel.notificationsList.add(notification)
+                    }
+                    initWidget()
+                }
+                binding.Progress.visibility = View.GONE
+                binding.notificationRecyclerView.visibility = View.VISIBLE
+            })
+    }
+
+    private fun getUser(senderID: String, notificationID: String) {
+        viewModel.getUser(senderID).observe(viewLifecycleOwner, Observer { querySnapShot ->
+            if (querySnapShot != null) {
+                for (document in querySnapShot) {
+                    val user = User(
+                        email = document["email"] as String,
+                        photoURL = document["photoURL"] as String,
+                        username = document["username"] as String,
+                        userId = document["userId"] as String
+                    )
+                    viewModel.usersList[notificationID] = user
+                }
+            }
+        })
     }
 }

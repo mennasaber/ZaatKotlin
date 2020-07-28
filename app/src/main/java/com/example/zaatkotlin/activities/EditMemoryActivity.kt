@@ -29,7 +29,6 @@ class EditMemoryActivity : AppCompatActivity(), View.OnClickListener {
         initWidget(memoryTitle, memoryContent, memorySharing)
     }
 
-    /** ------------------------------ initialization ----------------------------**/
     private fun initWidget(memoryTitle: String?, memoryContent: String?, isSharing: Boolean) {
         memoryTitle?.let { binding.titleET.setText(memoryTitle) }
         memoryContent?.let { binding.memoryET.setText(memoryContent) }
@@ -39,7 +38,6 @@ class EditMemoryActivity : AppCompatActivity(), View.OnClickListener {
         toolbarBinding.saveMemory.setOnClickListener(this)
     }
 
-    /** ------------------------------ setup Click listener ----------------------**/
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.back -> {
@@ -53,13 +51,11 @@ class EditMemoryActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    /** -------------- make sure of memory title or content empty ----------------**/
     private fun isValid(): Boolean {
         return binding.memoryET.text.toString().trim() != "" && binding.titleET.text.toString()
             .trim() != ""
     }
 
-    /** -------------- update memory data by call viewModel and pass new data ----------------**/
     private fun updateMemory() {
         viewModel.updateMemory(
             memoryID = memoryID,

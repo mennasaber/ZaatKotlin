@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.layout_profile_tabs.view.*
 import kotlinx.android.synthetic.main.layout_top_profile.view.*
 
 
-class ProfileActivity : AppCompatActivity(), View.OnClickListener {
+class ProfileActivity : AppCompatActivity() {
     private val viewModel: ProfileViewModel by viewModels()
     private lateinit var binding: ActivityProfileBinding
     private lateinit var toolbarBinding: LayoutTopProfileToolbarBinding
@@ -27,26 +27,7 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
         toolbarBinding = LayoutTopProfileToolbarBinding.bind(binding.root)
         setContentView(binding.root)
         initWidget()
-        //initLists()
     }
-
-    /* private fun initLists() {
-         viewModel.getFollowing().observe(this, Observer { querySnapShot ->
-             if (querySnapShot != null) {
-                 for (document in querySnapShot) {
-                     getUser(document["followingId"] as String, 1)
-                 }
-             }
-         })
-         viewModel.getFollowers().observe(this, Observer { querySnapShot ->
-             if (querySnapShot != null) {
-                 for (document in querySnapShot) {
-                     getUser(document["followerId"] as String, 0)
-                 }
-             }
-
-         })
-     }*/
 
     private fun initWidget() {
         getUser(FirebaseAuth.getInstance().uid!!)
@@ -68,62 +49,8 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener {
                     )
                     Picasso.get().load(user.photoURL).into(binding.topProfile.userIV)
                     binding.topProfile.usernameTV.text = user.username
-//                    when (type) {
-//                        0 -> if (viewModel.followersList.find { it.userId == userID } == null) {
-//                            viewModel.followersList.add(user)
-//                        }
-//                        1 -> if (viewModel.followingList.find { it.userId == userID } == null) {
-//                            viewModel.followingList.add(user)
-//                        }
-//                        2 -> {
-//                            Picasso.get().load(user.photoURL).into(binding.topProfile.userIV)
-//                            binding.topProfile.usernameTV.text = user.username
-//                        }
-//                    }
                 }
             }
-            //imageVisibility(0)
-            //imageVisibility(1)
-            //followersAdapter.notifyDataSetChanged()
-            //followingAdapter.notifyDataSetChanged()
         })
     }
-
-    override fun onClick(view: View?) {
-        /*when (view?.id) {
-            R.id.followerB -> {
-                imageVisibility(0)
-                followingB.setBackgroundResource(R.color.colorWhite)
-                followerB.setBackgroundResource(R.color.colorLightGray)
-                viewModel.index = 0
-                binding.profileRecyclerView.adapter = followersAdapter
-            }
-            R.id.followingB -> {
-                imageVisibility(1)
-                followerB.setBackgroundResource(R.color.colorWhite)
-                followingB.setBackgroundResource(R.color.colorLightGray)
-                viewModel.index = 1
-                binding.profileRecyclerView.adapter = followingAdapter
-            }
-            R.id.back ->
-                finish()
-        }*/
-    }
-
-    /*private fun imageVisibility(type: Int) {
-        when (type) {
-            0 -> {
-                if (viewModel.followersList.isEmpty())
-                    binding.connectionIV.visibility = View.VISIBLE
-                else
-                    binding.connectionIV.visibility = View.GONE
-            }
-            1 -> {
-                if (viewModel.followingList.isEmpty())
-                    binding.connectionIV.visibility = View.VISIBLE
-                else
-                    binding.connectionIV.visibility = View.GONE
-            }
-        }
-    }*/
 }

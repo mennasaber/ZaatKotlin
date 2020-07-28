@@ -39,6 +39,8 @@ class HomeFragment : Fragment() {
             val intent = Intent(context, AddMemoryActivity::class.java)
             startActivity(intent)
         }
+        binding.Progress.visibility = View.VISIBLE
+        binding.memoriesRecyclerView.visibility = View.INVISIBLE
         initWidget()
         getMemories()
         return binding.root
@@ -75,6 +77,8 @@ class HomeFragment : Fragment() {
                     }
                 }
                 memoriesAdapter.notifyDataSetChanged()
+                binding.Progress.visibility = View.INVISIBLE
+                binding.memoriesRecyclerView.visibility = View.VISIBLE
             })
     }
 

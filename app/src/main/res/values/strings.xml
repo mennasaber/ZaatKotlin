@@ -34,4 +34,5 @@
     <string name="memory">Memory</string>
     <string name="write_comment">Write your comment</string>
     <string name="people_reacted">People who reacted</string>
+    <string name="notifications">Notifications</string>
 </resources>

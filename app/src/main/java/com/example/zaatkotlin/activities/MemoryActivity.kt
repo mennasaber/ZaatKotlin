@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -44,27 +45,19 @@ class MemoryActivity : AppCompatActivity() {
         toolbarBinding = LayoutTopMemoryToolbarBinding.bind(binding.root)
         val view = binding.root
         setContentView(view)
-
-        //memory = intent.getParcelableExtra("memoryObject")!!
-        //memory.lovesCount = intent.getLongExtra("lovesCount", 0)
-        //memory.commentsCount = intent.getLongExtra("commentsCount", 0)
         memoryID = intent.getStringExtra("memoryID")!!
         userID = intent.getStringExtra("userID")!!
         getMemory(memoryID)
-        getUser(userID, 1)
         getUser(FirebaseAuth.getInstance().uid!!, 2)
-        //isFollow = intent.getStringExtra("isFollow")!!
-        // reset when phone rotate ,should solve it
-        //viewModel.isReact = intent.getBooleanExtra("isReact", false)
         initWidget()
-        // updateMemory()
-//        setupReact()
-//        setupMemory()
-//        getComments()
     }
 
     private fun getMemory(memoryID: String) {
         viewModel.getMemory(memoryID).observe(this, Observer { querySnapShot ->
+            if (querySnapShot.isEmpty) {
+                Toast.makeText(this, "Memory deleted", Toast.LENGTH_SHORT).show()
+                finish()
+            }
             if (querySnapShot != null) {
                 for (document in querySnapShot) {
                     viewModel.memory = Memory(
@@ -86,6 +79,7 @@ class MemoryActivity : AppCompatActivity() {
                         )
                     binding.memoryInclude.lovesTV.text = viewModel.memory.lovesCount.toString()
                     binding.memoryInclude.commentsCountTV.text = commentsText
+                    getUser(userID, 1)
                 }
             }
         })
@@ -200,7 +194,9 @@ class MemoryActivity : AppCompatActivity() {
                             userID = viewModel.memory.uID,
                             senderID = viewModel.currentUser.userId!!,
                             message = message,
-                            seen = false
+                            seen = false,
+                            memoryID = memoryID,
+                            date = date.toString("K:mm a dd-MM-yyyy")
                         )
                     )
                 }
@@ -247,7 +243,9 @@ class MemoryActivity : AppCompatActivity() {
                             userID = viewModel.memory.uID,
                             senderID = viewModel.currentUser.userId!!,
                             message = message,
-                            seen = false
+                            seen = false,
+                            memoryID = memoryID,
+                            date = getCurrentDateTime().toString("K:mm a dd-MM-yyyy")
                         )
                     )
                 }
@@ -325,11 +323,15 @@ class MemoryActivity : AppCompatActivity() {
         context: Context,
         user: User
     ) {
-        val intent = Intent(context, OtherProfileActivity::class.java)
-        intent.putExtra("userID", user.userId)
-        intent.putExtra("username", user.username)
-        intent.putExtra("photoURL", user.photoURL)
-        intent.putExtra("currentUsername", viewModel.currentUser.username)
-        context.startActivity(intent)
+        if (user.userId != FirebaseAuth.getInstance().uid) {
+            val intent = Intent(context, OtherProfileActivity::class.java)
+            intent.putExtra("userID", user.userId)
+            intent.putExtra("username", user.username)
+            intent.putExtra("photoURL", user.photoURL)
+            intent.putExtra("currentUsername", viewModel.currentUser.username)
+            context.startActivity(intent)
+        } else {
+            context.startActivity(Intent(context, ProfileActivity::class.java))
+        }
     }
 }
