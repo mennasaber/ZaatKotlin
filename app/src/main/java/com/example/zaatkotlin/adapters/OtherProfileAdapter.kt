@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
@@ -20,6 +21,7 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -54,7 +56,18 @@ class OtherProfileAdapter(
         if (user != null)
             holder.apply {
                 binding.usernameTV.text = user.username
-                Picasso.get().load(user.photoURL).into(binding.userIV)
+                binding.progressBar.visibility = View.VISIBLE
+                Picasso.get().load(user.photoURL).into(binding.userIV,
+                    object : com.squareup.picasso.Callback {
+                        override fun onSuccess() {
+                            binding.progressBar.visibility = View.INVISIBLE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            TODO("Not yet implemented")
+                        }
+
+                    })
                 binding.memoryTV.text = memoriesList[position].memory
                 binding.dateTV.text = memoriesList[position].date
                 binding.lovesTV.text = memoriesList[position].lovesCount.toString()
@@ -102,7 +115,8 @@ class OtherProfileAdapter(
                     sendNotification(
                         message,
                         memoriesList[position].memoryID,
-                        ownerMemoryID = memoriesList[position].uID
+                        ownerMemoryID = memoriesList[position].uID,
+                        type = "0"
                     )
                     saveNotificationToDB(
                         Notification(
@@ -139,13 +153,14 @@ class OtherProfileAdapter(
     private fun sendNotification(
         message: String,
         memoryID: String,
-        ownerMemoryID: String
+        ownerMemoryID: String,
+        type: String
     ) {
         api =
             Client.getClient(url = "https://fcm.googleapis.com/").create(APIService::class.java)
         Firebase.firestore.collection("Token").document(ownerMemoryID).get().addOnSuccessListener {
             val usertoken = it.data?.get("token") as String
-            send(usertoken, "ZAAT", message, memoryID, ownerMemoryID)
+            send(usertoken, "ZAAT", message, memoryID, ownerMemoryID, type)
         }
     }
 
@@ -154,10 +169,17 @@ class OtherProfileAdapter(
         s: String,
         message: String,
         memoryID: String,
-        ownerMemoryID: String
+        ownerMemoryID: String,
+        type: String
     ) {
         val data =
-            Data(Title = s, Message = message, MemoryID = memoryID, OwnerMemoryID = ownerMemoryID)
+            Data(
+                Title = s,
+                Message = message,
+                MemoryID = memoryID,
+                OwnerMemoryID = ownerMemoryID,
+                Type = type
+            )
         val notificationSender = NotificationSender(data = data, to = usertoken)
         api.sendNotification(notificationSender).enqueue(object : Callback<Response> {
             override fun onFailure(call: Call<Response>?, t: Throwable?) {

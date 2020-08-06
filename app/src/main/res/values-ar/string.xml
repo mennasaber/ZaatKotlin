@@ -32,6 +32,7 @@
     <string name="followers">المتابعين</string>
 
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="channel_name">إشعارات الذكريات</string>
     <string name="memory">الذكرى</string>
     <string name="write_comment">اكتب تعليقك</string>
     <string name="people_reacted">الاشخاص الذين تفاعلوا</string>

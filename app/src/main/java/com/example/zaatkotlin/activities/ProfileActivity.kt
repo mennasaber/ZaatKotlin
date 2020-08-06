@@ -2,6 +2,7 @@ package com.example.zaatkotlin.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -13,9 +14,13 @@ import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_profile_tabs.view.*
 import kotlinx.android.synthetic.main.layout_top_profile.view.*
+import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -52,18 +57,27 @@ class ProfileActivity : AppCompatActivity() {
         toolbarBinding.edit.setOnClickListener {
             goToEdit()
         }
+        binding.topProfile.userIV.setOnClickListener { goToImage() }
+    }
+
+    private fun goToImage() {
+        val intent = Intent(this, ImageActivity::class.java)
+        intent.putExtra("imageURI", user.photoURL)
+        startActivity(intent)
     }
 
     private fun goToEdit() {
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("userImage", user.photoURL)
         intent.putExtra("username", user.username)
+        intent.putExtra("userID", user.userId)
         startActivity(intent)
     }
 
     private fun getUser(userID: String) {
         viewModel.getUserData(userID).observe(this, Observer { querySnapShot ->
             if (querySnapShot != null) {
+                binding.topProfile.progressBar.visibility = View.VISIBLE
                 for (document in querySnapShot) {
                     user = User(
                         email = document["email"] as String,
@@ -71,7 +85,18 @@ class ProfileActivity : AppCompatActivity() {
                         username = document["username"] as String,
                         userId = document["userId"] as String
                     )
-                    Picasso.get().load(user.photoURL).into(binding.topProfile.userIV)
+                    Picasso.get().load(user.photoURL)
+                        .into(binding.topProfile.userIV,
+                            object : Callback {
+                                override fun onSuccess() {
+                                    binding.topProfile.progressBar.visibility = View.INVISIBLE
+                                }
+
+                                override fun onError(e: Exception?) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            })
                     binding.topProfile.usernameTV.text = user.username
                 }
             }

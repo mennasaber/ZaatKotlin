@@ -3,6 +3,7 @@ package com.example.zaatkotlin.adapters
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +12,9 @@ import com.example.zaatkotlin.activities.MemoryActivity
 import com.example.zaatkotlin.databinding.NotificationItemBinding
 import com.example.zaatkotlin.viewmodels.NotificationsViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 class NotificationsAdapter(
     val viewModel: NotificationsViewModel,
@@ -45,9 +48,20 @@ class NotificationsAdapter(
                     )
                 )
             binding.dateTV.text = viewModel.notificationsList[position].date
+            binding.progressBar.visibility = View.VISIBLE
             Picasso.get()
                 .load(viewModel.usersList[viewModel.notificationsList[position].notificationID]?.photoURL)
-                .into(binding.userIV)
+                .into(binding.userIV,
+                    object : Callback {
+                        override fun onSuccess() {
+                            binding.progressBar.visibility = View.INVISIBLE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            TODO("Not yet implemented")
+                        }
+
+                    })
             var message = context?.resources!!.getString(R.string.notification_react)
             if (viewModel.notificationsList[position].type == 1L)
                 message = context.resources!!.getString(R.string.notification_comment)

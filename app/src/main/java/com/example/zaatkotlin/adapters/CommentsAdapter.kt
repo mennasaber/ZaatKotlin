@@ -3,6 +3,7 @@ package com.example.zaatkotlin.adapters
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.activities.OtherProfileActivity
@@ -12,7 +13,10 @@ import com.example.zaatkotlin.models.Comment
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.MemoryViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.layout_top_profile.view.*
+import java.lang.Exception
 
 class CommentsAdapter(
     var commentsList: ArrayList<Comment>,
@@ -42,7 +46,18 @@ class CommentsAdapter(
                 binding.commentTV.text = commentsList[position].commentContent
                 binding.dateTV.text = commentsList[position].date
                 binding.usernameTV.text = user.username
-                Picasso.get().load(user.photoURL).into(binding.userIV)
+                binding.progressBar.visibility = View.VISIBLE
+                Picasso.get().load(user.photoURL).into(binding.userIV,
+                    object : Callback {
+                        override fun onSuccess() {
+                            binding.progressBar.visibility = View.INVISIBLE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            TODO("Not yet implemented")
+                        }
+
+                    })
 
                 binding.userIV.setOnClickListener {
                     goToProfile(

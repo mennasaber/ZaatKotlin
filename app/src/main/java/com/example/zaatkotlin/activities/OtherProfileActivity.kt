@@ -1,5 +1,6 @@
 package com.example.zaatkotlin.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.adapters.OtherProfileAdapter
 import com.example.zaatkotlin.databinding.ActivityOtherProfileBinding
+import com.example.zaatkotlin.databinding.LayoutTopOtherProfileToolbarBinding
 import com.example.zaatkotlin.databinding.LayoutTopProfileToolbarBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
@@ -22,7 +24,7 @@ class OtherProfileActivity : AppCompatActivity() {
     val viewModel: OtherProfileViewModel by viewModels()
     private lateinit var profileAdapter: OtherProfileAdapter
     private lateinit var binding: ActivityOtherProfileBinding
-    private lateinit var toolbarBinding: LayoutTopProfileToolbarBinding
+    private lateinit var toolbarBinding: LayoutTopOtherProfileToolbarBinding
     private val usersList = ArrayList<User>()
     private lateinit var userID: String
     private lateinit var currentUsername: String
@@ -32,7 +34,7 @@ class OtherProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOtherProfileBinding.inflate(layoutInflater)
-        toolbarBinding = LayoutTopProfileToolbarBinding.bind(binding.root)
+        toolbarBinding = LayoutTopOtherProfileToolbarBinding.bind(binding.root)
         setContentView(binding.root)
 
         userID = intent.getStringExtra("userID")!!
@@ -80,6 +82,13 @@ class OtherProfileActivity : AppCompatActivity() {
             }
         }
         toolbarBinding.back.setOnClickListener { finish() }
+        binding.userIV.setOnClickListener { goToImage() }
+    }
+
+    private fun goToImage() {
+        val intent = Intent(this, ImageActivity::class.java)
+        intent.putExtra("imageURI", photoURL)
+        startActivity(intent)
     }
 
     private fun getMemories(userID: String) {

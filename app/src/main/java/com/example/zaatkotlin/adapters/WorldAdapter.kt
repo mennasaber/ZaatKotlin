@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.activities.LovesActivity
@@ -24,6 +22,7 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -55,7 +54,18 @@ class WorldAdapter(
             )
         val user = usersList.find { it.userId == memoriesList[position].uID }
         holder.binding.usernameTV.text = user?.username
-        Picasso.get().load(user?.photoURL).into(holder.binding.userIV)
+        holder.binding.progressBar.visibility = View.VISIBLE
+        Picasso.get().load(user?.photoURL).into(holder.binding.userIV,
+            object : com.squareup.picasso.Callback {
+                override fun onSuccess() {
+                    holder.binding.progressBar.visibility = View.INVISIBLE
+                }
+
+                override fun onError(e: Exception?) {
+                    TODO("Not yet implemented")
+                }
+
+            })
         holder.binding.memoryTV.text = memoriesList[position].memory
         holder.binding.dateTV.text = memoriesList[position].date
         holder.binding.lovesTV.text = memoriesList[position].lovesCount.toString()
@@ -88,7 +98,8 @@ class WorldAdapter(
                     sendNotification(
                         message!!,
                         memoriesList[position].memoryID,
-                        ownerMemoryID = memoriesList[position].uID
+                        ownerMemoryID = memoriesList[position].uID,
+                        type = "0"
                     )
                     saveNotificationToDB(
                         Notification(
@@ -150,13 +161,14 @@ class WorldAdapter(
     private fun sendNotification(
         message: String,
         memoryID: String,
-        ownerMemoryID: String
+        ownerMemoryID: String,
+        type: String
     ) {
         api =
             Client.getClient(url = "https://fcm.googleapis.com/").create(APIService::class.java)
         Firebase.firestore.collection("Token").document(ownerMemoryID).get().addOnSuccessListener {
             val usertoken = it.data?.get("token") as String
-            send(usertoken, "ZAAT", message, memoryID, ownerMemoryID)
+            send(usertoken, "ZAAT", message, memoryID, ownerMemoryID, type)
         }
     }
 
@@ -165,10 +177,17 @@ class WorldAdapter(
         s: String,
         message: String,
         memoryID: String,
-        ownerMemoryID: String
+        ownerMemoryID: String,
+        type: String
     ) {
         val data =
-            Data(Title = s, Message = message, MemoryID = memoryID, OwnerMemoryID = ownerMemoryID)
+            Data(
+                Title = s,
+                Message = message,
+                MemoryID = memoryID,
+                OwnerMemoryID = ownerMemoryID,
+                Type = type
+            )
         val notificationSender = NotificationSender(data = data, to = usertoken)
         api.sendNotification(notificationSender).enqueue(object : Callback<Response> {
             override fun onFailure(call: Call<Response>?, t: Throwable?) {

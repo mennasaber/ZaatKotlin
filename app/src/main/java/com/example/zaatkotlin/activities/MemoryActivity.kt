@@ -192,7 +192,8 @@ class MemoryActivity : AppCompatActivity() {
                     sendNotification(
                         message = message!!,
                         memoryID = viewModel.memory.memoryID,
-                        ownerMemoryID = viewModel.memory.uID
+                        ownerMemoryID = viewModel.memory.uID,
+                        type = "1"
                     )
                     saveNotificationToDB(
                         Notification(
@@ -230,7 +231,8 @@ class MemoryActivity : AppCompatActivity() {
                     sendNotification(
                         message = message!!,
                         memoryID = viewModel.memory.memoryID,
-                        ownerMemoryID = viewModel.memory.uID
+                        ownerMemoryID = viewModel.memory.uID,
+                        type = "0"
                     )
                     saveNotificationToDB(
                         Notification(
@@ -280,13 +282,14 @@ class MemoryActivity : AppCompatActivity() {
     private fun sendNotification(
         message: String,
         memoryID: String,
-        ownerMemoryID: String
+        ownerMemoryID: String,
+        type: String
     ) {
         api =
             Client.getClient(url = "https://fcm.googleapis.com/").create(APIService::class.java)
         Firebase.firestore.collection("Token").document(ownerMemoryID).get().addOnSuccessListener {
             val usertoken = it.data?.get("token") as String
-            send(usertoken, "ZAAT", message, memoryID, ownerMemoryID)
+            send(usertoken, "ZAAT", message, memoryID, ownerMemoryID, type)
         }
     }
 
@@ -295,10 +298,17 @@ class MemoryActivity : AppCompatActivity() {
         s: String,
         message: String,
         memoryID: String,
-        ownerMemoryID: String
+        ownerMemoryID: String,
+        type: String
     ) {
         val data =
-            Data(Title = s, Message = message, MemoryID = memoryID, OwnerMemoryID = ownerMemoryID)
+            Data(
+                Title = s,
+                Message = message,
+                MemoryID = memoryID,
+                OwnerMemoryID = ownerMemoryID,
+                Type = type
+            )
         val notificationSender = NotificationSender(data = data, to = usertoken)
         api.sendNotification(notificationSender).enqueue(object : Callback<Response> {
             override fun onFailure(call: Call<Response>?, t: Throwable?) {

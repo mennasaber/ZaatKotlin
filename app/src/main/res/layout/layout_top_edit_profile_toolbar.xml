@@ -34,7 +34,7 @@
                     android:src="@drawable/ic_back" />
 
                 <ImageView
-                    android:id="@+id/saveMemory"
+                    android:id="@+id/save"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"

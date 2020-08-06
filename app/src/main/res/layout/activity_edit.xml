@@ -24,7 +24,7 @@
         android:layout_marginTop="16dp"
         android:src="@color/colorDeepOrange"
         app:civ_border_color="@color/colorDeepOrange"
-        app:civ_border_width="3dp"
+        app:civ_border_width="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relLayout1" />
@@ -40,9 +40,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/userIV" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/userIV"
+        app:layout_constraintEnd_toEndOf="@+id/userIV"
+        app:layout_constraintStart_toStartOf="@+id/userIV"
+        app:layout_constraintTop_toTopOf="@+id/userIV" />
+
     <EditText
         android:id="@+id/usernameET"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"

@@ -3,13 +3,16 @@ package com.example.zaatkotlin.adapters
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.activities.OtherProfileActivity
 import com.example.zaatkotlin.databinding.ProfileItemBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 class ProfileAdapter(
     private val usersList: ArrayList<User>, val viewModel: ProfileViewModel
@@ -30,7 +33,18 @@ class ProfileAdapter(
 
     override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) {
         holder.apply {
-            Picasso.get().load(usersList[position].photoURL).into(binding.userIV)
+            binding.progressBar.visibility = View.VISIBLE
+            Picasso.get().load(usersList[position].photoURL).into(binding.userIV,
+                object : Callback {
+                    override fun onSuccess() {
+                        binding.progressBar.visibility = View.INVISIBLE
+                    }
+
+                    override fun onError(e: Exception?) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
             binding.usernameTV.text = usersList[position].username
             binding.userIV.setOnClickListener {
                 goToProfile(

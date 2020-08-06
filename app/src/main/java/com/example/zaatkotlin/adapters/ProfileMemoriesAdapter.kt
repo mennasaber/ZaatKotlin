@@ -16,7 +16,9 @@ import com.example.zaatkotlin.databinding.WorldItemBinding
 import com.example.zaatkotlin.models.Memory
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.ProfileViewModel
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 class ProfileMemoriesAdapter(
     private val memoriesList: ArrayList<Memory>,
@@ -48,7 +50,18 @@ class ProfileMemoriesAdapter(
         }
         holder.apply {
             binding.usernameTV.text = user.username
-            Picasso.get().load(user.photoURL).into(binding.userIV)
+            binding.progressBar.visibility = View.VISIBLE
+            Picasso.get().load(user.photoURL).into(binding.userIV,
+                object : Callback {
+                    override fun onSuccess() {
+                        binding.progressBar.visibility = View.INVISIBLE
+                    }
+
+                    override fun onError(e: Exception?) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
             binding.memoryTV.text = memoriesList[position].memory
             binding.dateTV.text = memoriesList[position].date
             binding.lovesTV.text = memoriesList[position].lovesCount.toString()

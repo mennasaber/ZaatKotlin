@@ -13,7 +13,7 @@
         android:layout_marginTop="8dp"
         android:src="@color/colorWhite"
         app:civ_border_color="@color/colorWhite"
-        app:civ_border_width="3dp"
+        app:civ_border_width="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,5 +32,17 @@
         app:layout_constraintTop_toBottomOf="@+id/userIV"
         app:layout_constraintVertical_bias="0.0"
         tools:text="menna saber" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:visibility="visible"
+        android:indeterminateTint="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="@+id/userIV"
+        app:layout_constraintEnd_toEndOf="@+id/userIV"
+        app:layout_constraintStart_toStartOf="@+id/userIV"
+        app:layout_constraintTop_toTopOf="@+id/userIV" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

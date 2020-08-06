@@ -15,6 +15,7 @@ import com.example.zaatkotlin.activities.MemoryActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import java.util.*
 
 class FirebaseMessagingService :
     FirebaseMessagingService() {
@@ -25,12 +26,17 @@ class FirebaseMessagingService :
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         val title = remoteMessage.data["Title"] as String
-        val message = remoteMessage.data["Message"] as String
+        var message = remoteMessage.data["Message"] as String
         val memoryID = remoteMessage.data["MemoryID"] as String
         val ownerMemoryID = remoteMessage.data["OwnerMemoryID"] as String
+        val type = remoteMessage.data["Type"] as String
+        message = if (type == "0")
+            message + " " + resources.getString(R.string.notification_react)
+        else
+            message + " " + resources.getString(R.string.notification_comment)
         if (ownerMemoryID == FirebaseAuth.getInstance().uid)
             sendNotification(
-                title = title
+                title = resources.getString(R.string.app_name)
                 , message = message, memoryID = memoryID
             )
     }
@@ -63,12 +69,14 @@ class FirebaseMessagingService :
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelID,
-                "Memories Messages",
+                resources.getString(R.string.channel_name),
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(channel)
         }
-
-        notificationManager.notify(0, notificationBuilder.build())
+        notificationManager.notify(
+            Calendar.getInstance().timeInMillis.toInt(),
+            notificationBuilder.build()
+        )
     }
 }

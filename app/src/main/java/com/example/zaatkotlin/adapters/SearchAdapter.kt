@@ -4,6 +4,7 @@ package com.example.zaatkotlin.adapters
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.R
@@ -11,7 +12,9 @@ import com.example.zaatkotlin.activities.OtherProfileActivity
 import com.example.zaatkotlin.databinding.SearchItemBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.viewmodels.SearchViewModel
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 class SearchAdapter(
     var usersList: ArrayList<User>,
@@ -39,7 +42,18 @@ class SearchAdapter(
             holder.binding.followB.setText(R.string.unfollow)
         else
             holder.binding.followB.setText(R.string.follow)
-        Picasso.get().load(usersList[position].photoURL!!).into(holder.binding.searchItemIV)
+        holder.binding.progressBar.visibility = View.VISIBLE
+        Picasso.get().load(usersList[position].photoURL!!).into(holder.binding.searchItemIV,
+            object : Callback {
+                override fun onSuccess() {
+                    holder.binding.progressBar.visibility = View.INVISIBLE
+                }
+
+                override fun onError(e: Exception?) {
+                    TODO("Not yet implemented")
+                }
+
+            })
 
 
         holder.binding.followB.setOnClickListener {
