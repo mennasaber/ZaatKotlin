@@ -14,60 +14,65 @@
         <include layout="@layout/layout_top_add_toolbar" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/relLayout2"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/relLayout1">
 
-        <EditText
-            android:id="@+id/titleET"
+        <RelativeLayout
+            android:id="@+id/relLayout2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="5dp"
-            android:background="@null"
-            android:hint="@string/title"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingRight="10dp"
-            android:textColor="@color/colorDeepOrange"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:layout_editor_absoluteY="16dp" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/memoryET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/titleET"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@null"
-            android:gravity="start"
-            android:hint="@string/your_memory"
-            android:minHeight="100dp"
-            android:padding="10dp"
-            android:textColor="@color/colorDeepOrange" />
+            <EditText
+                android:id="@+id/titleET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="5dp"
+                android:background="@null"
+                android:hint="@string/title"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColor="@color/colorDeepOrange"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:layout_editor_absoluteY="16dp" />
 
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/makeMemoryPublicCB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/memoryET"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/make_public"
-            android:textColor="@color/colorDeepOrange" />
-    </RelativeLayout>
+            <EditText
+                android:id="@+id/memoryET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleET"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@null"
+                android:gravity="start"
+                android:hint="@string/your_memory"
+                android:minHeight="100dp"
+                android:padding="10dp"
+                android:textColor="@color/colorDeepOrange" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/makeMemoryPublicCB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/memoryET"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/make_public"
+                android:textColor="@color/colorDeepOrange" />
+        </RelativeLayout>
+    </ScrollView>
+
 </RelativeLayout>

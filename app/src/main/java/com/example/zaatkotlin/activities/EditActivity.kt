@@ -21,6 +21,7 @@ import com.example.zaatkotlin.viewmodels.EditViewModel
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_top_profile.view.*
+import kotlinx.android.synthetic.main.snippet_center_login.*
 import java.io.ByteArrayOutputStream
 import java.lang.Exception
 
@@ -28,46 +29,60 @@ class EditActivity : AppCompatActivity() {
     lateinit var binding: ActivityEditBinding
     lateinit var toolbarBinding: LayoutTopEditProfileToolbarBinding
     val viewModel: EditViewModel by viewModels()
-    lateinit var userImage: String
-    lateinit var username: String
     lateinit var userID: String
-    var imageUri: Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditBinding.inflate(layoutInflater)
         toolbarBinding = LayoutTopEditProfileToolbarBinding.bind(binding.root)
-        userImage = intent.getStringExtra("userImage")!!
-        username = intent.getStringExtra("username")!!
+        if (viewModel.username == "") {
+            viewModel.oldImage = intent.getStringExtra("userImage")!!
+            viewModel.username = intent.getStringExtra("username")!!
+        }
         userID = intent.getStringExtra("userID")!!
         initWidget()
         setContentView(binding.root)
     }
 
     private fun initWidget() {
-        binding.usernameET.setText(username)
+        binding.usernameET.setText(viewModel.username)
         binding.progressBar.visibility = View.VISIBLE
         binding.changeIV.visibility = View.INVISIBLE
 
-        Picasso.get().load(userImage).into(binding.userIV,
-            object : Callback {
-                override fun onSuccess() {
-                    binding.progressBar.visibility = View.INVISIBLE
-                    binding.changeIV.visibility = View.VISIBLE
-                }
+        if (viewModel.imageUri != null)
+            Picasso.get().load(viewModel.imageUri).into(binding.userIV,
+                object : Callback {
+                    override fun onSuccess() {
+                        binding.progressBar.visibility = View.INVISIBLE
+                        binding.changeIV.visibility = View.VISIBLE
+                    }
 
-                override fun onError(e: Exception?) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onError(e: Exception?) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        else
+            Picasso.get().load(viewModel.oldImage).into(binding.userIV,
+                object : Callback {
+                    override fun onSuccess() {
+                        binding.progressBar.visibility = View.INVISIBLE
+                        binding.changeIV.visibility = View.VISIBLE
+                    }
+
+                    override fun onError(e: Exception?) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+
         binding.changeIV.setOnClickListener { askForPermissions() }
         toolbarBinding.back.setOnClickListener { finish() }
         toolbarBinding.save.setOnClickListener {
             viewModel.updateData(
                 binding.usernameET.text.trim().toString(),
-                imageUri,
+                viewModel.imageUri,
                 userID,
-                userImage
+                viewModel.oldImage
             )
             finish()
         }
@@ -121,8 +136,8 @@ class EditActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == 0) {
-            imageUri = data?.data
-            binding.userIV.setImageURI(imageUri)
+            viewModel.imageUri = data?.data
+            binding.userIV.setImageURI(viewModel.imageUri)
         }
     }
 }

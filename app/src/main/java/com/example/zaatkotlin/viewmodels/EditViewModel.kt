@@ -12,7 +12,9 @@ import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
 
 class EditViewModel : ViewModel() {
-
+    var oldImage: String = ""
+    var username: String = ""
+    var imageUri: Uri? = null
     fun updateData(username: String, photoURL: Uri?, userID: String, oldImage: String) {
         if (photoURL != null) {
             val mImageFolderStorageRef = FirebaseStorage.getInstance().getReference("imagesFolder")

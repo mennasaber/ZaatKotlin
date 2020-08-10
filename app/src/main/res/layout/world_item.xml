@@ -8,7 +8,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:background="@color/colorWhite"
         android:elevation="30dp"
@@ -21,7 +21,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/colorWhite"
             android:padding="10dp">
 
@@ -82,19 +82,19 @@
             <TextView
                 android:id="@+id/memoryTV"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:textColor="@color/colorDeepOrange"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/lovesTV"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userIV"
+                app:layout_constraintVertical_bias="0.0"
                 tools:text="textView" />
 
             <TextView
@@ -102,12 +102,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
                 android:drawableStart="@drawable/ic_love_dark"
                 android:drawableLeft="@drawable/ic_love"
                 android:textColor="@color/colorDeepOrange"
                 android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                 app:layout_constraintEnd_toStartOf="@+id/commentsCountTV"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -115,11 +116,13 @@
                 tools:text="10000" />
 
             <LinearLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rounded_deep_background"
                 android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/lovesTV">
@@ -130,12 +133,13 @@
                     android:layout_height="30dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    tools:drawableStart="@drawable/ic_dislove"
                     android:gravity="center"
                     android:paddingStart="30dp"
                     android:paddingEnd="30dp"
                     android:text="@string/love"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    tools:drawableStart="@drawable/ic_dislove" />
+
                 <Button
                     android:id="@+id/commentButton"
                     android:layout_width="0dp"

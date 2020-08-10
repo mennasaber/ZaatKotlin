@@ -47,6 +47,13 @@ class NotificationsAdapter(
                         R.color.colorLightOrange
                     )
                 )
+            else
+                binding.root.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.binding.root.context,
+                        R.color.colorWhite
+                    )
+                )
             binding.dateTV.text = viewModel.notificationsList[position].date
             binding.progressBar.visibility = View.VISIBLE
             Picasso.get()

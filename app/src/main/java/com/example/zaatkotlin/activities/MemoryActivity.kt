@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -23,8 +24,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.layout_top_profile.view.*
 import retrofit2.Call
 import retrofit2.Callback
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -272,7 +275,18 @@ class MemoryActivity : AppCompatActivity() {
     }
 
     private fun setupMemory() {
-        Picasso.get().load(viewModel.user.photoURL).into(binding.memoryInclude.userIV)
+        binding.memoryInclude.progressBar.visibility = View.VISIBLE
+        Picasso.get().load(viewModel.user.photoURL).into(binding.memoryInclude.userIV,
+            object : com.squareup.picasso.Callback {
+                override fun onSuccess() {
+                    binding.memoryInclude.progressBar.visibility = View.INVISIBLE
+                }
+
+                override fun onError(e: Exception?) {
+                    TODO("Not yet implemented")
+                }
+
+            })
         binding.memoryInclude.usernameTV.text = viewModel.user.username
         binding.memoryInclude.memoryTV.text = viewModel.memory.memory
         binding.memoryInclude.dateTV.text = viewModel.memory.date

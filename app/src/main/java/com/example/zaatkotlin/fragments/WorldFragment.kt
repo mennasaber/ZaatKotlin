@@ -78,7 +78,7 @@ class ChatFragment : Fragment() {
                     }
                 }
                 viewModel.memoriesList.sortByDescending { it.timestamp }
-                worldAdapter.notifyDataSetChanged()
+                //worldAdapter.notifyDataSetChanged()
             }
             binding.Progress.visibility = View.INVISIBLE
             binding.memoriesRecyclerView.visibility = View.VISIBLE
