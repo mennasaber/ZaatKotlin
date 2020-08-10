@@ -4,9 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.databinding.ActivityLoginBinding
+import com.example.zaatkotlin.databinding.SnippetCenterLoginBinding
 import com.example.zaatkotlin.models.User
 import com.example.zaatkotlin.sendNotifications.Token
 import com.facebook.*
@@ -33,17 +35,32 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var callbackManager: CallbackManager
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var layoutBinding: SnippetCenterLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
+        layoutBinding = SnippetCenterLoginBinding.bind(binding.root)
         setContentView(binding.root)
 
+        setupAnimation()
         firebaseAuth = FirebaseAuth.getInstance()
-
         setupWidget(false)
         initSignInWithGoogle()
         initSignInWithFacebook()
+    }
+
+    private fun setupAnimation() {
+        val translateTopAnimation = AnimationUtils.loadAnimation(this, R.anim.translate_top_bottom)
+        val translateBottomAnimation =
+            AnimationUtils.loadAnimation(this, R.anim.translate_bottom_top)
+
+        layoutBinding.zaatIcon.startAnimation(translateTopAnimation)
+        layoutBinding.googleSignInButton.startAnimation(translateBottomAnimation)
+        layoutBinding.view.startAnimation(translateBottomAnimation)
+        layoutBinding.view2.startAnimation(translateBottomAnimation)
+        layoutBinding.textView2.startAnimation(translateBottomAnimation)
+        layoutBinding.facebookSignInButton.startAnimation(translateBottomAnimation)
     }
 
     /** ---------------- send request to sign in with google or facebook account ----------**/
