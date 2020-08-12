@@ -3,7 +3,6 @@ package com.example.zaatkotlin.adapters
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,9 +44,6 @@ class ProfileMemoriesAdapter(
     }
 
     override fun onBindViewHolder(holder: WorldViewHolder, position: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Log.d(TAG, "onBindViewHolder: ${holder.binding.root.layoutDirection}")
-        }
         holder.apply {
             binding.usernameTV.text = user.username
             binding.progressBar.visibility = View.VISIBLE

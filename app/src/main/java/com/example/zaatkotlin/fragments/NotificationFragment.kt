@@ -1,7 +1,6 @@
 package com.example.zaatkotlin.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,7 +61,6 @@ class NotificationFragment : Fragment() {
                             viewModel.notificationsList.find { it.notificationID == notification.notificationID }
                         if (tempNoti != null) {
                             viewModel.notificationsList.remove(tempNoti)
-                            Log.d("TAG", "getNotifications: ")
                         } else {
                             getUser(notification.senderID, notification.notificationID)
                         }

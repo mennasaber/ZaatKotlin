@@ -1,6 +1,5 @@
 package com.example.zaatkotlin.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.zaatkotlin.datalisteners.FirebaseQueryLiveData
@@ -85,7 +84,6 @@ class MemoryViewModel : ViewModel() {
     }
 
     fun addNotification(notification: Notification) {
-        Log.d("TAG", "addNotification: ")
         val db = Firebase.firestore
         notification.notificationID = db.collection("Notifications").document().id
         db.collection("Notifications").document(notification.notificationID).set(notification)

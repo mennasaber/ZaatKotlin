@@ -2,7 +2,6 @@ package com.example.zaatkotlin.fragments
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,48 +29,21 @@ class MemoriesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMemoriesBinding.inflate(inflater, container, false)
-        Log.d(TAG, "onCreateView: ")
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Log.d(TAG, "onResume: ${binding.root.layoutDirection}")
-        }
-
         binding.Progress.visibility = View.VISIBLE
         binding.memoriesRecyclerView.visibility = View.VISIBLE
         getUser(FirebaseAuth.getInstance().uid!!)
         getMemories()
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause: ")
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate: ")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart: ")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop: ")
-    }
-
     private fun getMemories() {
         viewModel.getMemories().observe(viewLifecycleOwner, Observer { querySnapShot ->
-            Log.d("TAG", "getMemories:")
             if (querySnapShot != null) {
                 for (document in querySnapShot) {
-                    Log.d("TAG", "getMemories: here")
                     val memory = Memory(
                         title = document.data["title"] as String,
                         memory = document.data["memory"] as String,
@@ -113,7 +85,6 @@ class MemoriesFragment : Fragment() {
                 viewModel = viewModel,
                 user = viewModel.user
             )
-        Log.d("TAG", "initWidget: ${viewModel.memoriesList.count()}")
         binding.memoriesRecyclerView.adapter = memoriesAdapter
     }
 

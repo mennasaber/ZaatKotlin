@@ -2,7 +2,6 @@ package com.example.zaatkotlin.adapters
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -191,7 +190,6 @@ class WorldAdapter(
         val notificationSender = NotificationSender(data = data, to = usertoken)
         api.sendNotification(notificationSender).enqueue(object : Callback<Response> {
             override fun onFailure(call: Call<Response>?, t: Throwable?) {
-                Log.d("TAG", "onFailure: ")
             }
 
             override fun onResponse(

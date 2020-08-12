@@ -2,7 +2,6 @@ package com.example.zaatkotlin.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
@@ -202,7 +201,6 @@ class LoginActivity : AppCompatActivity() {
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Log.d("TAG", "getInstanceId failed")
                     return@OnCompleteListener
                 }
 
@@ -211,8 +209,6 @@ class LoginActivity : AppCompatActivity() {
                 val tokenObject = Token(token!!)
                 Firebase.firestore.collection("Token").document(user.userId!!)
                     .set(tokenObject)
-
-                Log.d("TAG", "saveUserDataInFireStore: $token")
             })
     }
 }

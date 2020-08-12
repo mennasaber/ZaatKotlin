@@ -7,10 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.zaatkotlin.R
-import com.example.zaatkotlin.activities.MainActivity
 import com.example.zaatkotlin.activities.MemoryActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService

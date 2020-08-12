@@ -1,7 +1,6 @@
 package com.example.zaatkotlin.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +25,6 @@ class FollowersFragment : Fragment() {
     ): View? {
         binding = FragmentFollowersBinding.inflate(inflater, container, false)
         getUser(FirebaseAuth.getInstance().uid!!, 1)
-        Log.d(TAG, "onCreateView: ")
         return binding.root
     }
 

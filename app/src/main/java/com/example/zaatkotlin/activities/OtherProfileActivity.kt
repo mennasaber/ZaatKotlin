@@ -107,11 +107,12 @@ class OtherProfileActivity : AppCompatActivity() {
                     memory.memoryID = document.data["memoryID"] as String
                     memory.lovesCount = document.data["lovesCount"] as Long
                     memory.commentsCount = document.data["commentsCount"] as Long
-
-                    if (viewModel.memoriesList.find { it.memoryID == memory.memoryID } == null) {
-                        viewModel.memoriesList.add(memory)
-                        isReact(memoryID = memory.memoryID)
+                    val tempMemory = viewModel.memoriesList.find { it.memoryID == memory.memoryID }
+                    if (tempMemory != null) {
+                        viewModel.memoriesList.remove(tempMemory)
                     }
+                    viewModel.memoriesList.add(memory)
+                    isReact(memoryID = memory.memoryID)
                 }
                 viewModel.memoriesList.sortByDescending { it.timestamp }
                 profileAdapter.notifyDataSetChanged()

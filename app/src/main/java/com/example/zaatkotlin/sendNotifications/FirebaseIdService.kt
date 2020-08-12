@@ -1,6 +1,5 @@
 package com.example.zaatkotlin.sendNotifications
 
-import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
@@ -14,7 +13,6 @@ class FirebaseIdService : FirebaseMessagingService() {
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Log.d("TAG", "getInstanceId failed")
                     return@OnCompleteListener
                 }
 
@@ -23,7 +21,6 @@ class FirebaseIdService : FirebaseMessagingService() {
                 val tokenObject = Token(token!!)
                 Firebase.firestore.collection("Token").document(FirebaseAuth.getInstance().uid!!)
                     .set(tokenObject)
-                Log.d("TAG", "saveUserDataInFireStore: $token")
             })
     }
 }
