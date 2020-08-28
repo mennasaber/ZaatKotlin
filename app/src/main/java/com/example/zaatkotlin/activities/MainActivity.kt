@@ -88,8 +88,8 @@ class MainActivity : AppCompatActivity() {
                     newFragment = SearchFragment()
                 }
                 R.id.worldMenu -> {
-                    index = "chat"
-                    newFragment = ChatFragment()
+                    index = "world"
+                    newFragment = WorldFragment()
                 }
                 R.id.settingMenu -> {
                     index = "setting"
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
             navigationViewBinding.bottomNavViewBar.menu[0].isChecked = true
         if (currentFragment is SearchFragment)
             navigationViewBinding.bottomNavViewBar.menu[1].isChecked = true
-        if (currentFragment is ChatFragment)
+        if (currentFragment is WorldFragment)
             navigationViewBinding.bottomNavViewBar.menu[2].isChecked = true
         if (currentFragment is NotificationFragment)
             navigationViewBinding.bottomNavViewBar.menu[3].isChecked = true

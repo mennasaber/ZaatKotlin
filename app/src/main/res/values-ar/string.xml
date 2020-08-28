@@ -42,4 +42,7 @@
     <string name="notification_react">قام بالتفاعل مع ذكرى خاصه بك </string>
     <string name="memory_deleted">تم مسح الذكرى</string>
     <string name="edit_profile">تعديل الصفحه الشخصيه</string>
+
+    <string name="saved">تم الحفظ</string>
+    <string name="big_image">حجم الصورة كبير جدا. اختر اخرى</string>
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.example.zaatkotlin.R
 import com.example.zaatkotlin.databinding.ActivityLoginBinding
 import com.example.zaatkotlin.databinding.SnippetCenterLoginBinding
@@ -27,6 +28,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
@@ -195,9 +197,11 @@ class LoginActivity : AppCompatActivity() {
     /**  ------------ -----save user data in fireStore ----------------------**/
     private fun saveUserDataInFireStore(user: User) {
         val db = Firebase.firestore
-        user.userId?.let {
-            db.collection("Users").document(it).set(user)
+        db.collection("Users").document(user.userId!!).get().addOnSuccessListener {
+            if (!it.exists())
+                db.collection("Users").document(user.userId!!).set(user)
         }
+
         FirebaseInstanceId.getInstance().instanceId
             .addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {

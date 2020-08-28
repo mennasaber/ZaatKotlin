@@ -205,7 +205,8 @@ class MemoryActivity : AppCompatActivity() {
                             seen = false,
                             memoryID = memoryID,
                             date = date.toString("K:mm a dd-MM-yyyy"),
-                            type = 1
+                            type = 1,
+                            timestamp = System.currentTimeMillis()
                         )
                     )
                 }
@@ -244,7 +245,8 @@ class MemoryActivity : AppCompatActivity() {
                             seen = false,
                             memoryID = memoryID,
                             date = getCurrentDateTime().toString("K:mm a dd-MM-yyyy"),
-                            type = 0
+                            type = 0,
+                            timestamp = System.currentTimeMillis()
                         )
                     )
                 }
@@ -282,7 +284,7 @@ class MemoryActivity : AppCompatActivity() {
                 }
 
                 override fun onError(e: Exception?) {
-                    TODO("Not yet implemented")
+
                 }
 
             })

@@ -1,28 +1,23 @@
 package com.example.zaatkotlin.activities
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
+import com.example.zaatkotlin.R
 import com.example.zaatkotlin.databinding.ActivityEditBinding
 import com.example.zaatkotlin.databinding.LayoutTopEditProfileToolbarBinding
 import com.example.zaatkotlin.viewmodels.EditViewModel
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.layout_top_profile.view.*
-import kotlinx.android.synthetic.main.snippet_center_login.*
-import java.io.ByteArrayOutputStream
+import java.io.File
 import java.lang.Exception
 
 class EditActivity : AppCompatActivity() {
@@ -57,7 +52,6 @@ class EditActivity : AppCompatActivity() {
                     }
 
                     override fun onError(e: Exception?) {
-                        TODO("Not yet implemented")
                     }
 
                 })
@@ -70,7 +64,6 @@ class EditActivity : AppCompatActivity() {
                     }
 
                     override fun onError(e: Exception?) {
-                        TODO("Not yet implemented")
                     }
 
                 })
@@ -84,7 +77,7 @@ class EditActivity : AppCompatActivity() {
                 userID,
                 viewModel.oldImage
             )
-            finish()
+            Toast.makeText(this, resources.getString(R.string.saved), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -136,8 +129,35 @@ class EditActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == 0) {
-            viewModel.imageUri = data?.data
-            binding.userIV.setImageURI(viewModel.imageUri)
+            val scheme = data?.data?.scheme
+            if (scheme.equals(ContentResolver.SCHEME_CONTENT)) {
+                val fileInputStream =
+                    applicationContext.contentResolver.openInputStream(data?.data!!)
+                val dataSize = fileInputStream?.available()
+                if (dataSize!! > 2000000)
+                    Toast.makeText(
+                        this,
+                        resources.getString(R.string.big_image),
+                        Toast.LENGTH_LONG
+                    ).show()
+                else {
+                    viewModel.imageUri = data.data
+                    binding.userIV.setImageURI(viewModel.imageUri)
+                }
+            } else if (scheme.equals(ContentResolver.SCHEME_FILE)) {
+                val path = data?.data?.path
+                val f = File(path!!)
+                if (f.length() > 2000000)
+                    Toast.makeText(
+                        this,
+                        resources.getString(R.string.big_image),
+                        Toast.LENGTH_LONG
+                    ).show()
+                else {
+                    viewModel.imageUri = data.data
+                    binding.userIV.setImageURI(viewModel.imageUri)
+                }
+            }
         }
     }
 }

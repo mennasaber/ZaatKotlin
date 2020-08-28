@@ -115,8 +115,7 @@ class OtherProfileActivity : AppCompatActivity() {
                     isReact(memoryID = memory.memoryID)
                 }
                 viewModel.memoriesList.sortByDescending { it.timestamp }
-                profileAdapter.notifyDataSetChanged()
-                imageVisibility()
+                //profileAdapter.notifyDataSetChanged()
             }
         })
 
@@ -133,14 +132,6 @@ class OtherProfileActivity : AppCompatActivity() {
         viewModel.getUserReact(memoryID).observe(this, Observer {
             viewModel.reactMap[memoryID] = it.size() != 0
             profileAdapter.notifyDataSetChanged()
-            imageVisibility()
         })
-    }
-
-    private fun imageVisibility() {
-        if (viewModel.memoriesList.size == 0)
-            binding.publicIV.visibility = View.VISIBLE
-        else
-            binding.publicIV.visibility = View.INVISIBLE
     }
 }

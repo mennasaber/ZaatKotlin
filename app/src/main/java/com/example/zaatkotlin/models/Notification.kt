@@ -7,7 +7,9 @@ class Notification(
     val seen: Boolean,
     val memoryID: String,
     var date: String,
-    val type: Long
+    val type: Long,
+    var timestamp: Long
 ) {
     lateinit var notificationID: String
+
 }

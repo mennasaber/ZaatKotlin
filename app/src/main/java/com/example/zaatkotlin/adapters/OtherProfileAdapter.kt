@@ -63,7 +63,7 @@ class OtherProfileAdapter(
                         }
 
                         override fun onError(e: Exception?) {
-                            TODO("Not yet implemented")
+
                         }
 
                     })
@@ -125,7 +125,8 @@ class OtherProfileAdapter(
                             seen = false,
                             memoryID = memoriesList[position].memoryID,
                             date = getCurrentDateTime().toString("K:mm a dd-MM-yyyy"),
-                            type = 0
+                            type = 0,
+                            timestamp = System.currentTimeMillis()
                         )
                     )
                 }

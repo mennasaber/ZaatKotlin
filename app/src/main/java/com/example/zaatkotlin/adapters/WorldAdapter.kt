@@ -61,7 +61,7 @@ class WorldAdapter(
                 }
 
                 override fun onError(e: Exception?) {
-                    TODO("Not yet implemented")
+
                 }
 
             })
@@ -90,8 +90,20 @@ class WorldAdapter(
         holder.binding.loveButton.setOnClickListener {
             if (viewModel != null) {
                 if (viewModel.reactMap[memoriesList[position].memoryID]!!) {
+                    holder.binding.loveButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        R.drawable.ic_dislove,
+                        0,
+                        0,
+                        0
+                    )
                     viewModel.deleteReact(memoriesList[position].memoryID)
                 } else {
+                    holder.binding.loveButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        R.drawable.ic_love,
+                        0,
+                        0,
+                        0
+                    )
                     viewModel.makeReact(memoriesList[position].memoryID)
                     val message = viewModel.currentUser.username
                     sendNotification(
@@ -108,7 +120,8 @@ class WorldAdapter(
                             seen = false,
                             memoryID = memoriesList[position].memoryID,
                             date = getCurrentDateTime().toString("K:mm a dd-MM-yyyy"),
-                            type = 0
+                            type = 0,
+                            timestamp = System.currentTimeMillis()
                         )
                     )
                 }

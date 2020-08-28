@@ -42,4 +42,7 @@
 
     <string name="memory_deleted">Memory deleted</string>
     <string name="edit_profile">Edit profile</string>
+
+    <string name="saved">Saved</string>
+    <string name="big_image">This image is very big, Select another</string>
 </resources>

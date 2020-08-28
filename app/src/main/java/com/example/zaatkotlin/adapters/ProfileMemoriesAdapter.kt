@@ -54,7 +54,7 @@ class ProfileMemoriesAdapter(
                     }
 
                     override fun onError(e: Exception?) {
-                        TODO("Not yet implemented")
+
                     }
 
                 })
@@ -133,15 +133,6 @@ class ProfileMemoriesAdapter(
             holder.binding.root.context.startActivity(intent)
         }
     }
-
-    private fun isLayoutRtl(view: View): Boolean =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            view.layoutDirection == View.LAYOUT_DIRECTION_RTL
-        } else {
-            false
-        }
-
-
     private fun goToMemory(
         context: Context,
         user: User,

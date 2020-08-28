@@ -76,4 +76,6 @@ dependencies {
 
     //for zoom image view
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+    //for reduce size of image
+    //implementation 'id.zelory:compressor:3.0.0'
 }

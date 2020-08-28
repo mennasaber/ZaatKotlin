@@ -53,7 +53,8 @@ class NotificationFragment : Fragment() {
                             seen = document["seen"] as Boolean,
                             memoryID = document["memoryID"] as String,
                             date = document["date"] as String,
-                            type = document["type"] as Long
+                            type = document["type"] as Long,
+                            timestamp = document["timestamp"] as Long
                         )
                         notification.date = convertDate(notification.date)
                         notification.notificationID = document["notificationID"] as String
@@ -65,6 +66,7 @@ class NotificationFragment : Fragment() {
                             getUser(notification.senderID, notification.notificationID)
                         }
                         viewModel.notificationsList.add(notification)
+                        viewModel.notificationsList.sortByDescending { it.timestamp }
                     }
                     initWidget()
                 }

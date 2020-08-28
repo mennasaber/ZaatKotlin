@@ -1,15 +1,11 @@
 package com.example.zaatkotlin.viewmodels
 
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.provider.MediaStore
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.auth.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import java.io.ByteArrayOutputStream
 
 class EditViewModel : ViewModel() {
     var oldImage: String = ""
@@ -27,7 +23,8 @@ class EditViewModel : ViewModel() {
                     saveChanges(map, userID)
                 }
             }
-            FirebaseStorage.getInstance().getReferenceFromUrl(oldImage).delete()
+//            if (oldImage.contains("firebasestorage"))
+//                FirebaseStorage.getInstance().getReferenceFromUrl(oldImage).delete()
         } else {
             val map = mutableMapOf<String, Any>()
             map["username"] = username

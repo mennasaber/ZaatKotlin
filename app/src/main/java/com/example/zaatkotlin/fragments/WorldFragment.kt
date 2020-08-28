@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.zaatkotlin.adapters.WorldAdapter
 import com.example.zaatkotlin.databinding.FragmentWorldBinding
 import com.example.zaatkotlin.models.Memory
@@ -17,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ChatFragment : Fragment() {
+class WorldFragment : Fragment() {
     private lateinit var binding: FragmentWorldBinding
     private val viewModel: WorldViewModel by viewModels()
     private lateinit var worldAdapter: WorldAdapter
@@ -78,10 +79,10 @@ class ChatFragment : Fragment() {
                     }
                 }
                 viewModel.memoriesList.sortByDescending { it.timestamp }
-                //worldAdapter.notifyDataSetChanged()
             }
             binding.Progress.visibility = View.INVISIBLE
             binding.memoriesRecyclerView.visibility = View.VISIBLE
+            worldAdapter.notifyDataSetChanged()
         })
     }
 
@@ -121,8 +122,6 @@ class ChatFragment : Fragment() {
                     getUser(document["followingId"] as String)
                 }
             }
-            binding.Progress.visibility = View.INVISIBLE
-            binding.memoriesRecyclerView.visibility = View.VISIBLE
         })
     }
 

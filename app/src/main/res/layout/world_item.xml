@@ -156,7 +156,7 @@
                     android:paddingEnd="30dp"
                     android:text="@string/love"
                     android:textColor="@color/colorWhite"
-                    tools:drawableStart="@drawable/ic_dislove" />
+                    android:drawableStart="@drawable/ic_dislove" />
 
                 <Button
                     android:id="@+id/commentButton"

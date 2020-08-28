@@ -41,7 +41,7 @@ class ProfileAdapter(
                     }
 
                     override fun onError(e: Exception?) {
-                        TODO("Not yet implemented")
+
                     }
 
                 })
